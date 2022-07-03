@@ -1,7 +1,7 @@
 import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 // import { updateTransactionState } from '../../store/sw-ui-reducer';
 import { updateTransactionState, updateErrorState } from '../../store/aut.reducer';
-import { ParseSWErrorMessage } from '../../utils/error-parser';
+import { ParseErrorMessage } from '../../utils/error-parser';
 import { EnableAndChangeNetwork } from './web3.network';
 import { BaseThunkArgs, ThunkArgs, GetThunkAPI, AsyncThunkConfig, ProviderEvent, AsyncThunkPayloadCreator } from './web3.thunk.type';
 
@@ -46,7 +46,7 @@ export const Web3ThunkProviderFactory = <AutContractFunctions = any, AutContract
         return await thunk(contractProvider, arg, thunkAPI);
       } catch (error) {
         console.log(error);
-        const message = ParseSWErrorMessage(error);
+        const message = ParseErrorMessage(error);
         if (stateActions.updateErrorStateAction) {
           stateActions.updateErrorStateAction(message, thunkAPI.dispatch);
         }

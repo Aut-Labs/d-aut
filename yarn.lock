@@ -2457,10 +2457,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@skill-wallet/sw-abi-types@^0.0.41":
-  "integrity" "sha512-W30aObvnjxIzlCbcH+kD+zQylQjCXsPZmmhEunNAEviHzdGnZfbbKihvlJZ/NVylIssUlLJGp7zBu9H6vOvQ9g=="
-  "resolved" "https://registry.npmjs.org/@skill-wallet/sw-abi-types/-/sw-abi-types-0.0.41.tgz"
-  "version" "0.0.41"
+"@skill-wallet/sw-abi-types@^0.0.48":
+  "integrity" "sha512-v5y0mlPRkU89mQYZfQjmTcEbd3YuYYzJteFiK8ly28TOrKp6CZEn/nHDqfl35fCAztwgCqZEQHGGyRb4TB1YXg=="
+  "resolved" "https://registry.npmjs.org/@skill-wallet/sw-abi-types/-/sw-abi-types-0.0.48.tgz"
+  "version" "0.0.48"
   dependencies:
     "@types/prettier" "^2.4.1"
     "ethers" "^5.6.1"

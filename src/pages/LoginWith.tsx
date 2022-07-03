@@ -5,9 +5,11 @@ import { useHistory } from 'react-router-dom';
 import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
+import { autState } from '../store/aut.reducer';
 
 const LoginWith: React.FunctionComponent = () => {
   const history = useHistory();
+  const autData = useSelector(autState);
 
   const handleAutIdClicked = () => {
     history.push('autid');
@@ -20,7 +22,7 @@ const LoginWith: React.FunctionComponent = () => {
   return (
     <AutPageBox>
       <Box sx={{ mt: '76px' }}>
-        <AutLogo />
+        <AutLogo id="default-logo" />
       </Box>
       <Typography sx={{ mt: '25px' }} variant="h3">
         LOGIN OR SIGN-UP
@@ -34,12 +36,14 @@ const LoginWith: React.FunctionComponent = () => {
           alignItems: 'center',
         }}
       >
-        <AutButton sx={{ mt: '48px' }} onClick={handleAutIdClicked}>
+        <AutButton sx={{ mt: autData.communityExtensionAddress ? '48px' : '78px' }} onClick={handleAutIdClicked}>
           Connect with āut
         </AutButton>
-        <AutButton sx={{ mt: '30px' }} onClick={handleNewUserClicked}>
-          New User
-        </AutButton>
+        {autData.communityExtensionAddress && (
+          <AutButton sx={{ mt: '30px' }} onClick={handleNewUserClicked}>
+            New User
+          </AutButton>
+        )}
       </Box>
     </AutPageBox>
   );

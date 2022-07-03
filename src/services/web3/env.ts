@@ -1,5 +1,7 @@
 // eslint-disable-next-line import/no-mutable-exports
 export let env = {
+  AUTID_CONTRACT: '0x2ECefB89d166560d514B9dD3E84B1Dfec33A958B',
+  COMMUNITY_REGISTRY_CONTRACT: '0xeBDf871b95E2C62B2d297591d52FeC29a187f87c',
   NETWORK_METADATA_PARAMS: [
     {
       chainId: '0x89', // A 0x-prefixed hexadecimal string
@@ -18,6 +20,8 @@ export let env = {
 export const setUseDev = (isDev) => {
   if (isDev) {
     env = {
+      COMMUNITY_REGISTRY_CONTRACT: '0xeBDf871b95E2C62B2d297591d52FeC29a187f87c',
+      AUTID_CONTRACT: '0x2ECefB89d166560d514B9dD3E84B1Dfec33A958B',
       NETWORK_METADATA_PARAMS: [
         {
           chainId: '0x13881', // A 0x-prefixed hexadecimal string

@@ -93,19 +93,31 @@ export const METAMASK_POSSIBLE_ERRORS = {
   },
 };
 
-export const ParseSWErrorMessage = (error: any) => {
+export enum InternalErrorTypes {
+  AutIDAlreadyExistsForAddress = 'Aut Id already exists for this address.',
+}
+
+export const ParseErrorMessage = (error: any) => {
   if (!error) {
     return error;
   }
 
-  if (isJson(error)) {
-    error = JSON.parse(JSON.stringify(error));
+  if (error.message === InternalErrorTypes.AutIDAlreadyExistsForAddress) {
+    return InternalErrorTypes.AutIDAlreadyExistsForAddress;
   }
 
   const metamaskError = METAMASK_POSSIBLE_ERRORS[error?.code];
+  console.log(error.code);
+  console.log(error);
+  console.log(metamaskError);
 
   if (metamaskError) {
     return metamaskError.message;
+  }
+
+  if (isJson(error)) {
+    error = JSON.parse(JSON.stringify(error));
+    console.log(error);
   }
 
   if (error?.code === 'CALL_EXCEPTION') {
@@ -126,7 +138,7 @@ export const ParseSWErrorMessage = (error: any) => {
 
   if (typeof error !== 'string') {
     console.error(error);
-    throw new Error('SW smart contract error message is not a string!');
+    throw new Error('Smart contract error message is not a string!');
   }
 
   const [mainMsg, fullSwMsg] = error.split('execution reverted:');

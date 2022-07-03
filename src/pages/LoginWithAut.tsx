@@ -31,7 +31,7 @@ const LoginWithSkillWallet: React.FunctionComponent = (props) => {
     <AutPageBox>
       <AutBackButton />
       <Box sx={{ mt: '16px' }}>
-        <AutLogo />
+        <AutLogo id="default-logo" />
       </Box>
       <Typography sx={{ mt: '25px' }} variant="h3">
         WELCOME BACK

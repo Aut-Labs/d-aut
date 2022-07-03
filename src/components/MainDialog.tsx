@@ -6,13 +6,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useEffect } from 'react';
 import routes from '../config/routes';
 import { AutContainerBox } from './AutContainerBox';
-import { autUiState, loadingStatus, ResultState } from '../store/aut.reducer';
+import { autState, loadingStatus, ResultState } from '../store/aut.reducer';
 import { LoadingProgress } from './LoadingProgress';
 import { ErrorBox } from './ErrorBox';
 
 function MainDialog({ container, open, handleClose }) {
-  const autState = useSelector(autUiState);
-
   return (
     <>
       <Dialog container={container} open={open} onClose={handleClose}>

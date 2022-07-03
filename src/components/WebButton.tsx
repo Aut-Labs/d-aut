@@ -48,7 +48,6 @@ export const RoundedWebButton = (props: WebButtonProps) => {
       }}
     >
       <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
-        {console.log(props.userData)}
         <Box
           sx={{
             width: '100%',

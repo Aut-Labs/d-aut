@@ -40,7 +40,7 @@ const UserRole: React.FunctionComponent = (props) => {
     <AutPageBox>
       <AutBackButton />
       <Box>
-        <AutLogo />
+        <AutLogo id="default-logo" />
       </Box>
       <Typography sx={{ mt: '25px' }} variant="h3">
         WELCOME

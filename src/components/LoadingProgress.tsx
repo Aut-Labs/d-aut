@@ -16,7 +16,7 @@ export const LoadingProgress = (props) => {
       }}
     >
       <Box sx={{ mt: '16px' }}>
-        <AutLogo />
+        <AutLogo id="loading-logo" />
       </Box>
       <Typography sx={{ mt: '25px' }} variant="h3">
         LOADING YOUR ...

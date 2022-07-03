@@ -1,11 +1,13 @@
-import { Web3AutIDProvider, Web3CommunityExtensionProvider } from '@skill-wallet/sw-abi-types';
+import { Web3AutIDProvider, Web3CommunityExtensionProvider, Web3CommunityRegistryProvider } from '@skill-wallet/sw-abi-types';
 import dateFormat from 'dateformat';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import * as ethers from 'ethers';
 import { Web3ThunkProviderFactory } from '../ProviderFactory/web3-thunk.provider';
 import { storeMetadata, uploadFile } from '../textile/textile.hub';
 import { EnableAndChangeNetwork } from '../ProviderFactory/web3.network';
-import { ParseSWErrorMessage } from './utils';
 import { BaseNFTModel } from './models';
+import { env } from './env';
+import { InternalErrorTypes, ParseErrorMessage } from '../../utils/error-parser';
 
 export function ipfsCIDToHttpUrl(url: string, isJson = false) {
   return `${url.replace('https://hub.textile.io/', 'https://ipfs.io/')}`;
@@ -68,7 +70,8 @@ export const mintMembership = autIdProvider(
     type: 'membership/mint',
   },
   (thunkAPI) => {
-    return Promise.resolve('0xCeb3300b7de5061c633555Ac593C84774D160309');
+    // return Promise.resolve('0xCeb3300b7de5061c633555Ac593C84774D160309');
+    return Promise.resolve(env.AUTID_CONTRACT);
   },
   async (contract, args, thunkAPI) => {
     const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
@@ -97,7 +100,7 @@ export const mintMembership = autIdProvider(
     const { aut } = thunkAPI.getState();
     console.log({ name: args.userData.username, url, role: args.userData.role, cmtmt: args.commitment });
     const response = await contract.mint(args.userData.username, url, args.userData.role, args.commitment, aut.communityExtensionAddress, {
-      gasLimit: 1000000,
+      gasLimit: 2000000,
     });
     console.log(response);
   }
@@ -106,11 +109,12 @@ export const mintMembership = autIdProvider(
 export const injectMetamask = createAsyncThunk('metamask/inject', async (arg, thunkAPI) => {
   try {
     await EnableAndChangeNetwork();
+
     console.log('NO ERROR');
   } catch (error) {
     console.log('ERROR');
-    return thunkAPI.rejectWithValue(ParseSWErrorMessage(error));
-    return ParseSWErrorMessage(error);
+    return thunkAPI.rejectWithValue(ParseErrorMessage(error));
+    return ParseErrorMessage(error);
   }
 });
 
@@ -119,7 +123,9 @@ export const getAutId = autIdProvider(
     type: 'membership/get',
   },
   (thunkAPI) => {
-    return Promise.resolve('0xCeb3300b7de5061c633555Ac593C84774D160309');
+    // return Promise.resolve('0xCeb3300b7de5061c633555Ac593C84774D160309');
+    // console.log(env.AUTID_CONTRACT);
+    return Promise.resolve(env.AUTID_CONTRACT);
   },
   async (contract, args, thunkAPI) => {
     const { selectedAddress } = window.ethereum;
@@ -129,8 +135,8 @@ export const getAutId = autIdProvider(
     const response = await fetch(cidToHttpUrl(tokenURI));
     const autId = await response.json();
     const holderCommunities = await contract.getCommunities(selectedAddress);
-    const communityExtensioncontract = await Web3CommunityExtensionProvider(aut.communityExtensionAddress);
-
+    const communityRegistryContract = await Web3CommunityRegistryProvider(env.COMMUNITY_REGISTRY_CONTRACT);
+    console.log('holderCommunities', holderCommunities);
     const communities = await Promise.all(
       (holderCommunities as any).map(async (communityAddress) => {
         const details = await contract.getCommunityData(selectedAddress, communityAddress);
@@ -149,7 +155,16 @@ export const getAutId = autIdProvider(
                 true
             ]
          */
+
+        const communityExtensioncontract = await Web3CommunityExtensionProvider(communityAddress);
+
         const resp = await communityExtensioncontract.getComData();
+
+        const isCoreTeam = await communityExtensioncontract.isCoreTeam(selectedAddress);
+
+        const communitiesByDeployer = await communityRegistryContract.getCommunitiesByDeployer(selectedAddress);
+
+        console.log(communitiesByDeployer);
 
         /**
          * [
@@ -203,6 +218,7 @@ export const getAutId = autIdProvider(
         const a = new BaseNFTModel({
           ...communityJson,
           properties: {
+            isCoreTeam,
             address: communityAddress,
             ...communityJson.properties,
             userData: {
@@ -222,20 +238,46 @@ export const getAutId = autIdProvider(
   }
 );
 
-export const checkIfAutIdExists = autIdProvider(
+export const checkIfNameTaken = autIdProvider(
   {
-    type: 'membership/exists',
+    type: 'membership/nametaken',
   },
   (thunkAPI) => {
     const { aut } = thunkAPI.getState();
     return Promise.resolve(aut.communityExtensionAddress);
   },
   async (contract, args) => {
-    const { selectedAddress } = window.ethereum;
-    const tokenId = await contract.getAutIDByOwner(selectedAddress);
-    if (tokenId) {
-      return true;
+    const tokenId = await contract.autIDUsername(args.name);
+    if (tokenId === ethers.constants.AddressZero) {
+      throw new Error('Username is taken in this community');
     }
     return false;
+  }
+);
+
+export const checkIfAutIdExists = autIdProvider(
+  {
+    type: 'membership/exists',
+  },
+  (thunkAPI) => {
+    return Promise.resolve(env.AUTID_CONTRACT);
+  },
+  async (contract, args) => {
+    const { selectedAddress } = window.ethereum;
+    try {
+      // TODO: Do this with contract.balanceOf
+      // function balanceOf(address) -> if > 0 => they have AutID , if 0 = they don't have autID
+      const tokenId = await contract.getAutIDByOwner(selectedAddress);
+      if (tokenId) {
+        throw new Error(InternalErrorTypes.AutIDAlreadyExistsForAddress);
+      }
+      return false;
+    } catch (error) {
+      if (error?.code === 'CALL_EXCEPTION') {
+        if (error?.reason?.toString().includes('The AutID owner is invalid')) return false;
+      }
+      console.log(error);
+      throw error;
+    }
   }
 );

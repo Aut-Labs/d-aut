@@ -9,6 +9,7 @@ import { useAppDispatch } from '../store/store.model';
 import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { AutBackButton } from '../components/AutBackButton';
 import { AutPageBox } from '../components/AutPageBox';
+import { checkIfAutIdExists } from '../services/web3/api';
 
 const NewUser: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
@@ -21,18 +22,17 @@ const NewUser: React.FunctionComponent = (props) => {
   }, []);
 
   const handleInjectFromMetamaskClick = async () => {
-    try {
-      await EnableAndChangeNetwork();
+    const idExists = await dispatch(checkIfAutIdExists(null));
+    console.log(idExists.payload);
+    if (!idExists.payload) {
       history.push('userdetails');
-    } catch (e) {
-      console.log('cancel inject metamask');
     }
   };
 
   return (
     <AutPageBox>
       <AutBackButton />
-      <AutLogo />
+      <AutLogo id="default-logo" />
       <Typography sx={{ mt: '25px' }} variant="h3">
         WELCOME
       </Typography>

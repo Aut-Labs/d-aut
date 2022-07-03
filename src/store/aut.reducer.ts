@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
-import { fetchCommunity, getAutId, injectMetamask, mintMembership } from '../services/web3/api';
+import { checkIfAutIdExists, checkIfNameTaken, fetchCommunity, getAutId, injectMetamask, mintMembership } from '../services/web3/api';
 import { BaseNFTModel } from '../services/web3/models';
 import { OutputEventTypes } from '../types/event-types';
 import { dispatchEvent } from '../utils/utils';
@@ -100,6 +100,24 @@ export const autSlice = createSlice({
       })
       .addCase(mintMembership.rejected, (state) => {
         state.status = ResultState.Failed;
+      })
+      .addCase(checkIfNameTaken.pending, (state) => {
+        state.status = ResultState.Loading;
+      })
+      .addCase(checkIfNameTaken.fulfilled, (state, action) => {
+        state.status = ResultState.Idle;
+      })
+      .addCase(checkIfNameTaken.rejected, (state) => {
+        state.status = ResultState.Failed;
+      })
+      .addCase(checkIfAutIdExists.pending, (state) => {
+        state.status = ResultState.Loading;
+      })
+      .addCase(checkIfAutIdExists.fulfilled, (state, action) => {
+        state.status = ResultState.Idle;
+      })
+      .addCase(checkIfAutIdExists.rejected, (state) => {
+        state.status = ResultState.Failed;
       });
   },
 });
@@ -111,7 +129,7 @@ export const community = createSelector(
   (community) => community
 );
 
-export const autUiState = createSelector(
+export const autState = createSelector(
   (state) => state.aut,
   (aut) => aut as typeof initialState
 );

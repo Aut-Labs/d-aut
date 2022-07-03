@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { errorAction, errorState } from '../store/aut.reducer';
 import AutLogo from './AutLogo';
 import { AutButton } from './AutButton';
+import { InternalErrorTypes } from '../utils/error-parser';
 
 export const ErrorBox = () => {
   const errorMessage = useSelector(errorState);
@@ -11,8 +12,12 @@ export const ErrorBox = () => {
   const history = useHistory();
 
   const handleError = () => {
-    dispatch(errorAction(null));
-    history.push('/');
+    if (errorMessage === InternalErrorTypes.AutIDAlreadyExistsForAddress) {
+      dispatch(errorAction(null));
+    } else {
+      dispatch(errorAction(null));
+      history.push('/');
+    }
   };
   return (
     <Box
@@ -25,7 +30,7 @@ export const ErrorBox = () => {
       }}
     >
       <Box sx={{ mt: '16px' }}>
-        <AutLogo />
+        <AutLogo id="error-logo" />
       </Box>
       <Typography sx={{ color: '#B10000', mt: '25px' }} variant="h1">
         {errorMessage}

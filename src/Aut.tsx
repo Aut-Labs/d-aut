@@ -11,13 +11,13 @@ import { setUseDev } from './services/web3/env';
 import { AttributeNames, checkIfAttributeHasChanged, dispatchEvent, parseAttributeValue } from './utils/utils';
 import { AutButtonProps } from './types/sw-auth-config';
 import { OutputEventTypes } from './types/event-types';
-import { autUiState, ResultState, setCommunityExtesnionAddress, showDialog } from './store/aut.reducer';
+import { autState, ResultState, setCommunityExtesnionAddress, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { RoundedWebButton } from './components/WebButton';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
-  const uiState = useSelector(autUiState);
+  const uiState = useSelector(autState);
 
   const handleClose = (event, reason) => {
     // if (reason && reason === 'backdropClick') return;
@@ -41,7 +41,7 @@ const AutModal = withRouter(({ container, rootContainer = null }: any) => {
 export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container, setAttrCallback }: AutButtonProps<CSSObject>) => {
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const uiState = useSelector(autUiState);
+  const uiState = useSelector(autState);
   // const currentUser = useSelector(currentUserState);
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -70,8 +70,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
       console.log(attributes.communityAddress);
       dispatch(setCommunityExtesnionAddress(attributes.communityAddress as string));
     } else {
-      // Probably throw error cause we can't do anything without it
-      // dispatch(showGlobalError('Community address attribute is missing.'));
+      console.log('nocommunity extension');
     }
     selectEnvironment();
   };

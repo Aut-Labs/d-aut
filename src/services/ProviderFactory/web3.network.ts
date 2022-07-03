@@ -47,10 +47,11 @@ export const EnableAndChangeNetwork = async () => {
           params,
         });
       } catch (addError) {
+        console.log('Add Error', addError);
         throw new Error(addError);
       }
     } else {
-      throw new Error(switchError);
+      throw switchError;
     }
   }
 };
