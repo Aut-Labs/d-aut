@@ -32,10 +32,20 @@ export const ErrorBox = () => {
       <Box sx={{ mt: '16px' }}>
         <AutLogo id="error-logo" />
       </Box>
-      <Typography sx={{ color: '#B10000', mt: '25px' }} variant="h1">
-        {errorMessage}
-      </Typography>
-      <AutButton sx={{ mt: '40px' }} onClick={handleError}>
+      <Box
+        sx={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Typography sx={{ color: '#B10000', mt: '25px', textAlign: 'center' }} variant="h1">
+          {errorMessage}
+        </Typography>
+      </Box>
+      <AutButton sx={{ my: '30px' }} onClick={handleError}>
         Return
       </AutButton>
     </Box>

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Button, Slider, Typography } from '@mui/material';
+import { Box, Button, Slider, styled, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import BackButton from '../components/BackButton';
 import { setUserData, userData } from '../store/user-data.reducer';
@@ -12,11 +12,8 @@ import { AutSlider } from '../components/CommitmentSlider';
 import { AutButton } from '../components/AutButton';
 import { AutBackButton } from '../components/AutBackButton';
 import { AutPageBox } from '../components/AutPageBox';
-
-interface Role {
-  roleId: number;
-  roleName: string;
-}
+import { FormAction, FormContent, FormWrapper } from '../components/FormHelpers';
+import { AutHeader } from '../components/AutHeader';
 
 const Commitment: React.FunctionComponent = (props) => {
   const history = useHistory();
@@ -40,19 +37,17 @@ const Commitment: React.FunctionComponent = (props) => {
 
   return (
     <AutPageBox>
-      <AutBackButton />
-      <Box>
-        <AutLogo id="default-logo" />
-      </Box>
-      <Typography sx={{ mt: '25px' }} variant="h3">
-        YOU PICKED {userInput.roleName}
-      </Typography>
-      <Typography sx={{ mt: '25px' }} variant="h4">
-        Tell your community how much
-      </Typography>
-      <Typography variant="h4">Time you can commit to this role</Typography>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ mt: '56px' }}>
+      <AutHeader
+        logoId="commitment-logo"
+        title={`You picked ${userInput.roleName}`}
+        subtitle={
+          <>
+            Tell your community how much <br /> time you can commit to this role
+          </>
+        }
+      />
+      <FormWrapper onSubmit={handleSubmit(onSubmit)}>
+        <FormContent>
           <Controller
             name="commitment"
             control={control}
@@ -76,24 +71,15 @@ const Commitment: React.FunctionComponent = (props) => {
                   max: 10,
                 }}
               />
-              // <Slider
-              //   min={0}
-              //   max={10}
-              //   onChange={(e, v) => {
-              //     console.log(v);
-              //     return onChange(v);
-              //   }}
-              //   value={value}
-              // />
             )}
           />
-        </Box>
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-          <AutButton sx={{ mt: '56px' }} type="submit" disabled={!isValid}>
+        </FormContent>
+        <FormAction>
+          <AutButton type="submit" disabled={!isValid}>
             Join the Community
           </AutButton>
-        </Box>
-      </form>
+        </FormAction>
+      </FormWrapper>
     </AutPageBox>
   );
 };

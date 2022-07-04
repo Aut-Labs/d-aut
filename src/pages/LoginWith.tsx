@@ -6,6 +6,7 @@ import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState } from '../store/aut.reducer';
+import { AutHeader } from '../components/AutHeader';
 
 const LoginWith: React.FunctionComponent = () => {
   const history = useHistory();
@@ -21,21 +22,17 @@ const LoginWith: React.FunctionComponent = () => {
 
   return (
     <AutPageBox>
-      <Box sx={{ mt: '76px' }}>
-        <AutLogo id="default-logo" />
-      </Box>
-      <Typography sx={{ mt: '25px' }} variant="h3">
-        LOGIN OR SIGN-UP
-      </Typography>
       <Box
         sx={{
           width: '100%',
+          height: '100%',
           display: 'flex',
           justifyContent: 'center',
           flexDirection: 'column',
           alignItems: 'center',
         }}
       >
+        <AutHeader hideBackBtn logoId="login-with-logo" title="LOGIN OR SIGN-UP" />
         <AutButton sx={{ mt: autData.communityExtensionAddress ? '48px' : '78px' }} onClick={handleAutIdClicked}>
           Connect with āut
         </AutButton>

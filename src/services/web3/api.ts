@@ -3,28 +3,15 @@ import dateFormat from 'dateformat';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import * as ethers from 'ethers';
 import { Web3ThunkProviderFactory } from '../ProviderFactory/web3-thunk.provider';
-import { storeMetadata, uploadFile } from '../textile/textile.hub';
+import { ipfsCIDToHttpUrl, storeImageAsBlob, storeMetadata } from '../storage/storage.hub';
 import { EnableAndChangeNetwork } from '../ProviderFactory/web3.network';
 import { BaseNFTModel } from './models';
 import { env } from './env';
 import { InternalErrorTypes, ParseErrorMessage } from '../../utils/error-parser';
 import { setCommunityExtesnionAddress } from '../../store/aut.reducer';
+import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
+import { base64toFile } from '../../utils/utils';
 
-export function ipfsCIDToHttpUrl(url: string, isJson = false) {
-  return `${url.replace('https://hub.textile.io/', 'https://ipfs.io/')}`;
-}
-
-// export function replaceIpfsSlashes(url: string) {
-//   return `${url.replace('ipfs://', 'https://nftstorage.link/ipfs')}`;
-// }
-
-export function cidToHttpUrl(cid: string) {
-  // TODO: this should not be required
-  if (cid.includes('ipfs://')) {
-    return `${cid.replace('ipfs://', 'https://nftstorage.link/ipfs/')}`;
-  }
-  return `https://nftstorage.link/ipfs/${cid}`;
-}
 const communityProvider = Web3ThunkProviderFactory('Community', {
   provider: Web3CommunityExtensionProvider,
 });
@@ -45,7 +32,7 @@ export const fetchCommunity = communityProvider(
     const resp = await contract.getComData();
     console.log(resp);
     // const communityMetadata = await fetch(cidToHttpUrl(`${resp[2]}/metadata.json`));
-    const communityMetadata = await fetch(cidToHttpUrl(resp[2]));
+    const communityMetadata = await fetch(ipfsCIDToHttpUrl(resp[2]));
     const communityJson = await communityMetadata.json();
     console.log(communityJson);
     console.log(communityJson.properties.rolesSets[0].roles);
@@ -70,37 +57,41 @@ export const mintMembership = autIdProvider(
   {
     type: 'membership/mint',
   },
-  (thunkAPI) => {
-    // return Promise.resolve('0xCeb3300b7de5061c633555Ac593C84774D160309');
+  () => {
     return Promise.resolve(env.AUTID_CONTRACT);
   },
-  async (contract, args, thunkAPI) => {
+  async (contract, { userData, commitment }, thunkAPI) => {
+    const { username, picture, role } = userData;
     const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
 
-    const file = await dataUrlToFile(args.userData.picture, 'avatar');
+    const config = {
+      title: `${username}`,
+      timestamp: `#${1} | ${timeStamp}`,
+    };
 
-    console.log(file);
-    const fileUrl = await uploadFile(file);
-    console.log(fileUrl);
+    const { toFile } = await AutIDBadgeGenerator(config);
+    const badgeFile = await toFile();
+    const avatarFile = base64toFile(picture, 'avatar');
+    const avatarCid = await storeImageAsBlob(avatarFile as File);
 
     const metadataJson = {
-      name: `${args.userData.username}`,
+      name: username,
       description: `AutID are a new standard for self-sovereign Identities that do not depend from the provider,
        therefore, they are universal. They are individual NFT IDs.`,
-      image: file,
+      image: badgeFile,
       properties: {
+        avatar: avatarCid,
         timestamp: timeStamp,
-        avatar: fileUrl,
       },
     };
-    const url = await storeMetadata(metadataJson);
-    console.log(url);
-    console.log(metadataJson);
-    console.log(fileUrl);
+    const cid = await storeMetadata(metadataJson);
+    console.log('Generated AutID -> ', ipfsCIDToHttpUrl(cid));
+    console.log('Avatar -> ', ipfsCIDToHttpUrl(avatarCid));
+    console.log('Role -> ', role);
+    console.log('Commitment -> ', commitment);
 
     const { aut } = thunkAPI.getState();
-    console.log({ name: args.userData.username, url, role: args.userData.role, cmtmt: args.commitment });
-    const response = await contract.mint(args.userData.username, url, args.userData.role, args.commitment, aut.communityExtensionAddress, {
+    const response = await contract.mint(username, cid, role, commitment, aut.communityExtensionAddress, {
       gasLimit: 2000000,
     });
     console.log(response);
@@ -133,7 +124,7 @@ export const getAutId = autIdProvider(
     const { aut } = thunkAPI.getState();
     const tokenId = await contract.getAutIDByOwner(selectedAddress);
     const tokenURI = await contract.tokenURI(tokenId);
-    const response = await fetch(cidToHttpUrl(tokenURI));
+    const response = await fetch(ipfsCIDToHttpUrl(tokenURI));
     const autId = await response.json();
     const holderCommunities = await contract.getCommunities(selectedAddress);
     const communityRegistryContract = await Web3CommunityRegistryProvider(env.COMMUNITY_REGISTRY_CONTRACT);
@@ -193,7 +184,7 @@ export const getAutId = autIdProvider(
               ""
           ]
          */
-        const communityMetadata = await fetch(cidToHttpUrl(resp[2]));
+        const communityMetadata = await fetch(ipfsCIDToHttpUrl(resp[2]));
         const communityJson = await communityMetadata.json();
 
         /**

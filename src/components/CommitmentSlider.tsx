@@ -1,5 +1,4 @@
-import styled from '@emotion/styled';
-import { Typography, Slider, SliderProps } from '@mui/material';
+import { Typography, Slider, SliderProps, styled } from '@mui/material';
 import { FieldErrors } from 'react-hook-form';
 import { pxToRem } from '../services/web3/utils';
 import { FormHelperText } from './Fields';
@@ -48,7 +47,7 @@ export function CommitmentMessage({ value, children = null }) {
   );
 }
 
-const StyledSlider = styled(Slider)({
+const StyledSlider = styled(Slider)(({ theme }) => ({
   width: pxToRem(400),
   height: pxToRem(40),
   color: '#439EDD',
@@ -86,7 +85,12 @@ const StyledSlider = styled(Slider)({
   '.MuiSlider-rail': {
     opacity: '0',
   },
-});
+
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+    height: pxToRem(20),
+  },
+}));
 
 interface AutSliderProps {
   sliderProps: SliderProps;
@@ -103,6 +107,7 @@ export const AutSlider = (props: AutSliderProps) => {
   return (
     <div
       style={{
+        width: '100%',
         position: 'relative',
       }}
     >

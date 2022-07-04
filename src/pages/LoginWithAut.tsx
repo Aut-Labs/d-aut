@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
-import { SwButton } from 'sw-web-shared';
-import { Link, useHistory } from 'react-router-dom';
-import { Box, Typography } from '@mui/material';
+import { useHistory } from 'react-router-dom';
+import { Box } from '@mui/material';
 import { ReactComponent as Metamask } from '../assets/metamask.svg';
 import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
-import { AutBackButton } from '../components/AutBackButton';
 import { useAppDispatch } from '../store/store.model';
-import AutLogo from '../components/AutLogo';
 import { AutButton, ButtonIcon } from '../components/AutButton';
 import { getAutId } from '../services/web3/api';
 import { AutPageBox } from '../components/AutPageBox';
 import { InternalErrorTypes } from '../utils/error-parser';
+import { AutHeader } from '../components/AutHeader';
 
 const LoginWithSkillWallet: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
@@ -28,19 +26,9 @@ const LoginWithSkillWallet: React.FunctionComponent = (props) => {
     }
   };
 
-  const handleBackClick = async () => {
-    history.goBack();
-  };
-
   return (
     <AutPageBox>
-      <AutBackButton />
-      <Box sx={{ mt: '16px' }}>
-        <AutLogo id="default-logo" />
-      </Box>
-      <Typography sx={{ mt: '25px' }} variant="h3">
-        WELCOME BACK
-      </Typography>
+      <AutHeader logoId="new-user-logo" title=" WELCOME BACK" />
       <Box
         sx={{
           width: '100%',
@@ -59,7 +47,7 @@ const LoginWithSkillWallet: React.FunctionComponent = (props) => {
           sx={{ mt: '29px' }}
           onClick={handleMetamaskClick}
         >
-          Login with MetaMaskg
+          Metamask
         </AutButton>
         <AutButton
           startIcon={

@@ -7,7 +7,7 @@ import { ReactComponent as BackIcon } from '../assets/back-icon.svg';
 
 export const StyledButton = styled(Button)(({ theme }) => ({
   '&.MuiButton-root': {
-    height: '60px',
+    height: '20px',
     textTransform: 'none',
     color: 'white',
     letterSpacing: '3px',
@@ -30,7 +30,7 @@ export const AutBackButton = () => {
     history.goBack();
   };
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ height: '40px', display: 'flex', alignItems: 'flex-end', padding: '0 20px', width: 'calc(100% - 40px)' }}>
       <StyledButton onClick={() => handleClick()}>Back</StyledButton>
     </Box>
   );
