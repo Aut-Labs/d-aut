@@ -8,6 +8,7 @@ import { EnableAndChangeNetwork } from '../ProviderFactory/web3.network';
 import { BaseNFTModel } from './models';
 import { env } from './env';
 import { InternalErrorTypes, ParseErrorMessage } from '../../utils/error-parser';
+import { setCommunityExtesnionAddress } from '../../store/aut.reducer';
 
 export function ipfsCIDToHttpUrl(url: string, isJson = false) {
   return `${url.replace('https://hub.textile.io/', 'https://ipfs.io/')}`;
@@ -136,7 +137,18 @@ export const getAutId = autIdProvider(
     const autId = await response.json();
     const holderCommunities = await contract.getCommunities(selectedAddress);
     const communityRegistryContract = await Web3CommunityRegistryProvider(env.COMMUNITY_REGISTRY_CONTRACT);
+
+    const communitiesByDeployer = await communityRegistryContract.getCommunitiesByDeployer(selectedAddress);
+    console.log(communitiesByDeployer);
+    for (const address of communitiesByDeployer) {
+      if (!(holderCommunities as unknown as string[]).includes(address)) {
+        console.log(address);
+        await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
+        throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
+      }
+    }
     console.log('holderCommunities', holderCommunities);
+
     const communities = await Promise.all(
       (holderCommunities as any).map(async (communityAddress) => {
         const details = await contract.getCommunityData(selectedAddress, communityAddress);
@@ -161,10 +173,6 @@ export const getAutId = autIdProvider(
         const resp = await communityExtensioncontract.getComData();
 
         const isCoreTeam = await communityExtensioncontract.isCoreTeam(selectedAddress);
-
-        const communitiesByDeployer = await communityRegistryContract.getCommunitiesByDeployer(selectedAddress);
-
-        console.log(communitiesByDeployer);
 
         /**
          * [

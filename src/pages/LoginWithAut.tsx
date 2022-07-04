@@ -10,6 +10,7 @@ import AutLogo from '../components/AutLogo';
 import { AutButton, ButtonIcon } from '../components/AutButton';
 import { getAutId } from '../services/web3/api';
 import { AutPageBox } from '../components/AutPageBox';
+import { InternalErrorTypes } from '../utils/error-parser';
 
 const LoginWithSkillWallet: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
@@ -20,7 +21,11 @@ const LoginWithSkillWallet: React.FunctionComponent = (props) => {
 
   const handleMetamaskClick = async () => {
     // performMetamaskLogin();
-    dispatch(getAutId(null));
+    const result = await dispatch(getAutId(null));
+
+    if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
+      history.push('/role');
+    }
   };
 
   const handleBackClick = async () => {
