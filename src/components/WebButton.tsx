@@ -79,12 +79,13 @@ export const RoundedWebButton = (props: WebButtonProps) => {
                   maxWidth: '100%',
                 }}
                 alt="User image."
+                // Make this not the badge
                 src={ipfsCIDToHttpUrl(props.userData.image)}
               />
             </Box>
           ) : (
             <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
-              Connect with aut
+              Connect with āut
             </Typography>
           )}
         </Box>

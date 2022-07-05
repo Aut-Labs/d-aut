@@ -16,11 +16,6 @@ import { autState } from '../store/aut.reducer';
 import { FormAction, FormContent, FormWrapper } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
 
-interface Role {
-  roleId: number;
-  roleName: string;
-}
-
 const Commitment: React.FunctionComponent = (props) => {
   const history = useHistory();
   const userInput = useSelector(userData);
@@ -40,9 +35,12 @@ const Commitment: React.FunctionComponent = (props) => {
   const onSubmit = async (data: any) => {
     console.log(data);
     if (coreState.justJoin) {
-      dispatch(joinCommunity({ userData: userInput, commitment: data.commitment }));
+      // TODO : Use user input from the store
+      const result = await dispatch(joinCommunity({ userData: userInput, commitment: data.commitment }));
+      history.push('congrats');
     } else {
-      dispatch(mintMembership({ userData: userInput, commitment: data.commitment }));
+      const result = await dispatch(mintMembership({ userData: userInput, commitment: data.commitment }));
+      history.push('minted');
     }
   };
 

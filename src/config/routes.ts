@@ -5,6 +5,8 @@ import NewUser from '../pages/NewUser';
 import UserDetails from '../pages/UserDetails';
 import UserRole from '../pages/UserRole';
 import Commitment from '../pages/Commitment';
+import Congratulations from '../pages/Congratulations';
+import MintSuccess from '../pages/MintSuccess';
 
 const routes: IRoute[] = [
   {
@@ -41,6 +43,18 @@ const routes: IRoute[] = [
     path: '/commitment',
     name: 'Commitment',
     component: Commitment,
+    exact: true,
+  },
+  {
+    path: '/congrats',
+    name: 'Congrats',
+    component: Congratulations,
+    exact: true,
+  },
+  {
+    path: '/mintsuccess',
+    name: 'Mint Success',
+    component: MintSuccess,
     exact: true,
   },
 ];
