@@ -8,7 +8,7 @@ import { EnableAndChangeNetwork } from '../ProviderFactory/web3.network';
 import { BaseNFTModel } from './models';
 import { env } from './env';
 import { InternalErrorTypes, ParseErrorMessage } from '../../utils/error-parser';
-import { setCommunityExtesnionAddress } from '../../store/aut.reducer';
+import { setCommunityExtesnionAddress, setJustJoining } from '../../store/aut.reducer';
 
 export function ipfsCIDToHttpUrl(url: string, isJson = false) {
   return `${url.replace('https://hub.textile.io/', 'https://ipfs.io/')}`;
@@ -107,6 +107,23 @@ export const mintMembership = autIdProvider(
   }
 );
 
+export const joinCommunity = autIdProvider(
+  {
+    type: 'membership/join',
+  },
+  (thunkAPI) => {
+    // return Promise.resolve('0xCeb3300b7de5061c633555Ac593C84774D160309');
+    return Promise.resolve(env.AUTID_CONTRACT);
+  },
+  async (contract, args, thunkAPI) => {
+    const { aut } = thunkAPI.getState();
+    const response = await contract.joinCommunity(args.userData.role, args.commitment, aut.communityExtensionAddress, {
+      gasLimit: 2000000,
+    });
+    console.log(response);
+  }
+);
+
 export const injectMetamask = createAsyncThunk('metamask/inject', async (arg, thunkAPI) => {
   try {
     await EnableAndChangeNetwork();
@@ -139,15 +156,16 @@ export const getAutId = autIdProvider(
     const communityRegistryContract = await Web3CommunityRegistryProvider(env.COMMUNITY_REGISTRY_CONTRACT);
 
     const communitiesByDeployer = await communityRegistryContract.getCommunitiesByDeployer(selectedAddress);
+    console.log('holderCommunities', holderCommunities);
     console.log(communitiesByDeployer);
     for (const address of communitiesByDeployer) {
       if (!(holderCommunities as unknown as string[]).includes(address)) {
         console.log(address);
+        await thunkAPI.dispatch(setJustJoining(true));
         await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
         throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
       }
     }
-    console.log('holderCommunities', holderCommunities);
 
     const communities = await Promise.all(
       (holderCommunities as any).map(async (communityAddress) => {
@@ -257,7 +275,7 @@ export const checkIfNameTaken = autIdProvider(
   async (contract, args) => {
     const tokenId = await contract.autIDUsername(args.name);
     if (tokenId === ethers.constants.AddressZero) {
-      throw new Error('Username is taken in this community');
+      throw new Error(InternalErrorTypes.UsernameAlreadyTaken);
     }
     return false;
   }
@@ -270,13 +288,14 @@ export const checkIfAutIdExists = autIdProvider(
   (thunkAPI) => {
     return Promise.resolve(env.AUTID_CONTRACT);
   },
-  async (contract, args) => {
+  async (contract, args, thunkAPI) => {
     const { selectedAddress } = window.ethereum;
     try {
       // TODO: Do this with contract.balanceOf
       // function balanceOf(address) -> if > 0 => they have AutID , if 0 = they don't have autID
       const tokenId = await contract.getAutIDByOwner(selectedAddress);
       if (tokenId) {
+        await thunkAPI.dispatch(setJustJoining(true));
         throw new Error(InternalErrorTypes.AutIDAlreadyExistsForAddress);
       }
       return false;

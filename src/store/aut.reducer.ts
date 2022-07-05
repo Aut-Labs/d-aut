@@ -3,6 +3,7 @@ import { createSelector } from 'reselect';
 import { checkIfAutIdExists, checkIfNameTaken, fetchCommunity, getAutId, injectMetamask, mintMembership } from '../services/web3/api';
 import { BaseNFTModel } from '../services/web3/models';
 import { OutputEventTypes } from '../types/event-types';
+import { InternalErrorTypes } from '../utils/error-parser';
 import { dispatchEvent } from '../utils/utils';
 import { ActionPayload } from './action-payload';
 
@@ -34,6 +35,7 @@ export interface AutState {
   errorStateAction: string;
   transactionState: string;
   user: BaseNFTModel<any>;
+  justJoin: boolean;
 }
 
 export const initialState: AutState = {
@@ -44,6 +46,7 @@ export const initialState: AutState = {
   errorStateAction: null,
   transactionState: null,
   user: null,
+  justJoin: false,
 };
 
 export const autSlice = createSlice({
@@ -61,6 +64,9 @@ export const autSlice = createSlice({
     },
     updateErrorState(state, action) {
       state.errorStateAction = action.payload;
+    },
+    setJustJoining(state, action) {
+      state.justJoin = action.payload;
     },
     errorAction(state, action) {
       state.status = ResultState.Idle;
@@ -116,13 +122,16 @@ export const autSlice = createSlice({
       .addCase(checkIfAutIdExists.fulfilled, (state, action) => {
         state.status = ResultState.Idle;
       })
-      .addCase(checkIfAutIdExists.rejected, (state) => {
-        state.status = ResultState.Failed;
+      .addCase(checkIfAutIdExists.rejected, (state, action) => {
+        if (action.payload !== InternalErrorTypes.AutIDAlreadyExistsForAddress) {
+          state.status = ResultState.Failed;
+        }
       });
   },
 });
 
-export const { setCommunityExtesnionAddress, showDialog, updateTransactionState, updateErrorState, errorAction } = autSlice.actions;
+export const { setJustJoining, setCommunityExtesnionAddress, showDialog, updateTransactionState, updateErrorState, errorAction } =
+  autSlice.actions;
 
 export const community = createSelector(
   (state) => state.aut.community,

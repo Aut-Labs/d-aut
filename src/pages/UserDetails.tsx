@@ -13,6 +13,9 @@ import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
 import { AutBackButton } from '../components/AutBackButton';
 import { AutPageBox } from '../components/AutPageBox';
+import { useAppDispatch } from '../store/store.model';
+import { checkIfNameTaken } from '../services/web3/api';
+import { InternalErrorTypes } from '../utils/error-parser';
 
 interface Values {
   picture?: File;
@@ -22,7 +25,7 @@ interface Values {
 const UserDetails: React.FunctionComponent = (props) => {
   const history = useHistory();
   const userInput = useSelector(userData);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const {
     handleSubmit,
     control,
@@ -34,8 +37,11 @@ const UserDetails: React.FunctionComponent = (props) => {
 
   const onSubmit = async (data) => {
     console.log(data);
-    dispatch(setUserData(data));
-    history.push('/role');
+    const result = await dispatch(checkIfNameTaken({ name: data.username }));
+    if (result.payload !== InternalErrorTypes.UsernameAlreadyTaken) {
+      await dispatch(setUserData(data));
+      history.push('/role');
+    }
   };
 
   return (

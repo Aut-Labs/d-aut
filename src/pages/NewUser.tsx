@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
+import { useSelector } from 'react-redux';
 import { ReactComponent as Metamask } from '../assets/metamask.svg';
 import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
 import AutLogo from '../components/AutLogo';
@@ -10,10 +11,12 @@ import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network
 import { AutBackButton } from '../components/AutBackButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists } from '../services/web3/api';
+import { autState } from '../store/aut.reducer';
 
 const NewUser: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const [metamaskSelected, setMetamaskSelected] = useState(false);
+  const coreState = useSelector(autState);
   const history = useHistory();
 
   useEffect(() => {
@@ -26,6 +29,8 @@ const NewUser: React.FunctionComponent = (props) => {
     console.log(idExists.payload);
     if (!idExists.payload) {
       history.push('userdetails');
+    } else {
+      history.push('role');
     }
   };
 

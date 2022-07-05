@@ -95,6 +95,7 @@ export const METAMASK_POSSIBLE_ERRORS = {
 
 export enum InternalErrorTypes {
   AutIDAlreadyExistsForAddress = 'Aut Id already exists for this address.',
+  UsernameAlreadyTaken = 'This username is already taken.',
   UserHasUnjoinedCommunities = 'User has unjoined communities.',
 }
 

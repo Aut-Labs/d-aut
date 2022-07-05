@@ -6,12 +6,13 @@ import { Controller, useForm } from 'react-hook-form';
 import BackButton from '../components/BackButton';
 import { setUserData, userData } from '../store/user-data.reducer';
 import { useAppDispatch } from '../store/store.model';
-import { mintMembership } from '../services/web3/api';
+import { joinCommunity, mintMembership } from '../services/web3/api';
 import AutLogo from '../components/AutLogo';
 import { AutSlider } from '../components/CommitmentSlider';
 import { AutButton } from '../components/AutButton';
 import { AutBackButton } from '../components/AutBackButton';
 import { AutPageBox } from '../components/AutPageBox';
+import { autState } from '../store/aut.reducer';
 
 interface Role {
   roleId: number;
@@ -21,6 +22,7 @@ interface Role {
 const Commitment: React.FunctionComponent = (props) => {
   const history = useHistory();
   const userInput = useSelector(userData);
+  const coreState = useSelector(autState);
   const dispatch = useAppDispatch();
 
   const {
@@ -35,7 +37,11 @@ const Commitment: React.FunctionComponent = (props) => {
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    dispatch(mintMembership({ userData: userInput, commitment: data.commitment }));
+    if (coreState.justJoin) {
+      dispatch(joinCommunity({ userData: userInput, commitment: data.commitment }));
+    } else {
+      dispatch(mintMembership({ userData: userInput, commitment: data.commitment }));
+    }
   };
 
   return (
