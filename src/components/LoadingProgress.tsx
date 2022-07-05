@@ -1,10 +1,9 @@
-import { Box, Typography } from '@mui/material';
-import * as LottiePlayer from '@lottiefiles/lottie-player';
-import { Player, Controls } from '@lottiefiles/react-lottie-player';
+import { Box } from '@mui/material';
+import { Player } from '@lottiefiles/react-lottie-player';
 import animationData from '../assets/aut-load.json';
-import AutLogo from './AutLogo';
+import { AutHeader } from './AutHeader';
 
-export const LoadingProgress = (props) => {
+export const LoadingProgress = () => {
   return (
     <Box
       sx={{
@@ -13,19 +12,29 @@ export const LoadingProgress = (props) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        padding: '45px 0',
       }}
     >
-      <Box sx={{ mt: '16px' }}>
-        <AutLogo id="loading-logo" />
+      <AutHeader
+        hideBackBtn
+        title="LOADING ..."
+        subtitle={
+          <>
+            Funny words here that change <br /> as the loading process happens
+          </>
+        }
+      />
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Player autoplay loop src={animationData} style={{ height: '300px', width: '300px' }} />
       </Box>
-      <Typography sx={{ mt: '25px' }} variant="h3">
-        LOADING YOUR ...
-      </Typography>
-      <Typography sx={{ mt: '25px' }} variant="h4">
-        Funny words here that change
-      </Typography>
-      <Typography variant="h4">as the loading process happens</Typography>
-      <Player autoplay loop src={animationData} style={{ height: '300px', width: '300px' }} />
     </Box>
   );
 };

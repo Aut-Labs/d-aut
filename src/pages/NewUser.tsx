@@ -12,6 +12,7 @@ import { AutBackButton } from '../components/AutBackButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists } from '../services/web3/api';
 import { autState } from '../store/aut.reducer';
+import { AutHeader } from '../components/AutHeader';
 
 const NewUser: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
@@ -36,15 +37,15 @@ const NewUser: React.FunctionComponent = (props) => {
 
   return (
     <AutPageBox>
-      <AutBackButton />
-      <AutLogo id="default-logo" />
-      <Typography sx={{ mt: '25px' }} variant="h3">
-        WELCOME
-      </Typography>
-      <Typography sx={{ mt: '25px' }} variant="h4">
-        First, import your wallet
-      </Typography>
-      <Typography variant="h4">Or create a brand new account</Typography>
+      <AutHeader
+        logoId="new-user-logo"
+        title="WELCOME"
+        subtitle={
+          <>
+            First, import your wallet <br /> & claim your Role in <span style={{ textDecoration: 'underline' }}>DAO Name!</span>
+          </>
+        }
+      />
       <Box
         sx={{
           width: '100%',

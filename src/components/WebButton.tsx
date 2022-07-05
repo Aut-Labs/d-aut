@@ -1,9 +1,9 @@
-import { Avatar, Box, Button, ButtonProps, Typography } from '@mui/material';
+import { Box, Button, ButtonProps, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { ReactComponent as Oval } from '../assets/oval.svg';
 import { ReactComponent as DarkOval } from '../assets/darker-oval.svg';
 import { pxToRem } from '../services/web3/utils';
-import { cidToHttpUrl } from '../services/web3/api';
+import { ipfsCIDToHttpUrl } from '../services/storage/storage.hub';
 
 export const RoundedButton = styled(Button)(({ theme }) => ({
   '&.MuiButton-root': {
@@ -79,7 +79,7 @@ export const RoundedWebButton = (props: WebButtonProps) => {
                   maxWidth: '100%',
                 }}
                 alt="User image."
-                src={cidToHttpUrl(props.userData.image)}
+                src={ipfsCIDToHttpUrl(props.userData.image)}
               />
             </Box>
           ) : (

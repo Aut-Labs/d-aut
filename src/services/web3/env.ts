@@ -1,5 +1,8 @@
 // eslint-disable-next-line import/no-mutable-exports
 export let env = {
+  REACT_APP_IPFS_URL: 'https://infura-ipfs.io/ipfs',
+  REACT_APP_NFT_STORAGE_KEY:
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDIwQkEyNDNhNTU1YmY4YzI0MzViNzVmMTk0NmFDNWQ2QTY4QUQzMjgiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY0MzkwMjIzNDA2NywibmFtZSI6IlBhcnRuZXJzQXBwIn0.sG-6S0mNp0FQ_4SIimMChrMj4250ymEH58V09eXNY4o',
   AUTID_CONTRACT: '0x2ECefB89d166560d514B9dD3E84B1Dfec33A958B',
   COMMUNITY_REGISTRY_CONTRACT: '0xeBDf871b95E2C62B2d297591d52FeC29a187f87c',
   NETWORK_METADATA_PARAMS: [
@@ -17,11 +20,14 @@ export let env = {
   ],
 };
 
-export const setUseDev = (isDev) => {
+export const setUseDev = (isDev: boolean) => {
   if (isDev) {
     env = {
-      COMMUNITY_REGISTRY_CONTRACT: '0xeBDf871b95E2C62B2d297591d52FeC29a187f87c',
+      REACT_APP_IPFS_URL: 'https://infura-ipfs.io/ipfs',
+      REACT_APP_NFT_STORAGE_KEY:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDIwQkEyNDNhNTU1YmY4YzI0MzViNzVmMTk0NmFDNWQ2QTY4QUQzMjgiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY0MzkwMjIzNDA2NywibmFtZSI6IlBhcnRuZXJzQXBwIn0.sG-6S0mNp0FQ_4SIimMChrMj4250ymEH58V09eXNY4o',
       AUTID_CONTRACT: '0x2ECefB89d166560d514B9dD3E84B1Dfec33A958B',
+      COMMUNITY_REGISTRY_CONTRACT: '0xeBDf871b95E2C62B2d297591d52FeC29a187f87c',
       NETWORK_METADATA_PARAMS: [
         {
           chainId: '0x13881', // A 0x-prefixed hexadecimal string

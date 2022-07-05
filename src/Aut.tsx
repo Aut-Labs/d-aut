@@ -1,17 +1,15 @@
 import { withRouter, useHistory } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { Avatar, Box, Button, ButtonProps, Menu, MenuItem, Typography } from '@mui/material';
 import Portal from '@mui/material/Portal';
 import { CSSObject } from '@emotion/react';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
 import { setUseDev } from './services/web3/env';
-// import { validateDomain } from './services/web3/web3Service';
-import { AttributeNames, checkIfAttributeHasChanged, dispatchEvent, parseAttributeValue } from './utils/utils';
+import { dispatchEvent } from './utils/utils';
 import { AutButtonProps } from './types/sw-auth-config';
 import { OutputEventTypes } from './types/event-types';
-import { autState, ResultState, setCommunityExtesnionAddress, showDialog } from './store/aut.reducer';
+import { autState, setCommunityExtesnionAddress, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { RoundedWebButton } from './components/WebButton';
 
@@ -49,7 +47,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
 
   const selectEnvironment = () => {
     if (attributes.useDev) {
-      setUseDev(attributes.useDev);
+      setUseDev(attributes.useDev as boolean);
     } else {
       // dispatch(startValidatingDomain());
       // try {

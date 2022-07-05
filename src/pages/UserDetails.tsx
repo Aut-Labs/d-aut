@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { SwUploadFile, toBase64 } from 'sw-web-shared';
 import { useHistory } from 'react-router-dom';
-import { Box, Button, Input, TextField, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import AutFileUpload from '../components/AutFileUpload';
-import { ReactComponent as Upload } from '../assets/upload.svg';
-import BackButton from '../components/BackButton';
 import { setUserData, userData } from '../store/user-data.reducer';
 import { AutTextField, FormHelperText } from '../components/Fields';
 import AutLogo from '../components/AutLogo';
@@ -16,6 +13,9 @@ import { AutPageBox } from '../components/AutPageBox';
 import { useAppDispatch } from '../store/store.model';
 import { checkIfNameTaken } from '../services/web3/api';
 import { InternalErrorTypes } from '../utils/error-parser';
+import { toBase64 } from '../utils/utils';
+import { FormWrapper, FormContent, FormAction } from '../components/FormHelpers';
+import { AutHeader } from '../components/AutHeader';
 
 interface Values {
   picture?: File;
@@ -46,23 +46,9 @@ const UserDetails: React.FunctionComponent = (props) => {
 
   return (
     <AutPageBox>
-      <AutBackButton />
-      <Box>
-        <AutLogo id="default-logo" />
-      </Box>
-      <Typography sx={{ mt: '25px' }} variant="h3">
-        TELL US ABOUT YOU
-      </Typography>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box
-          sx={{
-            maxWidth: '382px',
-            display: 'flex',
-            justifyContent: 'center',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
+      <AutHeader logoId="user-details-logo" title="TELL US ABOUT YOU" />
+      <FormWrapper onSubmit={handleSubmit(onSubmit)}>
+        <FormContent>
           <Controller
             name="picture"
             control={control}
@@ -71,7 +57,6 @@ const UserDetails: React.FunctionComponent = (props) => {
               return (
                 <Box
                   sx={{
-                    mt: '45px',
                     display: 'flex',
                     flexDirection: 'column',
                     justifyContent: 'center',
@@ -100,7 +85,7 @@ const UserDetails: React.FunctionComponent = (props) => {
             render={({ field: { name, value, onChange }, formState }) => (
               // <TextField onChange={onChange} value={value} label="username" />
               <AutTextField
-                width="330"
+                width="360"
                 variant="standard"
                 required
                 autoFocus
@@ -112,11 +97,13 @@ const UserDetails: React.FunctionComponent = (props) => {
               />
             )}
           />
-          <AutButton sx={{ mt: '40px' }} type="submit" disabled={!isValid}>
+        </FormContent>
+        <FormAction>
+          <AutButton type="submit" disabled={!isValid}>
             Next
           </AutButton>
-        </Box>
-      </form>
+        </FormAction>
+      </FormWrapper>
     </AutPageBox>
     // <Box
     //   sx={{

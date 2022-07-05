@@ -86,7 +86,6 @@
     "redux-logger": "~3.0.6",
     "redux-persist": "~6.0.0",
     "reselect": "^4.1.5",
-    "sw-web-shared": "github:DistributedTown/sw-web-shared#master",
     "typescript": "~4.5.3",
     "webpack": "^5.0.0"
   },

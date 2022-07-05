@@ -66,6 +66,9 @@ export function FormHelperText({ errors, name, errorTypes, children = null, valu
 export const AutTextField = styled((props: TextFieldProps & { width: string }) => <TextField {...props} />)(
   ({ theme, width, multiline }) => ({
     width: pxToRem(width),
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
     '.MuiInputLabel-root': {
       top: '-2px',
     },

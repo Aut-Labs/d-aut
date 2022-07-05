@@ -1,7 +1,5 @@
 import { ArrowBackIos } from '@mui/icons-material';
-import { IconButton, Typography } from '@mui/material';
-import { Box } from '@mui/system';
-import { SwButton } from 'sw-web-shared';
+import { IconButton } from '@mui/material';
 
 const BackButton = ({ handleClick }) => {
   const handleOnClick = () => {

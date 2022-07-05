@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, styled, Typography } from '@mui/material';
 import { community } from '../store/aut.reducer';
 import BackButton from '../components/BackButton';
 import { useAppDispatch } from '../store/store.model';
@@ -11,6 +11,8 @@ import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
 import { AutBackButton } from '../components/AutBackButton';
 import { AutPageBox } from '../components/AutPageBox';
+import { FormWrapper } from '../components/FormHelpers';
+import { AutHeader } from '../components/AutHeader';
 
 const UserRole: React.FunctionComponent = (props) => {
   const dipsatch = useAppDispatch();
@@ -38,32 +40,32 @@ const UserRole: React.FunctionComponent = (props) => {
 
   return (
     <AutPageBox>
-      <AutBackButton />
-      <Box>
-        <AutLogo id="default-logo" />
-      </Box>
-      <Typography sx={{ mt: '25px' }} variant="h3">
-        WELCOME
-      </Typography>
-      <Typography sx={{ mt: '25px' }} variant="h4">
-        Pick what you’re the best at,
-      </Typography>
-      <Typography variant="h4">& be rewarded for it!</Typography>
-      <Box
-        sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          flexDirection: 'column',
-          alignItems: 'center',
-          mb: '9px',
-        }}
-      >
+      <AutHeader
+        logoId="role-logo"
+        title="WELCOME"
+        subtitle={
+          <>
+            Pick what you’re the best at, <br /> & be rewarded for it!
+          </>
+        }
+      />
+      <FormWrapper>
         {communityData &&
           communityData.roles &&
           communityData.roles.map((role, n) => {
             return (
-              <AutButton sx={{ mt: '30px' }} onClick={() => handleRoleSelect(role)} key={n}>
+              <AutButton
+                sx={{
+                  '&.MuiButton-root': {
+                    height: '55px',
+                    '& + .MuiButton-root': {
+                      mt: '30px',
+                    },
+                  },
+                }}
+                onClick={() => handleRoleSelect(role)}
+                key={n}
+              >
                 {role.roleName}
               </AutButton>
             );
@@ -79,7 +81,7 @@ const UserRole: React.FunctionComponent = (props) => {
           disabled={!selectedRole}
           label="That's it - join this community!"
         /> */}
-      </Box>
+      </FormWrapper>
     </AutPageBox>
   );
 };

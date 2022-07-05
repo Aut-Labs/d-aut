@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { SwButton } from 'sw-web-shared';
+import { AutButton } from './AutButton';
 
 const ErrorBox = ({ errorData }) => {
   const handleOnClick = () => {
@@ -23,16 +23,8 @@ const ErrorBox = ({ errorData }) => {
       <Typography sx={{ mb: '26px', width: '90%' }} variant="h2">
         {errorData.errorMessage}
       </Typography>
-      <SwButton
-        sx={{
-          borderColor: 'primary.main',
-          mb: '26px',
-        }}
-        onClick={handleOnClick}
-        btnType="large"
-        mode="dark"
-        label={errorData.actionLabel}
-      />
+
+      <AutButton onClick={handleOnClick}>{errorData.actionLabel}</AutButton>
     </Box>
   );
 };
