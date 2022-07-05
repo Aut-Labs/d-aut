@@ -160,7 +160,12 @@ export const getAutId = autIdProvider(
 
     const communities = await Promise.all(
       (holderCommunities as any).map(async (communityAddress) => {
-        const details = await contract.getCommunityData(selectedAddress, communityAddress);
+        // * communityExtension: string
+        // * role: number
+        // * commitment: number
+        // * isActive: boolean
+        // */
+        const [_, role, commitment, isActive] = await contract.getCommunityData(selectedAddress, communityAddress);
 
         /**
          * [
@@ -239,12 +244,12 @@ export const getAutId = autIdProvider(
             address: communityAddress,
             ...communityJson.properties,
             userData: {
-              role: details[1].toString(),
-              commitment: details[2].toString(),
+              role: role.toString(),
+              commitment: commitment.toString(),
+              isActive,
             },
           },
         });
-
         return a;
       })
     );
