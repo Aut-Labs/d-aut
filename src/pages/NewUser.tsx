@@ -13,6 +13,8 @@ import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists } from '../services/web3/api';
 import { autState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
+import { ErrorTypes } from '../types/error-types';
+import { InternalErrorTypes } from '../utils/error-parser';
 
 const NewUser: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
@@ -26,12 +28,13 @@ const NewUser: React.FunctionComponent = (props) => {
   }, []);
 
   const handleInjectFromMetamaskClick = async () => {
-    const idExists = await dispatch(checkIfAutIdExists(null));
-    console.log(idExists.payload);
-    if (!idExists.payload) {
-      history.push('userdetails');
-    } else {
-      history.push('role');
+    const hasAutId = await dispatch(checkIfAutIdExists(null));
+    if (hasAutId.meta.requestStatus !== 'rejected') {
+      if (!hasAutId.payload) {
+        history.push('userdetails');
+      } else {
+        history.push('role');
+      }
     }
   };
 

@@ -1,14 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
-import {
-  checkIfAutIdExists,
-  checkIfNameTaken,
-  fetchCommunity,
-  getAutId,
-  injectMetamask,
-  joinCommunity,
-  mintMembership,
-} from '../services/web3/api';
+import { checkIfAutIdExists, checkIfNameTaken, fetchCommunity, getAutId, joinCommunity, mintMembership } from '../services/web3/api';
 import { BaseNFTModel } from '../services/web3/models';
 import { OutputEventTypes } from '../types/event-types';
 import { InternalErrorTypes } from '../utils/error-parser';
@@ -43,6 +35,7 @@ export interface AutState {
   errorStateAction: string;
   transactionState: string;
   user: BaseNFTModel<any>;
+  userBadge: string;
   justJoin: boolean;
 }
 
@@ -54,6 +47,7 @@ export const initialState: AutState = {
   errorStateAction: null,
   transactionState: null,
   user: null,
+  userBadge: null,
   justJoin: false,
 };
 
@@ -131,9 +125,7 @@ export const autSlice = createSlice({
         state.status = ResultState.Idle;
       })
       .addCase(checkIfAutIdExists.rejected, (state, action) => {
-        if (action.payload !== InternalErrorTypes.AutIDAlreadyExistsForAddress) {
-          state.status = ResultState.Failed;
-        }
+        state.status = ResultState.Failed;
       })
       .addCase(joinCommunity.fulfilled, (state, action) => {
         state.status = ResultState.Idle;

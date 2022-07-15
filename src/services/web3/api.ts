@@ -95,6 +95,7 @@ export const mintMembership = autIdProvider(
       gasLimit: 2000000,
     });
     console.log(response);
+    return response;
   }
 );
 
@@ -112,6 +113,7 @@ export const joinCommunity = autIdProvider(
       gasLimit: 2000000,
     });
     console.log(response);
+    return response;
   }
 );
 
@@ -286,21 +288,52 @@ export const checkIfAutIdExists = autIdProvider(
   },
   async (contract, args, thunkAPI) => {
     const { selectedAddress } = window.ethereum;
-    try {
-      // TODO: Do this with contract.balanceOf
-      // function balanceOf(address) -> if > 0 => they have AutID , if 0 = they don't have autID
-      const tokenId = await contract.getAutIDByOwner(selectedAddress);
-      if (tokenId) {
-        await thunkAPI.dispatch(setJustJoining(true));
-        throw new Error(InternalErrorTypes.AutIDAlreadyExistsForAddress);
-      }
-      return false;
-    } catch (error) {
-      if (error?.code === 'CALL_EXCEPTION') {
-        if (error?.reason?.toString().includes('The AutID owner is invalid')) return false;
-      }
-      console.log(error);
-      throw error;
+    // try {
+    // TODO: Do this with contract.balanceOf
+    // function balanceOf(address) -> if > 0 => they have AutID , if 0 = they don't have autID
+    const balanceOf = await contract.balanceOf(selectedAddress);
+    let hasAutId;
+    if (balanceOf > 0) {
+      hasAutId = true;
+    } else {
+      hasAutId = false;
     }
+    let holderCommunities = null;
+    try {
+      holderCommunities = await contract.getCommunities(selectedAddress);
+    } catch (e) {
+      if (e?.reason?.toString().includes(`AutID: Doesn't have a SW.`)) {
+        console.log(e);
+      } else {
+        throw e;
+      }
+    }
+    if (holderCommunities) {
+      const { aut } = thunkAPI.getState();
+      for (const community of holderCommunities as unknown as string[]) {
+        if (community === aut.communityExtensionAddress) {
+          throw Error(InternalErrorTypes.AutIDAlreadyInThisCommunity);
+        }
+      }
+    }
+    return hasAutId;
+    // const tokenId = await contract.getAutIDByOwner(selectedAddress);
+    // if (tokenId) {
+    //   await thunkAPI.dispatch(setJustJoining(true));
+    //   // return true;
+    //   throw new Error(InternalErrorTypes.AutIDAlreadyExistsForAddress);
+    // }
+    // const tokenURI = await contract.tokenURI(tokenId);
+    // const response = await fetch(ipfsCIDToHttpUrl(tokenURI));
+    // const autId = await response.json();
+
+    //   return false;
+    // } catch (error) {
+    //   if (error?.code === 'CALL_EXCEPTION') {
+    //     if (error?.reason?.toString().includes('The AutID owner is invalid')) return false;
+    //   }
+    //   console.log(error);
+    //   throw error;
+    // }
   }
 );

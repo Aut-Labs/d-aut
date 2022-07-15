@@ -95,6 +95,7 @@ export const METAMASK_POSSIBLE_ERRORS = {
 
 export enum InternalErrorTypes {
   AutIDAlreadyExistsForAddress = 'Aut Id already exists for this address.',
+  AutIDAlreadyInThisCommunity = 'Your Aut Id is already a membter of this community.',
   UsernameAlreadyTaken = 'This username is already taken.',
   UserHasUnjoinedCommunities = 'User has unjoined communities.',
 }
@@ -102,10 +103,6 @@ export enum InternalErrorTypes {
 export const ParseErrorMessage = (error: any) => {
   if (!error) {
     return error;
-  }
-
-  if (error.message === InternalErrorTypes.AutIDAlreadyExistsForAddress) {
-    return InternalErrorTypes.AutIDAlreadyExistsForAddress;
   }
 
   if (error.message === InternalErrorTypes.UserHasUnjoinedCommunities) {

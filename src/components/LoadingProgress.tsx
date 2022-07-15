@@ -12,18 +12,19 @@ export const LoadingProgress = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '45px 0',
       }}
     >
-      <AutHeader
-        hideBackBtn
-        title="LOADING ..."
-        subtitle={
-          <>
-            Funny words here that change <br /> as the loading process happens
-          </>
-        }
-      />
+      <Box sx={{ width: '100%', mt: '64px', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+        <AutHeader
+          hideBackBtn
+          title="LOADING ..."
+          subtitle={
+            <>
+              Funny words here that change <br /> as the loading process happens
+            </>
+          }
+        />
+      </Box>
       <Box
         sx={{
           display: 'flex',
