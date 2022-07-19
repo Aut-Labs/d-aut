@@ -14,8 +14,9 @@ export const LoadingProgress = () => {
         alignItems: 'center',
       }}
     >
-      <Box sx={{ width: '100%', mt: '64px', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+      <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
         <AutHeader
+          hideCloseBtn
           hideBackBtn
           title="LOADING ..."
           subtitle={

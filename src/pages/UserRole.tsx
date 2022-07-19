@@ -9,7 +9,6 @@ import { fetchCommunity } from '../services/web3/api';
 import { setUserData } from '../store/user-data.reducer';
 import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
-import { AutBackButton } from '../components/AutBackButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { FormWrapper } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';

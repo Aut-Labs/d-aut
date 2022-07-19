@@ -8,7 +8,6 @@ import { setUserData, userData } from '../store/user-data.reducer';
 import { AutTextField, FormHelperText } from '../components/Fields';
 import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
-import { AutBackButton } from '../components/AutBackButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { useAppDispatch } from '../store/store.model';
 import { checkIfNameTaken } from '../services/web3/api';
@@ -37,7 +36,7 @@ const UserDetails: React.FunctionComponent = (props) => {
 
   const onSubmit = async (data) => {
     console.log(data);
-    const result = await dispatch(checkIfNameTaken({ name: data.username }));
+    const result = await dispatch(checkIfNameTaken({ username: data.username }));
     if (result.payload !== InternalErrorTypes.UsernameAlreadyTaken) {
       await dispatch(setUserData(data));
       history.push('/role');

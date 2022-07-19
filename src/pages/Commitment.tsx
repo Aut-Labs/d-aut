@@ -10,7 +10,6 @@ import { joinCommunity, mintMembership } from '../services/web3/api';
 import AutLogo from '../components/AutLogo';
 import { AutSlider } from '../components/CommitmentSlider';
 import { AutButton } from '../components/AutButton';
-import { AutBackButton } from '../components/AutBackButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState } from '../store/aut.reducer';
 import { FormAction, FormContent, FormWrapper } from '../components/FormHelpers';
@@ -35,12 +34,11 @@ const Commitment: React.FunctionComponent = (props) => {
   const onSubmit = async (data: any) => {
     console.log(data);
     if (coreState.justJoin) {
-      // TODO : Use user input from the store
-      const result = await dispatch(joinCommunity({ userData: userInput, commitment: data.commitment }));
+      const result = await dispatch(joinCommunity(null));
       history.push('congrats');
     } else {
-      const result = await dispatch(mintMembership({ userData: userInput, commitment: data.commitment }));
-      history.push('minted');
+      const result = await dispatch(mintMembership(null));
+      history.push('mintsuccess');
     }
   };
 

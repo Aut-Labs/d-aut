@@ -6,6 +6,7 @@ import { ActionPayload } from './action-payload';
 export interface UserData {
   username?: string;
   picture?: string;
+  badge?: string;
   role?: number;
   roleName?: string;
   commitment: number;
@@ -15,6 +16,7 @@ export interface UserData {
 export const initialState: UserData = {
   username: '',
   picture: undefined,
+  badge: undefined,
   role: undefined,
   roleName: undefined,
   commitment: 0,
@@ -27,6 +29,7 @@ export interface UserState {
   role?: number;
   roleName?: string;
   picture?: string;
+  badge?: string;
   isLoggedIn?: boolean;
 }
 

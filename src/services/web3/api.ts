@@ -11,6 +11,7 @@ import { InternalErrorTypes, ParseErrorMessage } from '../../utils/error-parser'
 import { setCommunityExtesnionAddress, setJustJoining } from '../../store/aut.reducer';
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
 import { base64toFile } from '../../utils/utils';
+import { setUserData } from '../../store/user-data.reducer';
 
 const communityProvider = Web3ThunkProviderFactory('Community', {
   provider: Web3CommunityExtensionProvider,
@@ -60,8 +61,10 @@ export const mintMembership = autIdProvider(
   () => {
     return Promise.resolve(env.AUTID_CONTRACT);
   },
-  async (contract, { userData, commitment }, thunkAPI) => {
-    const { username, picture, role } = userData;
+  async (contract, args, thunkAPI) => {
+    const { userData } = thunkAPI.getState();
+    console.log(userData);
+    const { username, picture, role, commitment } = userData;
     const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
 
     const config = {
@@ -85,17 +88,23 @@ export const mintMembership = autIdProvider(
       },
     };
     const cid = await storeMetadata(metadataJson);
+    const metadata = await fetch(ipfsCIDToHttpUrl(cid));
+    const metadataJsons = await metadata.json();
+    console.log(metadataJsons);
+    console.log(metadata);
     console.log('Generated AutID -> ', ipfsCIDToHttpUrl(cid));
     console.log('Avatar -> ', ipfsCIDToHttpUrl(avatarCid));
     console.log('Role -> ', role);
     console.log('Commitment -> ', commitment);
 
     const { aut } = thunkAPI.getState();
-    const response = await contract.mint(username, cid, role, commitment, aut.communityExtensionAddress, {
+
+    await contract.mint(username, cid, role, commitment, aut.communityExtensionAddress, {
       gasLimit: 2000000,
     });
-    console.log(response);
-    return response;
+    await thunkAPI.dispatch(setUserData({ badge: ipfsCIDToHttpUrl(metadataJsons.image) }));
+    // return true;
+    return true;
   }
 );
 
@@ -109,11 +118,10 @@ export const joinCommunity = autIdProvider(
   },
   async (contract, args, thunkAPI) => {
     const { aut } = thunkAPI.getState();
-    const response = await contract.joinCommunity(args.userData.role, args.commitment, aut.communityExtensionAddress, {
+    await contract.joinCommunity(args.userData.role, args.commitment, aut.communityExtensionAddress, {
       gasLimit: 2000000,
     });
-    console.log(response);
-    return response;
+    return true;
   }
 );
 
@@ -271,7 +279,7 @@ export const checkIfNameTaken = autIdProvider(
     return Promise.resolve(aut.communityExtensionAddress);
   },
   async (contract, args) => {
-    const tokenId = await contract.autIDUsername(args.name);
+    const tokenId = await contract.autIDUsername(args.username);
     if (tokenId === ethers.constants.AddressZero) {
       throw new Error(InternalErrorTypes.UsernameAlreadyTaken);
     }

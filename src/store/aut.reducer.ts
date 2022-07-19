@@ -40,7 +40,7 @@ export interface AutState {
 }
 
 export const initialState: AutState = {
-  community: null,
+  community: { name: 'SASSS', description: 'null', roles: null },
   communityExtensionAddress: null,
   showDialog: false,
   status: ResultState.Idle,

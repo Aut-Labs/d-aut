@@ -1,3 +1,4 @@
+import React from 'react';
 import IRoute from '../interfaces/route';
 import LoginWith from '../pages/LoginWith';
 import LoginWithSkillWallet from '../pages/LoginWithAut';

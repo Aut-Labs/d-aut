@@ -8,8 +8,8 @@ import { ipfsCIDToHttpUrl } from '../services/storage/storage.hub';
 export const RoundedButton = styled(Button)(({ theme }) => ({
   '&.MuiButton-root': {
     padding: '0px',
-    height: '60px',
-    width: '240px',
+    height: '50px',
+    width: '200px',
     background:
       '#009ADE linear-gradient(270deg, #009fe3 0%, #0399de 8%, #0e8bd3 19%, #2072bf 30%, #3a50a4 41%, #5a2583 53%, #453f94 71%, #38519f 88%, #3458a4 100%) 0% 0%',
     border: `${pxToRem(3)} solid #009FE3`,
@@ -80,7 +80,7 @@ export const RoundedWebButton = (props: WebButtonProps) => {
                 }}
                 alt="User image."
                 // Make this not the badge
-                src={ipfsCIDToHttpUrl(props.userData.image)}
+                src={ipfsCIDToHttpUrl(props.userData.properties.avatar)}
               />
             </Box>
           ) : (
@@ -93,7 +93,7 @@ export const RoundedWebButton = (props: WebButtonProps) => {
           <Box sx={{ transform: 'translate(116px, -109px)' }}>
             <Oval />
           </Box>
-          <Box sx={{ transform: 'translate(181px, -230px)' }}>
+          <Box sx={{ transform: 'translate(157px, -230px)' }}>
             <DarkOval />
           </Box>
         </Box>
