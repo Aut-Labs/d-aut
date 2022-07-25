@@ -1,4 +1,4 @@
-import { Web3AutIDProvider, Web3CommunityExtensionProvider, Web3CommunityRegistryProvider } from '@skill-wallet/sw-abi-types';
+import { Web3AutIDProvider, Web3CommunityExtensionProvider, Web3CommunityRegistryProvider } from '@aut-protocol/abi-types';
 import dateFormat from 'dateformat';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import * as ethers from 'ethers';
