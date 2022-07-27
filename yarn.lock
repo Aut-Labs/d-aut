@@ -16,10 +16,10 @@
   "resolved" "https://registry.npmjs.org/@assemblyscript/loader/-/loader-0.9.4.tgz"
   "version" "0.9.4"
 
-"@aut-protocol/abi-types@^0.0.51":
-  "integrity" "sha512-0MxUdPSyWEFlfkonBngCyZ7POSZdb8NbTezvaHiDUhIHfCdyP3bRMYekkcbLpZqvEyAWZprKtYHM0CUEmbeAmQ=="
-  "resolved" "https://registry.npmjs.org/@aut-protocol/abi-types/-/abi-types-0.0.51.tgz"
-  "version" "0.0.51"
+"@aut-protocol/abi-types@^0.0.54":
+  "integrity" "sha512-8fBtQBJCJ03WHlZKRDuJ2+/4JQ8U7ROvfcXzI/hub5CiIbsGyX3qGYriYdDAKEoTfsXknNxMczALN7+TL8NFSA=="
+  "resolved" "https://registry.npmjs.org/@aut-protocol/abi-types/-/abi-types-0.0.54.tgz"
+  "version" "0.0.54"
 
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.12.13", "@babel/code-frame@^7.16.0", "@babel/code-frame@^7.16.7", "@babel/code-frame@^7.18.6", "@babel/code-frame@^7.8.3":
   "integrity" "sha512-TDCmlK5eOvH+eH7cdAFlNXeVJqWIQ7gW9tY1GJIpUtFb6CmjVyq2VM3u71bOyR8CRihcCgMUYoDNyLXao3+70Q=="
