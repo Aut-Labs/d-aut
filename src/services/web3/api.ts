@@ -1,4 +1,4 @@
-import { Web3AutIDProvider, Web3CommunityExtensionProvider, Web3CommunityRegistryProvider } from '@aut-protocol/abi-types';
+import { Web3AutIDProvider, Web3DAOExpanderProvider, Web3DAOExpanderRegistryProvider } from '@aut-protocol/abi-types';
 import dateFormat from 'dateformat';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import * as ethers from 'ethers';
@@ -14,7 +14,7 @@ import { base64toFile } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
 
 const communityProvider = Web3ThunkProviderFactory('Community', {
-  provider: Web3CommunityExtensionProvider,
+  provider: Web3DAOExpanderProvider,
 });
 
 const autIdProvider = Web3ThunkProviderFactory('AutId', {
@@ -30,7 +30,7 @@ export const fetchCommunity = communityProvider(
     return Promise.resolve(aut.communityExtensionAddress);
   },
   async (contract) => {
-    const resp = await contract.getComData();
+    const resp = await contract.getDAOData();
     console.log(resp);
     // const communityMetadata = await fetch(cidToHttpUrl(`${resp[2]}/metadata.json`));
     const communityMetadata = await fetch(ipfsCIDToHttpUrl(resp[2]));
@@ -118,7 +118,7 @@ export const joinCommunity = autIdProvider(
   },
   async (contract, args, thunkAPI) => {
     const { aut } = thunkAPI.getState();
-    await contract.joinCommunity(args.userData.role, args.commitment, aut.communityExtensionAddress, {
+    await contract.joinDAO(args.userData.role, args.commitment, aut.communityExtensionAddress, {
       gasLimit: 2000000,
     });
     return true;
@@ -153,10 +153,10 @@ export const getAutId = autIdProvider(
     const tokenURI = await contract.tokenURI(tokenId);
     const response = await fetch(ipfsCIDToHttpUrl(tokenURI));
     const autId = await response.json();
-    const holderCommunities = await contract.getCommunities(selectedAddress);
-    const communityRegistryContract = await Web3CommunityRegistryProvider(env.COMMUNITY_REGISTRY_CONTRACT);
+    const holderCommunities = await contract.getHolderDAOs(selectedAddress);
+    const communityRegistryContract = await Web3DAOExpanderRegistryProvider(env.COMMUNITY_REGISTRY_CONTRACT);
 
-    const communitiesByDeployer = await communityRegistryContract.getCommunitiesByDeployer(selectedAddress);
+    const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
     console.log('holderCommunities', holderCommunities);
     console.log(communitiesByDeployer);
     for (const address of communitiesByDeployer) {
@@ -175,7 +175,7 @@ export const getAutId = autIdProvider(
         // * commitment: number
         // * isActive: boolean
         // */
-        const [_, role, commitment, isActive] = await contract.getCommunityData(selectedAddress, communityAddress);
+        const [_, role, commitment, isActive] = await contract.getMembershipData(selectedAddress, communityAddress);
 
         /**
          * [
@@ -192,9 +192,9 @@ export const getAutId = autIdProvider(
             ]
          */
 
-        const communityExtensioncontract = await Web3CommunityExtensionProvider(communityAddress);
+        const communityExtensioncontract = await Web3DAOExpanderProvider(communityAddress);
 
-        const resp = await communityExtensioncontract.getComData();
+        const resp = await communityExtensioncontract.getDAOData();
 
         const isCoreTeam = await communityExtensioncontract.isCoreTeam(selectedAddress);
 
@@ -308,7 +308,7 @@ export const checkIfAutIdExists = autIdProvider(
     }
     let holderCommunities = null;
     try {
-      holderCommunities = await contract.getCommunities(selectedAddress);
+      holderCommunities = await contract.getHolderDAOs(selectedAddress);
     } catch (e) {
       if (e?.reason?.toString().includes(`AutID: Doesn't have a SW.`)) {
         console.log(e);
