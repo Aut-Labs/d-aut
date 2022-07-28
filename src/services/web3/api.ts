@@ -147,8 +147,10 @@ export const getAutId = autIdProvider(
     return Promise.resolve(env.AUTID_CONTRACT);
   },
   async (contract, args, thunkAPI) => {
-    const { selectedAddress } = window.ethereum;
+    const transaction = contract.contract.populateTransaction;
+    debugger;
     const { aut } = thunkAPI.getState();
+    const [selectedAddress] = aut.provider.accounts;
     const tokenId = await contract.getAutIDByOwner(selectedAddress);
     const tokenURI = await contract.tokenURI(tokenId);
     const response = await fetch(ipfsCIDToHttpUrl(tokenURI));

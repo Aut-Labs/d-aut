@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 import { createSelector } from 'reselect';
 import { checkIfAutIdExists, checkIfNameTaken, fetchCommunity, getAutId, joinCommunity, mintMembership } from '../services/web3/api';
 import { BaseNFTModel } from '../services/web3/models';
@@ -6,6 +7,13 @@ import { OutputEventTypes } from '../types/event-types';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { dispatchEvent } from '../utils/utils';
 import { ActionPayload } from './action-payload';
+
+// const provider = new WalletConnectProvider({
+//   rpc: {
+//     1: 'https://matic-mumbai.chainstacklabs.com',
+//     2: 'https://rpc-mumbai.matic.today',
+//   },
+// });
 
 export interface Community {
   name: string;
@@ -37,6 +45,7 @@ export interface AutState {
   user: BaseNFTModel<any>;
   userBadge: string;
   justJoin: boolean;
+  provider: any;
 }
 
 export const initialState: AutState = {
@@ -49,12 +58,16 @@ export const initialState: AutState = {
   user: null,
   userBadge: null,
   justJoin: false,
+  provider: null,
 };
 
 export const autSlice = createSlice({
   name: 'aut',
   initialState,
   reducers: {
+    setProvider: (state, action: ActionPayload<any>) => {
+      state.provider = action.payload;
+    },
     setCommunityExtesnionAddress: (state, action: ActionPayload<string>) => {
       state.communityExtensionAddress = action.payload;
     },
@@ -139,8 +152,15 @@ export const autSlice = createSlice({
   },
 });
 
-export const { setJustJoining, setCommunityExtesnionAddress, showDialog, updateTransactionState, updateErrorState, errorAction } =
-  autSlice.actions;
+export const {
+  setProvider,
+  setJustJoining,
+  setCommunityExtesnionAddress,
+  showDialog,
+  updateTransactionState,
+  updateErrorState,
+  errorAction,
+} = autSlice.actions;
 
 export const community = createSelector(
   (state) => state.aut.community,

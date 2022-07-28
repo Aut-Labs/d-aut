@@ -31,6 +31,7 @@
         "endOfLine": "auto"
       }
     ],
+
     "no-shadow": "off",
     "no-underscore-dangle": "off",
     "consistent-return": "off",
@@ -39,6 +40,7 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "import/no-extraneous-dependencies": "off",
     "import/no-cycle": "off",
+    "import/order": "off",
     "jsx-a11y/click-events-have-key-events": "off",
     "no-use-before-define": "off",
     "react/function-component-definition": "off",
