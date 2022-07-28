@@ -296,9 +296,6 @@ export const checkIfAutIdExists = autIdProvider(
   },
   async (contract, args, thunkAPI) => {
     const { selectedAddress } = window.ethereum;
-    // try {
-    // TODO: Do this with contract.balanceOf
-    // function balanceOf(address) -> if > 0 => they have AutID , if 0 = they don't have autID
     const balanceOf = await contract.balanceOf(selectedAddress);
     let hasAutId;
     if (balanceOf > 0) {
@@ -310,11 +307,11 @@ export const checkIfAutIdExists = autIdProvider(
     try {
       holderCommunities = await contract.getHolderDAOs(selectedAddress);
     } catch (e) {
-      if (e?.reason?.toString().includes(`AutID: Doesn't have a SW.`)) {
-        console.log(e);
-      } else {
-        throw e;
-      }
+      // if (e?.data?.message?.toString().includes(`AutID: Doesn't have a SW.`)) {
+      console.log(e);
+      // } else {
+      //   throw e;
+      // }
     }
     if (holderCommunities) {
       const { aut } = thunkAPI.getState();
