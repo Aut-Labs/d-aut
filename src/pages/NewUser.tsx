@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
+import WalletConnectProvider from '@walletconnect/web3-provider';
 import { ReactComponent as Metamask } from '../assets/metamask.svg';
 import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
 import AutLogo from '../components/AutLogo';
@@ -10,7 +11,7 @@ import { useAppDispatch } from '../store/store.model';
 import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists } from '../services/web3/api';
-import { autState } from '../store/aut.reducer';
+import { autState, setProvider, setSelectedAddress } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { ErrorTypes } from '../types/error-types';
 import { InternalErrorTypes } from '../utils/error-parser';
@@ -18,13 +19,44 @@ import { InternalErrorTypes } from '../utils/error-parser';
 const NewUser: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const [metamaskSelected, setMetamaskSelected] = useState(false);
-  const coreState = useSelector(autState);
+  const autData = useSelector(autState);
   const history = useHistory();
 
   useEffect(() => {
-    // const fetchData = async () => {};
-    // fetchData();
-  }, []);
+    // Subscribe to accounts change
+    if (autData.provider) {
+      console.log('SET PROVIDER');
+      autData.provider.once('accountsChanged', async (accounts: string[]) => {
+        console.log(accounts);
+        // console.log(provider);
+        debugger;
+        // [window.ethereum.selectedAddress] = accounts;
+        // console.log(window.ethereum.selectedAddress);
+
+        await dispatch(setSelectedAddress(accounts[0]));
+
+        const hasAutId = await dispatch(checkIfAutIdExists(null));
+        debugger;
+        if (hasAutId.meta.requestStatus !== 'rejected') {
+          if (!hasAutId.payload) {
+            history.push('userdetails');
+          } else {
+            history.push('role');
+          }
+        }
+      });
+    }
+  }, [autData.provider]);
+
+  const handleWalletConnectClick = async () => {
+    const provider = new WalletConnectProvider({
+      rpc: {
+        80001: 'https://matic-mumbai.chainstacklabs.com',
+      },
+    });
+    await dispatch(setProvider(provider));
+    provider.enable();
+  };
 
   const handleInjectFromMetamaskClick = async () => {
     const hasAutId = await dispatch(checkIfAutIdExists(null));
@@ -66,18 +98,18 @@ const NewUser: React.FunctionComponent = (props) => {
           sx={{ mt: '29px' }}
           onClick={handleInjectFromMetamaskClick}
         >
-          Inject from Metamask
+          Metamask
         </AutButton>
         <AutButton
+          onClick={handleWalletConnectClick}
           startIcon={
             <ButtonIcon>
               <WalletConnect />
             </ButtonIcon>
           }
-          disabled
           sx={{ mt: '30px' }}
         >
-          Create Social Account
+          WalletConnect
         </AutButton>
       </Box>
     </AutPageBox>

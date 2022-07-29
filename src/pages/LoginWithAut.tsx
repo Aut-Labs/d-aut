@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { autState, setProvider } from '../store/aut.reducer';
+import { autState, setProvider, setSelectedAddress } from '../store/aut.reducer';
 import { Box } from '@mui/material';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import { providers } from 'ethers';
@@ -16,8 +16,7 @@ import { useSelector } from 'react-redux';
 
 const provider = new WalletConnectProvider({
   rpc: {
-    1: 'https://matic-mumbai.chainstacklabs.com',
-    2: 'https://rpc-mumbai.matic.today',
+    80001: 'https://matic-mumbai.chainstacklabs.com',
   },
 });
 const LoginWithSkillWallet: React.FunctionComponent = (props) => {
@@ -36,6 +35,8 @@ const LoginWithSkillWallet: React.FunctionComponent = (props) => {
         // [window.ethereum.selectedAddress] = accounts;
         // console.log(window.ethereum.selectedAddress);
 
+        await dispatch(setSelectedAddress(accounts[0]));
+
         const result = await dispatch(getAutId(null));
         if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
           history.push('/role');
@@ -52,7 +53,6 @@ const LoginWithSkillWallet: React.FunctionComponent = (props) => {
   const handleWalletConnectCLick = async () => {
     //  Enable session (triggers QR Code modal)
 
-    debugger;
     await dispatch(setProvider(provider));
 
     await provider.enable();

@@ -92,7 +92,7 @@ const UserDetails: React.FunctionComponent = (props) => {
                 value={value || ''}
                 onChange={onChange}
                 placeholder="Nickname"
-                helperText={<FormHelperText value={value} name={name} errors={formState.errors} />}
+                helperText={<FormHelperText value={value} name={name} errors={formState.errors as any} />}
               />
             )}
           />

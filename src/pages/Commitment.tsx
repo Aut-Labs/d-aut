@@ -63,7 +63,7 @@ const Commitment: React.FunctionComponent = (props) => {
               <AutSlider
                 value={value}
                 name={name}
-                errors={errors}
+                errors={errors as any}
                 sliderProps={{
                   defaultValue: 0,
                   step: 1,

@@ -36,22 +36,8 @@ export const Web3ThunkProviderFactory = <AutContractFunctions = any, AutContract
         if (!addressOrName) {
           throw new Error(`Could not find addressOrName for ${type}`);
         }
-        // const defaultContractProvider = await stateActions.provider(addressOrName, {
-        //   event: (args as ProviderEvent<AutContractEventTypes>).event,
-        //   beforeRequest: () => EnableAndChangeNetwork(),
-        //   transactionState: (state) => {
-        //     if (stateActions.updateTransactionStateAction) {
-        //       stateActions.updateTransactionStateAction(state, thunkAPI.dispatch);
-        //     }
-        //   },
-        // });
-        debugger;
-        const walletConnectProvider = await stateActions.provider(addressOrName, {
-          provider: async () => {
-            const { aut } = thunkAPI.getState() as any;
-            const web3Provider = new ethers.providers.Web3Provider(aut.provider);
-            return web3Provider;
-          },
+        const { aut } = thunkAPI.getState() as any;
+        const defaultProvider = await stateActions.provider(addressOrName, {
           event: (args as ProviderEvent<AutContractEventTypes>).event,
           beforeRequest: () => EnableAndChangeNetwork(),
           transactionState: (state) => {
@@ -60,7 +46,23 @@ export const Web3ThunkProviderFactory = <AutContractFunctions = any, AutContract
             }
           },
         });
-        return await thunk(walletConnectProvider, arg, thunkAPI);
+        const walletConnectProvider = await stateActions.provider(addressOrName, {
+          provider: async () => {
+            const web3Provider = new ethers.providers.Web3Provider(aut.provider);
+            return web3Provider;
+          },
+          event: (args as ProviderEvent<AutContractEventTypes>).event,
+          transactionState: (state) => {
+            if (stateActions.updateTransactionStateAction) {
+              stateActions.updateTransactionStateAction(state, thunkAPI.dispatch);
+            }
+          },
+        });
+        debugger;
+        if (aut.provider) {
+          return await thunk(walletConnectProvider, arg, thunkAPI);
+        }
+        return await thunk(defaultProvider, arg, thunkAPI);
       } catch (error) {
         console.log(error);
         const message = ParseErrorMessage(error);

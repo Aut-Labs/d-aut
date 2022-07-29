@@ -46,6 +46,7 @@ export interface AutState {
   userBadge: string;
   justJoin: boolean;
   provider: any;
+  selectedAddress: any;
 }
 
 export const initialState: AutState = {
@@ -59,12 +60,16 @@ export const initialState: AutState = {
   userBadge: null,
   justJoin: false,
   provider: null,
+  selectedAddress: null,
 };
 
 export const autSlice = createSlice({
   name: 'aut',
   initialState,
   reducers: {
+    setSelectedAddress: (state, action: ActionPayload<any>) => {
+      state.selectedAddress = action.payload;
+    },
     setProvider: (state, action: ActionPayload<any>) => {
       state.provider = action.payload;
     },
@@ -153,6 +158,7 @@ export const autSlice = createSlice({
 });
 
 export const {
+  setSelectedAddress,
   setProvider,
   setJustJoining,
   setCommunityExtesnionAddress,

@@ -1,6 +1,6 @@
 {
   "name": "d-aut-alpha",
-  "version": "0.0.14",
+  "version": "0.0.17",
   "main": "build/cjs/index.js",
   "module": "build/ems/index.js",
   "types": "build/index.d.ts",
@@ -37,7 +37,7 @@
     ]
   },
   "devDependencies": {
-    "@aut-protocol/abi-types": "^0.0.53",
+    "@aut-protocol/abi-types": "^0.0.54",
     "@emotion/cache": "^11.7.1",
     "@emotion/react": "~11.7.0",
     "@emotion/styled": "~11.6.0",
