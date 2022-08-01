@@ -10,7 +10,7 @@ import { AutButton, ButtonIcon } from '../components/AutButton';
 import { useAppDispatch } from '../store/store.model';
 import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { AutPageBox } from '../components/AutPageBox';
-import { checkIfAutIdExists } from '../services/web3/api';
+import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
 import {
   autState,
   resetWalletConnectThunk,
@@ -29,6 +29,13 @@ const NewUser: React.FunctionComponent = (props) => {
   const [metamaskSelected, setMetamaskSelected] = useState(false);
   const autData = useSelector(autState);
   const history = useHistory();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      dispatch(fetchCommunity(null));
+    };
+    fetchData();
+  }, []);
 
   const checkForExistingAutId = async () => {
     const hasAutId = await dispatch(checkIfAutIdExists(null));
@@ -87,7 +94,8 @@ const NewUser: React.FunctionComponent = (props) => {
         title="WELCOME"
         subtitle={
           <>
-            First, import your wallet <br /> & claim your Role in <span style={{ textDecoration: 'underline' }}>DAO Name!</span>
+            First, import your wallet <br /> & claim your Role in{' '}
+            <span style={{ textDecoration: 'underline' }}>{autData.community?.name}!</span>
           </>
         }
       />

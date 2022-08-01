@@ -290,6 +290,7 @@ export const checkIfNameTaken = autIdProvider(
     return Promise.resolve(aut.communityExtensionAddress);
   },
   async (contract, args) => {
+    debugger;
     const tokenId = await contract.autIDUsername(args.username);
     if (tokenId === ethers.constants.AddressZero) {
       throw new Error(InternalErrorTypes.UsernameAlreadyTaken);
@@ -309,7 +310,6 @@ export const checkIfAutIdExists = autIdProvider(
     const { aut } = thunkAPI.getState();
     const selectedAddress = determineSelectedAddress(aut);
     const balanceOf = await contract.balanceOf(selectedAddress);
-    debugger;
     let hasAutId;
     if (balanceOf > 0) {
       hasAutId = true;
