@@ -2,7 +2,7 @@ import { AsyncThunk, createAsyncThunk } from '@reduxjs/toolkit';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import { ethers } from 'ethers';
 // import { updateTransactionState } from '../../store/sw-ui-reducer';
-import { updateTransactionState, updateErrorState } from '../../store/aut.reducer';
+import { updateTransactionState, updateErrorState, setSelectedAddress } from '../../store/aut.reducer';
 import { ParseErrorMessage } from '../../utils/error-parser';
 import { EnableAndChangeNetwork } from './web3.network';
 import { BaseThunkArgs, ThunkArgs, GetThunkAPI, AsyncThunkConfig, ProviderEvent, AsyncThunkPayloadCreator } from './web3.thunk.type';
@@ -37,32 +37,33 @@ export const Web3ThunkProviderFactory = <AutContractFunctions = any, AutContract
           throw new Error(`Could not find addressOrName for ${type}`);
         }
         const { aut } = thunkAPI.getState() as any;
-        const defaultProvider = await stateActions.provider(addressOrName, {
-          event: (args as ProviderEvent<AutContractEventTypes>).event,
-          beforeRequest: () => EnableAndChangeNetwork(),
-          transactionState: (state) => {
-            if (stateActions.updateTransactionStateAction) {
-              stateActions.updateTransactionStateAction(state, thunkAPI.dispatch);
-            }
-          },
-        });
-        const walletConnectProvider = await stateActions.provider(addressOrName, {
-          provider: async () => {
-            const web3Provider = new ethers.providers.Web3Provider(aut.provider);
-            return web3Provider;
-          },
-          event: (args as ProviderEvent<AutContractEventTypes>).event,
-          transactionState: (state) => {
-            if (stateActions.updateTransactionStateAction) {
-              stateActions.updateTransactionStateAction(state, thunkAPI.dispatch);
-            }
-          },
-        });
-        debugger;
+        let provider;
         if (aut.provider) {
-          return await thunk(walletConnectProvider, arg, thunkAPI);
+          provider = await stateActions.provider(addressOrName, {
+            provider: async () => {
+              const web3Provider = new ethers.providers.Web3Provider(aut.provider);
+              return web3Provider;
+            },
+            event: (args as ProviderEvent<AutContractEventTypes>).event,
+            transactionState: (state) => {
+              if (stateActions.updateTransactionStateAction) {
+                stateActions.updateTransactionStateAction(state, thunkAPI.dispatch);
+              }
+            },
+          });
+        } else {
+          await thunkAPI.dispatch(setSelectedAddress(window.ethereum.selectedAddress));
+          provider = await stateActions.provider(addressOrName, {
+            event: (args as ProviderEvent<AutContractEventTypes>).event,
+            beforeRequest: () => EnableAndChangeNetwork(),
+            transactionState: (state) => {
+              if (stateActions.updateTransactionStateAction) {
+                stateActions.updateTransactionStateAction(state, thunkAPI.dispatch);
+              }
+            },
+          });
         }
-        return await thunk(defaultProvider, arg, thunkAPI);
+        return await thunk(provider, arg, thunkAPI);
       } catch (error) {
         console.log(error);
         const message = ParseErrorMessage(error);

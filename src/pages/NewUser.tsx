@@ -11,7 +11,15 @@ import { useAppDispatch } from '../store/store.model';
 import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists } from '../services/web3/api';
-import { autState, setProvider, setSelectedAddress } from '../store/aut.reducer';
+import {
+  autState,
+  resetWalletConnectThunk,
+  setProvider,
+  setSelectedAddress,
+  switchToMetaMask,
+  switchToWalletConnect,
+  switchToWalletConnectThunk,
+} from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { ErrorTypes } from '../types/error-types';
 import { InternalErrorTypes } from '../utils/error-parser';
@@ -22,43 +30,7 @@ const NewUser: React.FunctionComponent = (props) => {
   const autData = useSelector(autState);
   const history = useHistory();
 
-  useEffect(() => {
-    // Subscribe to accounts change
-    if (autData.provider) {
-      console.log('SET PROVIDER');
-      autData.provider.once('accountsChanged', async (accounts: string[]) => {
-        console.log(accounts);
-        // console.log(provider);
-        debugger;
-        // [window.ethereum.selectedAddress] = accounts;
-        // console.log(window.ethereum.selectedAddress);
-
-        await dispatch(setSelectedAddress(accounts[0]));
-
-        const hasAutId = await dispatch(checkIfAutIdExists(null));
-        debugger;
-        if (hasAutId.meta.requestStatus !== 'rejected') {
-          if (!hasAutId.payload) {
-            history.push('userdetails');
-          } else {
-            history.push('role');
-          }
-        }
-      });
-    }
-  }, [autData.provider]);
-
-  const handleWalletConnectClick = async () => {
-    const provider = new WalletConnectProvider({
-      rpc: {
-        80001: 'https://matic-mumbai.chainstacklabs.com',
-      },
-    });
-    await dispatch(setProvider(provider));
-    provider.enable();
-  };
-
-  const handleInjectFromMetamaskClick = async () => {
+  const checkForExistingAutId = async () => {
     const hasAutId = await dispatch(checkIfAutIdExists(null));
     if (hasAutId.meta.requestStatus !== 'rejected') {
       if (!hasAutId.payload) {
@@ -67,6 +39,45 @@ const NewUser: React.FunctionComponent = (props) => {
         history.push('role');
       }
     }
+  };
+
+  useEffect(() => {
+    // Subscribe to accounts change
+    if (autData.provider) {
+      autData.provider.once('accountsChanged', async (accounts: string[]) => {
+        await dispatch(setSelectedAddress(accounts[0]));
+
+        await checkForExistingAutId();
+      });
+    }
+  }, [autData.provider]);
+
+  const handleWalletConnectClick = async () => {
+    // if (autData.isWalletConnect) {
+    //   if (autData.provider?.connected) {
+    //     await dispatch(setSelectedAddress(autData.provider.accounts[0]));
+
+    //     await checkForExistingAutId();
+    //   } else {
+    //     // autData.provider.isConnecting = false;
+    //     // autData.provider.qrcodeModal.open('69');
+
+    //     const wcProvider = await dispatch(resetWalletConnectThunk());
+    //     (wcProvider.payload as WalletConnectProvider).enable();
+    //   }
+    // } else {
+    //   const wcProvider = await dispatch(resetWalletConnectThunk());
+    //   // await dispatch(setProvider(provider));
+    //   (wcProvider.payload as WalletConnectProvider).enable();
+    // }
+
+    const wcProvider = await dispatch(resetWalletConnectThunk());
+    (wcProvider.payload as WalletConnectProvider).enable();
+  };
+
+  const handleInjectFromMetamaskClick = async () => {
+    await dispatch(switchToMetaMask());
+    await checkForExistingAutId();
   };
 
   return (

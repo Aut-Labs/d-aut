@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import { createSelector } from 'reselect';
 import { checkIfAutIdExists, checkIfNameTaken, fetchCommunity, getAutId, joinCommunity, mintMembership } from '../services/web3/api';
@@ -14,6 +14,12 @@ import { ActionPayload } from './action-payload';
 //     2: 'https://rpc-mumbai.matic.today',
 //   },
 // });
+
+let walletConnectProvider = new WalletConnectProvider({
+  rpc: {
+    80001: 'https://matic-mumbai.chainstacklabs.com',
+  },
+});
 
 export interface Community {
   name: string;
@@ -47,6 +53,7 @@ export interface AutState {
   justJoin: boolean;
   provider: any;
   selectedAddress: any;
+  isWalletConnect: boolean;
 }
 
 export const initialState: AutState = {
@@ -61,6 +68,7 @@ export const initialState: AutState = {
   justJoin: false,
   provider: null,
   selectedAddress: null,
+  isWalletConnect: false,
 };
 
 export const autSlice = createSlice({
@@ -69,6 +77,14 @@ export const autSlice = createSlice({
   reducers: {
     setSelectedAddress: (state, action: ActionPayload<any>) => {
       state.selectedAddress = action.payload;
+    },
+    switchToMetaMask: (state, action: ActionPayload<void>) => {
+      state.provider = window.ethereum;
+      state.isWalletConnect = false;
+    },
+    switchToWalletConnect: (state, action: ActionPayload<any>) => {
+      state.provider = action.payload;
+      state.isWalletConnect = true;
     },
     setProvider: (state, action: ActionPayload<any>) => {
       state.provider = action.payload;
@@ -111,7 +127,6 @@ export const autSlice = createSlice({
       })
       .addCase(getAutId.fulfilled, (state, action) => {
         state.showDialog = false;
-        console.log(action.payload);
         state.user = action.payload;
         dispatchEvent(OutputEventTypes.Connected, action.payload);
       })
@@ -158,6 +173,8 @@ export const autSlice = createSlice({
 });
 
 export const {
+  switchToMetaMask,
+  switchToWalletConnect,
   setSelectedAddress,
   setProvider,
   setJustJoining,
@@ -167,6 +184,23 @@ export const {
   updateErrorState,
   errorAction,
 } = autSlice.actions;
+
+export const switchToWalletConnectThunk = createAsyncThunk('walletconnect/setProvider', async (args, thunkAPI) => {
+  await walletConnectProvider.disconnect();
+  await thunkAPI.dispatch(switchToWalletConnect(walletConnectProvider));
+  return walletConnectProvider;
+});
+
+export const resetWalletConnectThunk = createAsyncThunk('walletconnect/resetProvider', async (args, thunkAPI) => {
+  await walletConnectProvider.disconnect();
+  walletConnectProvider = new WalletConnectProvider({
+    rpc: {
+      80001: 'https://matic-mumbai.chainstacklabs.com',
+    },
+  });
+  await thunkAPI.dispatch(switchToWalletConnect(walletConnectProvider));
+  return walletConnectProvider;
+});
 
 export const community = createSelector(
   (state) => state.aut.community,
