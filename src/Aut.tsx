@@ -17,7 +17,7 @@ const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
 
-  const handleClose = (event, reason) => {
+  const handleClose = async (event, reason) => {
     // if (reason && reason === 'backdropClick') return;
     dispatch(showDialog(false));
   };
@@ -100,7 +100,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     // }
   };
 
-  const handleButtonClick = () => {
+  const handleButtonClick = async () => {
     // if (currentUser.isLoggedIn) {
 
     if (uiState.user) {
@@ -110,7 +110,8 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
       dispatchEvent(OutputEventTypes.Disconnected, false);
     } else {
       history.push('/');
-      dispatch(resetUIState);
+      await uiState?.provider?.disconnect();
+      await dispatch(resetUIState);
       dispatch(showDialog(true));
     }
   };

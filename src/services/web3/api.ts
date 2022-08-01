@@ -137,6 +137,16 @@ export const injectMetamask = createAsyncThunk('metamask/inject', async (arg, th
   }
 });
 
+const determineSelectedAddress = (autState) => {
+  let selectedAddress;
+  if (autState.isWalletConnect) {
+    [selectedAddress] = autState.provider.accounts;
+  } else {
+    selectedAddress = autState.provider.selectedAddress;
+  }
+  return selectedAddress;
+};
+
 export const getAutId = autIdProvider(
   {
     type: 'membership/get',
@@ -147,8 +157,9 @@ export const getAutId = autIdProvider(
     return Promise.resolve(env.AUTID_CONTRACT);
   },
   async (contract, args, thunkAPI) => {
-    const { selectedAddress } = window.ethereum;
     const { aut } = thunkAPI.getState();
+    const selectedAddress = determineSelectedAddress(aut);
+    //  const { selectedAddress } = aut;
     const tokenId = await contract.getAutIDByOwner(selectedAddress);
     const tokenURI = await contract.tokenURI(tokenId);
     const response = await fetch(ipfsCIDToHttpUrl(tokenURI));
@@ -295,8 +306,10 @@ export const checkIfAutIdExists = autIdProvider(
     return Promise.resolve(env.AUTID_CONTRACT);
   },
   async (contract, args, thunkAPI) => {
-    const { selectedAddress } = window.ethereum;
+    const { aut } = thunkAPI.getState();
+    const selectedAddress = determineSelectedAddress(aut);
     const balanceOf = await contract.balanceOf(selectedAddress);
+    debugger;
     let hasAutId;
     if (balanceOf > 0) {
       hasAutId = true;

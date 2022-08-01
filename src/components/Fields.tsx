@@ -22,7 +22,7 @@ export function FormHelperText({ errors, name, errorTypes, children = null, valu
       ...defaultErrorTypes,
       ...(errorTypes || {}),
     };
-
+    // @ts-ignore
     const message = types[type];
 
     return (
