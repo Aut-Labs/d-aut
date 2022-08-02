@@ -74,6 +74,8 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     if (attributes.buttonType) {
       console.log(attributes.buttonType);
       setButtonType(attributes.buttonType as string);
+    } else {
+      setButtonType(null);
     }
     selectEnvironment();
   };

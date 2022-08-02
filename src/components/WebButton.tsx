@@ -573,7 +573,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
           </Box>
         </SquareButtonWhiteBorder>
       )}
-      {!props.buttontype && (
+      {props.buttontype === null && (
         <RoundedButton
           {...props}
           sx={{
