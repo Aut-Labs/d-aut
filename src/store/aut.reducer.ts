@@ -107,6 +107,9 @@ export const autSlice = createSlice({
     errorAction(state, action) {
       state.status = ResultState.Idle;
     },
+    setUser(state, action: ActionPayload<any>) {
+      state.user = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -173,6 +176,7 @@ export const autSlice = createSlice({
 });
 
 export const {
+  setUser,
   switchToMetaMask,
   switchToWalletConnect,
   setSelectedAddress,

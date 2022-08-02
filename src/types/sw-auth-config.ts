@@ -14,6 +14,7 @@ export enum AttributesDefinitions {
   'community-address' = 'string',
   'use-dev' = 'boolean',
   'hide-button' = 'boolean',
+  'button-type' = 'string',
 }
 
 type EnumKeys = keyof typeof AttributesDefinitions;

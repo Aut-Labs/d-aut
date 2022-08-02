@@ -275,6 +275,7 @@ export const getAutId = autIdProvider(
       })
     );
     autId.properties.communities = communities;
+    autId.loginTimestamp = new Date().getTime();
     console.log(autId);
     window.sessionStorage.setItem('aut-data', JSON.stringify(autId));
     return autId;
@@ -290,7 +291,6 @@ export const checkIfNameTaken = autIdProvider(
     return Promise.resolve(aut.communityExtensionAddress);
   },
   async (contract, args) => {
-    debugger;
     const tokenId = await contract.autIDUsername(args.username);
     if (tokenId === ethers.constants.AddressZero) {
       throw new Error(InternalErrorTypes.UsernameAlreadyTaken);

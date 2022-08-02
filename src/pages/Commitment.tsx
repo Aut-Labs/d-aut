@@ -46,7 +46,11 @@ const Commitment: React.FunctionComponent = (props) => {
     <AutPageBox>
       <AutHeader
         logoId="commitment-logo"
-        title={`You picked ${userInput.roleName}`}
+        title={
+          <>
+            You picked<span style={{ fontStyle: 'italic' }}> {userInput.roleName}</span>
+          </>
+        }
         subtitle={
           <>
             Tell your community how much <br /> time you can commit to this role

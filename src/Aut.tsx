@@ -9,7 +9,7 @@ import { setUseDev } from './services/web3/env';
 import { dispatchEvent } from './utils/utils';
 import { AutButtonProps } from './types/sw-auth-config';
 import { OutputEventTypes } from './types/event-types';
-import { autState, setCommunityExtesnionAddress, showDialog } from './store/aut.reducer';
+import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { RoundedWebButton } from './components/WebButton';
 
@@ -43,6 +43,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   // const currentUser = useSelector(currentUserState);
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [buttonType, setButtonType] = useState('simple');
   const [buttonHidden, setButtonHidden] = useState(false);
 
   const selectEnvironment = () => {
@@ -70,39 +71,31 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     } else {
       console.log('nocommunity extension');
     }
+    if (attributes.buttonType) {
+      console.log(attributes.buttonType);
+      setButtonType(attributes.buttonType as string);
+    }
     selectEnvironment();
   };
 
   const initializeAut = async () => {
     // check timestamp
-    // const sw = JSON.parse(sessionStorage.getItem('aut-data'));
-    // if (sw) {
-    //   const currentTime = new Date().getTime();
-    //   // 8 Hours
-    //   const sessionLength = new Date(8 * 60 * 60 * 1000 + sw.timestamp).getTime();
-    //   if (currentTime < sessionLength) {
-    //     const isLoggedIn = true;
-    //     dispatch(
-    //       setUserData({
-    //         username: sw.nickname,
-    //         profileImageUrl: sw.imageUrl,
-    //         isLoggedIn,
-    //       })
-    //     );
-    //     dispatchSwEvent(OutputEventTypes.Login, isLoggedIn);
-    //   } else {
-    //     const isLoggedIn = false;
-    //     window.sessionStorage.removeItem('skillWallet');
-    //     dispatch(resetUIState);
-    //     dispatch(setLoggedIn(isLoggedIn));
-    //     dispatchSwEvent(OutputEventTypes.Login, isLoggedIn);
-    //   }
-    // }
+    const autId = JSON.parse(sessionStorage.getItem('aut-data'));
+    if (autId) {
+      const currentTime = new Date().getTime();
+      // 8 Hours
+      const sessionLength = new Date(8 * 60 * 60 * 1000 + autId.loginTimestamp).getTime();
+      if (currentTime < sessionLength) {
+        dispatch(setUser(autId));
+      } else {
+        window.sessionStorage.removeItem('aut-data');
+        dispatch(resetUIState);
+      }
+    }
   };
 
   const handleButtonClick = async () => {
     // if (currentUser.isLoggedIn) {
-
     if (uiState.user) {
       // if (!attributes.useButtonOptions) {
       window.sessionStorage.removeItem('aut-data');
@@ -162,7 +155,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
       <Portal container={container}>
         {!buttonHidden && (
           <>
-            <RoundedWebButton userData={uiState.user} onClick={handleButtonClick} onMouseEnter={handleMouseEnter} />
+            <RoundedWebButton buttontype={buttonType} onClick={handleButtonClick} onMouseEnter={handleMouseEnter} />
           </>
         )}
       </Portal>

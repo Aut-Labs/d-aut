@@ -61,10 +61,9 @@ const MintSuccess: React.FunctionComponent = () => {
         </Box>
         <TwitterShareButton
           url={`https://my.aut.id/${userInput.username}`}
-          title={`I'm now a {userInput.roleName} @ {autData.community.name} 🎉
-           
-                  Look at my self-sovereign AutID,
-                  and follow my journey 🖖`}
+          title={`I'm now a ${userInput.roleName} @${autData.community.name} 🎉
+Look at my self-sovereign AutID,
+and follow my journey 🖖`}
           hashtags={['Aut', 'DAO', 'Blockchain']}
           className="social-button"
         >
