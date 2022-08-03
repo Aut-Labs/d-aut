@@ -12,6 +12,7 @@ import { setCommunityExtesnionAddress, setJustJoining } from '../../store/aut.re
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
 import { base64toFile } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
+import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
 
 const communityProvider = Web3ThunkProviderFactory('Community', {
   provider: Web3DAOExpanderProvider,
@@ -69,8 +70,10 @@ export const mintMembership = autIdProvider(
 
     const config = {
       title: `${username}`,
-      timestamp: `#${1} | ${timeStamp}`,
-    };
+      hash: '#1',
+      network: 'mumbai',
+      timestamp: `${timeStamp}`,
+    } as SWIDParams;
 
     const { toFile } = await AutIDBadgeGenerator(config);
     const badgeFile = await toFile();
