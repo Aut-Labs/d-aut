@@ -58,6 +58,7 @@ export const AutTheme = () =>
       },
       body1: {
         fontSize: '14px', // 0.875rem
+        letterSpacing: '2.5px',
       },
       body2: {
         fontSize: '12px', // 0.75rem

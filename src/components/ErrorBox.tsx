@@ -16,7 +16,7 @@ export const ErrorBox = () => {
       dispatch(errorAction(null));
     } else {
       dispatch(errorAction(null));
-      // history.push('/');
+      history.push('/');
     }
   };
   return (

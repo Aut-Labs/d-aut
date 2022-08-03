@@ -219,7 +219,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
+                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="body1">
                     {userData.name}
                   </Typography>
                   <Box

@@ -12,7 +12,7 @@ export enum AttributesDefinitions {
   'disable-create-new-user' = 'boolean',
   'partner-key' = 'string',
   'community-address' = 'string',
-  'use-dev' = 'boolean',
+  'network' = 'string',
   'hide-button' = 'boolean',
   'button-type' = 'string',
 }

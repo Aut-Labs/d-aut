@@ -5,7 +5,7 @@ import Portal from '@mui/material/Portal';
 import { CSSObject } from '@emotion/react';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
-import { setUseDev } from './services/web3/env';
+import { setNetwork } from './services/web3/env';
 import { dispatchEvent } from './utils/utils';
 import { AutButtonProps } from './types/sw-auth-config';
 import { OutputEventTypes } from './types/event-types';
@@ -47,8 +47,8 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   const [buttonHidden, setButtonHidden] = useState(false);
 
   const selectEnvironment = () => {
-    if (attributes.useDev) {
-      setUseDev(attributes.useDev as boolean);
+    if (attributes.network) {
+      setNetwork(attributes.network as string);
     } else {
       // dispatch(startValidatingDomain());
       // try {
@@ -105,7 +105,9 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
       dispatchEvent(OutputEventTypes.Disconnected, false);
     } else {
       history.push('/');
-      await uiState?.provider?.disconnect();
+      if (uiState?.provider?.disconnect) {
+        await uiState?.provider?.disconnect();
+      }
       await dispatch(resetUIState);
       dispatch(showDialog(true));
     }

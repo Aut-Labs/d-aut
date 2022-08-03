@@ -111,20 +111,24 @@ export const ParseErrorMessage = (error: any) => {
 
   const metamaskError = METAMASK_POSSIBLE_ERRORS[error?.code];
   console.log(error.code);
+  console.log(error.reason);
   console.log(error);
   console.log(metamaskError);
 
   if (metamaskError) {
     return metamaskError.message;
   }
-
+  debugger;
   if (isJson(error)) {
     error = JSON.parse(JSON.stringify(error));
     console.log(error);
   }
 
   if (error?.code === 'CALL_EXCEPTION') {
-    return error?.reason?.toString();
+    if (error?.reason) {
+      return error?.reason?.toString();
+    }
+    return 'Something went wrong.';
   }
 
   if (error?.code === 'UNEXPECTED_ARGUMENT') {
@@ -139,13 +143,16 @@ export const ParseErrorMessage = (error: any) => {
     error = error?.data?.message?.toString();
   }
 
+  if (error?.error?.message) {
+    error = error.error.message;
+  }
+
   if (typeof error !== 'string') {
     console.error(error);
     throw new Error('Smart contract error message is not a string!');
   }
 
   const [mainMsg, fullSwMsg] = error.split('execution reverted:');
-  const [swMainMsg, parsedMsg] = (fullSwMsg || '').split('SkillWallet:');
 
-  return (parsedMsg || swMainMsg || fullSwMsg || mainMsg || 'Internal JSON-RPC error.').toString();
+  return (fullSwMsg || mainMsg || 'Internal JSON-RPC error.').toString();
 };
