@@ -11,15 +11,7 @@ import { useAppDispatch } from '../store/store.model';
 import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
-import {
-  autState,
-  resetWalletConnectThunk,
-  setProvider,
-  setSelectedAddress,
-  switchToMetaMask,
-  switchToWalletConnect,
-  switchToWalletConnectThunk,
-} from '../store/aut.reducer';
+import { autState, setSelectedAddress } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { ErrorTypes } from '../types/error-types';
 import { InternalErrorTypes } from '../utils/error-parser';
@@ -63,12 +55,10 @@ const NewUser: React.FunctionComponent = (props) => {
     // if (autData.isWalletConnect) {
     //   if (autData.provider?.connected) {
     //     await dispatch(setSelectedAddress(autData.provider.accounts[0]));
-
     //     await checkForExistingAutId();
     //   } else {
     //     // autData.provider.isConnecting = false;
     //     // autData.provider.qrcodeModal.open('69');
-
     //     const wcProvider = await dispatch(resetWalletConnectThunk());
     //     (wcProvider.payload as WalletConnectProvider).enable();
     //   }
@@ -77,13 +67,12 @@ const NewUser: React.FunctionComponent = (props) => {
     //   // await dispatch(setProvider(provider));
     //   (wcProvider.payload as WalletConnectProvider).enable();
     // }
-
-    const wcProvider = await dispatch(resetWalletConnectThunk());
-    (wcProvider.payload as WalletConnectProvider).enable();
+    // const wcProvider = await dispatch(resetWalletConnectThunk());
+    // (wcProvider.payload as WalletConnectProvider).enable();
   };
 
   const handleInjectFromMetamaskClick = async () => {
-    await dispatch(switchToMetaMask());
+    // await dispatch(switchToMetaMask());
     await checkForExistingAutId();
   };
 

@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import {
-  autState,
-  resetWalletConnectThunk,
-  setProvider,
-  setSelectedAddress,
-  switchToMetaMask,
-  switchToWalletConnect,
-  switchToWalletConnectThunk,
-} from '../store/aut.reducer';
+import { autState, setSelectedAddress } from '../store/aut.reducer';
 import { Box } from '@mui/material';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import { providers } from 'ethers';
@@ -21,61 +13,71 @@ import { AutPageBox } from '../components/AutPageBox';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { AutHeader } from '../components/AutHeader';
 import { useSelector } from 'react-redux';
+import { metaMaskConnector, walletConnectConnector } from '../services/ProviderFactory/web3.connectors';
+import { SelectedNetworkConfig, setWallet } from '../store/wallet-provider';
+import { useWeb3React } from '@web3-react/core';
+import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 
 // const provider = new WalletConnectProvider({
 //   rpc: {
 //     80001: 'https://matic-mumbai.chainstacklabs.com',
 //   },
 // });
+const [metamaskConnector] = metaMaskConnector;
+const [wcConnector] = walletConnectConnector;
 
 const LoginWithSkillWallet: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const autData = useSelector(autState);
+  const networkConfig = useSelector(SelectedNetworkConfig);
   const history = useHistory();
-  const [errorData, setErrorData] = useState(undefined);
+  const { isActive, provider, account } = useWeb3React();
+
+  // useEffect(() => {
+  //   if (autData.provider && autData.isWalletConnect) {
+  //     autData.provider.once('accountsChanged', async (accounts: string[]) => {
+  //       await dispatch(setSelectedAddress(accounts[0]));
+
+  //       const result = await dispatch(getAutId(null));
+  //       if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
+  //         history.push('/role');
+  //       }
+  //     });
+  //   }
+  // }, [autData.provider]);
 
   useEffect(() => {
-    if (autData.provider && autData.isWalletConnect) {
-      autData.provider.once('accountsChanged', async (accounts: string[]) => {
-        await dispatch(setSelectedAddress(accounts[0]));
-
+    console.log(isActive);
+    const activate = async () => {
+      if (isActive) {
+        const res = await dispatch(setSelectedAddress(account));
+        debugger;
         const result = await dispatch(getAutId(null));
         if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
           history.push('/role');
         }
-      });
-    }
-  }, [autData.provider]);
+      }
+    };
+    activate();
+  }, [isActive]);
 
   const handleWalletConnectClick = async () => {
-    // if (autData.isWalletConnect) {
-    //   if (autData.provider?.connected) {
-    //     await dispatch(setSelectedAddress(autData.provider.accounts[0]));
-    //     const result = await dispatch(getAutId(null));
-    //     if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
-    //       history.push('/role');
-    //     }
-    //   } else {
-    //     const wcProvider = await dispatch(resetWalletConnectThunk());
-    //     (wcProvider.payload as WalletConnectProvider).enable();
-    //   }
-    // } else {
-    // autData.provider?.disconnect();
-    const wcProvider = await dispatch(resetWalletConnectThunk());
-    (wcProvider.payload as WalletConnectProvider).enable();
-    // }
+    await wcConnector.activate();
+    await dispatch(setWallet('walletConnect'));
+    await EnableAndChangeNetwork(wcConnector.provider, networkConfig.network);
   };
 
   const handleMetamaskClick = async () => {
-    // performMetamaskLogin();
-    // await dispatch(setProvider(window.ethereum));
+    await metamaskConnector.activate();
+    await dispatch(setWallet('injected'));
+    await EnableAndChangeNetwork(metamaskConnector.provider, networkConfig);
 
-    await dispatch(switchToMetaMask());
-    const result = await dispatch(getAutId(null));
+    // await dispatch(switchToMetaMask());
+    // const result = await dispatch(getAutId(null));
 
-    if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
-      history.push('/role');
-    }
+    // if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
+    //   history.push('/role');
+    // }
   };
 
   return (

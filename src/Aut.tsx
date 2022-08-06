@@ -5,13 +5,16 @@ import Portal from '@mui/material/Portal';
 import { CSSObject } from '@emotion/react';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
-import { setNetwork } from './services/web3/env';
 import { dispatchEvent } from './utils/utils';
 import { AutButtonProps } from './types/sw-auth-config';
 import { OutputEventTypes } from './types/event-types';
 import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { RoundedWebButton } from './components/WebButton';
+import { SelectedNetworkConfig, setNetwork, setSigner } from './store/wallet-provider';
+import { getNetwork } from './services/web3/env';
+import { EnableAndChangeNetwork } from './services/ProviderFactory/web3.network';
+import { useWeb3React } from '@web3-react/core';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
@@ -45,23 +48,21 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   const [anchorEl, setAnchorEl] = useState(null);
   const [buttonType, setButtonType] = useState('simple');
   const [buttonHidden, setButtonHidden] = useState(false);
+  const { connector, isActive, chainId, provider } = useWeb3React();
 
-  const selectEnvironment = () => {
-    if (attributes.network) {
-      setNetwork(attributes.network as string);
-    } else {
-      // dispatch(startValidatingDomain());
-      // try {
-      //   const isValid = await validateDomain(attributes.partnerKey);
-      //   if (!isValid) {
-      //     dispatch(showGlobalError('Invalid domain. Please add the URL throught the dashboard.'));
-      //   }
-      // } catch (e) {
-      //   dispatch(showGlobalError('Failed to validate domain.'));
-      // } finally {
-      //   dispatch(finishValidatingDomain());
-      // }
+  useEffect(() => {
+    if (provider) {
+      debugger;
+      dispatch(setSigner(provider.getSigner()));
     }
+  }, [chainId, provider]);
+
+  const selectEnvironment = async () => {
+    await dispatch(setNetwork(attributes.network as string));
+    // await connector.activate();
+    // EnableAndChangeNetwork(connector.provider, config);
+    // EnableAndChangeNetwork();
+    // dispatch(setNetwork(attributes.network as string));
   };
 
   const setAttributes = () => {
