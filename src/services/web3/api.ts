@@ -8,17 +8,23 @@ import { EnableAndChangeNetwork } from '../ProviderFactory/web3.network';
 import { BaseNFTModel } from './models';
 import { env } from './env';
 import { InternalErrorTypes, ParseErrorMessage } from '../../utils/error-parser';
-import { setCommunityExtesnionAddress, setJustJoining } from '../../store/aut.reducer';
+import { setCommunityExtesnionAddress, setJustJoining, updateErrorState } from '../../store/aut.reducer';
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
 import { base64toFile } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
 
 const communityProvider = Web3ThunkProviderFactory('Community', {
   provider: Web3DAOExpanderProvider,
+  updateErrorStateAction: (message, dispatch) => {
+    dispatch(updateErrorState(message));
+  },
 });
 
 const autIdProvider = Web3ThunkProviderFactory('AutId', {
   provider: Web3AutIDProvider,
+  updateErrorStateAction: (message, dispatch) => {
+    dispatch(updateErrorState(message));
+  },
 });
 
 export const fetchCommunity = communityProvider(
@@ -126,35 +132,12 @@ export const joinCommunity = autIdProvider(
   }
 );
 
-export const injectMetamask = createAsyncThunk('metamask/inject', async (arg, thunkAPI) => {
-  try {
-    // await EnableAndChangeNetwork();
-
-    console.log('NO ERROR');
-  } catch (error) {
-    console.log('ERROR');
-    return thunkAPI.rejectWithValue(ParseErrorMessage(error));
-    return ParseErrorMessage(error);
-  }
-});
-
-const determineSelectedAddress = (autState) => {
-  let selectedAddress;
-  if (autState.isWalletConnect) {
-    [selectedAddress] = autState.provider.accounts;
-  } else {
-    selectedAddress = autState.provider.selectedAddress;
-  }
-  return selectedAddress;
-};
-
 export const getAutId = autIdProvider(
   {
     type: 'membership/get',
   },
   (thunkAPI) => {
     const { walletProvider } = thunkAPI.getState();
-    debugger;
     return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args, thunkAPI) => {
@@ -286,12 +269,12 @@ export const checkIfNameTaken = autIdProvider(
     type: 'membership/nametaken',
   },
   (thunkAPI) => {
-    const { aut } = thunkAPI.getState();
-    return Promise.resolve(aut.communityExtensionAddress);
+    const { walletProvider } = thunkAPI.getState();
+    return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args) => {
     const tokenId = await contract.autIDUsername(args.username);
-    if (tokenId === ethers.constants.AddressZero) {
+    if (tokenId !== ethers.constants.AddressZero) {
       throw new Error(InternalErrorTypes.UsernameAlreadyTaken);
     }
     return false;
@@ -308,7 +291,6 @@ export const checkIfAutIdExists = autIdProvider(
   },
   async (contract, args, thunkAPI) => {
     const { aut } = thunkAPI.getState();
-
     const { selectedAddress } = aut;
     const balanceOf = await contract.balanceOf(selectedAddress);
     let hasAutId;

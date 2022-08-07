@@ -51,7 +51,6 @@ const LoginWithSkillWallet: React.FunctionComponent = (props) => {
     const activate = async () => {
       if (isActive) {
         const res = await dispatch(setSelectedAddress(account));
-        debugger;
         const result = await dispatch(getAutId(null));
         if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
           history.push('/role');

@@ -52,17 +52,12 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
 
   useEffect(() => {
     if (provider) {
-      debugger;
       dispatch(setSigner(provider.getSigner()));
     }
   }, [chainId, provider]);
 
   const selectEnvironment = async () => {
     await dispatch(setNetwork(attributes.network as string));
-    // await connector.activate();
-    // EnableAndChangeNetwork(connector.provider, config);
-    // EnableAndChangeNetwork();
-    // dispatch(setNetwork(attributes.network as string));
   };
 
   const setAttributes = () => {
@@ -106,6 +101,11 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
       dispatchEvent(OutputEventTypes.Disconnected, false);
     } else {
       history.push('/');
+
+      if (isActive) {
+        await connector.deactivate();
+        // dispatch(setSigner(provider.getSigner()));
+      }
       if (uiState?.provider?.disconnect) {
         await uiState?.provider?.disconnect();
       }

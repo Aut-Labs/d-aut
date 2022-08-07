@@ -1,6 +1,6 @@
 {
   "name": "d-aut-alpha",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "main": "build/cjs/index.js",
   "module": "build/ems/index.js",
   "types": "build/index.d.ts",

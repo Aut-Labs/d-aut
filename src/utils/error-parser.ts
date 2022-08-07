@@ -114,11 +114,10 @@ export const ParseErrorMessage = (error: any) => {
   console.log(error.reason);
   console.log(error);
   console.log(metamaskError);
-
+  debugger;
   if (metamaskError) {
     return metamaskError.message;
   }
-  debugger;
   if (isJson(error)) {
     error = JSON.parse(JSON.stringify(error));
     console.log(error);
@@ -128,6 +127,14 @@ export const ParseErrorMessage = (error: any) => {
     if (error?.reason) {
       return error?.reason?.toString();
     }
+    return 'Something went wrong.';
+  }
+
+  if (error?.code === 'NETWORK_ERROR') {
+    return 'A network error occured. Please try again.';
+  }
+
+  if (error?.reason === 'transaction failed') {
     return 'Something went wrong.';
   }
 

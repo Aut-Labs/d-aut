@@ -15,23 +15,24 @@ import { autState, setSelectedAddress } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { ErrorTypes } from '../types/error-types';
 import { InternalErrorTypes } from '../utils/error-parser';
+import { metaMaskConnector, walletConnectConnector } from '../services/ProviderFactory/web3.connectors';
+import { useWeb3React } from '@web3-react/core';
+import { SelectedNetworkConfig, setWallet } from '../store/wallet-provider';
+
+const [metamaskConnector] = metaMaskConnector;
+const [wcConnector] = walletConnectConnector;
 
 const NewUser: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
-  const [metamaskSelected, setMetamaskSelected] = useState(false);
+  const networkConfig = useSelector(SelectedNetworkConfig);
   const autData = useSelector(autState);
   const history = useHistory();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      dispatch(fetchCommunity(null));
-    };
-    fetchData();
-  }, []);
+  const { isActive, account, connector } = useWeb3React();
 
   const checkForExistingAutId = async () => {
     const hasAutId = await dispatch(checkIfAutIdExists(null));
     if (hasAutId.meta.requestStatus !== 'rejected') {
+      await dispatch(fetchCommunity(null));
       if (!hasAutId.payload) {
         history.push('userdetails');
       } else {
@@ -40,40 +41,34 @@ const NewUser: React.FunctionComponent = (props) => {
     }
   };
 
-  useEffect(() => {
-    // Subscribe to accounts change
-    if (autData.provider) {
-      autData.provider.once('accountsChanged', async (accounts: string[]) => {
-        await dispatch(setSelectedAddress(accounts[0]));
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     dispatch(fetchCommunity(null));
+  //   };
+  //   fetchData();
+  // }, []);
 
-        await checkForExistingAutId();
-      });
-    }
-  }, [autData.provider]);
+  useEffect(() => {
+    console.log(isActive);
+    const activate = async () => {
+      if (isActive) {
+        const res = await dispatch(setSelectedAddress(account));
+        checkForExistingAutId();
+      }
+    };
+    activate();
+  }, [isActive]);
 
   const handleWalletConnectClick = async () => {
-    // if (autData.isWalletConnect) {
-    //   if (autData.provider?.connected) {
-    //     await dispatch(setSelectedAddress(autData.provider.accounts[0]));
-    //     await checkForExistingAutId();
-    //   } else {
-    //     // autData.provider.isConnecting = false;
-    //     // autData.provider.qrcodeModal.open('69');
-    //     const wcProvider = await dispatch(resetWalletConnectThunk());
-    //     (wcProvider.payload as WalletConnectProvider).enable();
-    //   }
-    // } else {
-    //   const wcProvider = await dispatch(resetWalletConnectThunk());
-    //   // await dispatch(setProvider(provider));
-    //   (wcProvider.payload as WalletConnectProvider).enable();
-    // }
-    // const wcProvider = await dispatch(resetWalletConnectThunk());
-    // (wcProvider.payload as WalletConnectProvider).enable();
+    await wcConnector.activate();
+    await dispatch(setWallet('walletConnect'));
+    await EnableAndChangeNetwork(wcConnector.provider, networkConfig.network);
   };
 
   const handleInjectFromMetamaskClick = async () => {
-    // await dispatch(switchToMetaMask());
-    await checkForExistingAutId();
+    await metamaskConnector.activate();
+    await dispatch(setWallet('injected'));
+    await EnableAndChangeNetwork(metamaskConnector.provider, networkConfig);
   };
 
   return (
@@ -83,8 +78,8 @@ const NewUser: React.FunctionComponent = (props) => {
         title="WELCOME"
         subtitle={
           <>
-            First, import your wallet <br /> & claim your Role in{' '}
-            <span style={{ textDecoration: 'underline' }}>{autData.community?.name}!</span>
+            First, import your wallet <br /> & claim your Role in your DAO
+            {/* <span style={{ textDecoration: 'underline' }}>{autData.community?.name}!</span> */}
           </>
         }
       />

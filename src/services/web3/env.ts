@@ -7,8 +7,8 @@ export const env = {
 
 export const supportedNetworks = [
   {
-    autIdAddress: '0x00fbB8e663614f16e85df9634fd116aecF4872F9',
-    communityRegistryAddress: '0x5a37DE031A2155425700B6C842968fC2E32EC10f',
+    autIdAddress: '0xc22d41B54671703349C3Aa26dAf286E30059874B',
+    communityRegistryAddress: '0x073E8B270844E6AB2Fd7d0aD9849D21aE75220c1',
     network: {
       chainId: '5',
       chainName: 'Goerli',
@@ -22,8 +22,8 @@ export const supportedNetworks = [
     },
   },
   {
-    autIdAddress: '0xC866514E817893188CFe58030d57F50f62ADE319',
-    communityRegistryAddress: '0xB126D97141E5f379b14988985e18Af93a5C1B938',
+    autIdAddress: '0xbA51C34E02d72C0F67c448dB08d95AD950976fB6',
+    communityRegistryAddress: '0x36221Bfcb46e6e0388677A6BC6b51D27d00e2cfA',
     network: {
       chainId: '80001',
       chainName: 'Mumbai',
