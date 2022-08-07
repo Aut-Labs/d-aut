@@ -8,17 +8,23 @@ import { EnableAndChangeNetwork } from '../ProviderFactory/web3.network';
 import { BaseNFTModel } from './models';
 import { env } from './env';
 import { InternalErrorTypes, ParseErrorMessage } from '../../utils/error-parser';
-import { setCommunityExtesnionAddress, setJustJoining } from '../../store/aut.reducer';
+import { setCommunityExtesnionAddress, setJustJoining, updateErrorState } from '../../store/aut.reducer';
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
 import { base64toFile } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
 
 const communityProvider = Web3ThunkProviderFactory('Community', {
   provider: Web3DAOExpanderProvider,
+  updateErrorStateAction: (message, dispatch) => {
+    dispatch(updateErrorState(message));
+  },
 });
 
 const autIdProvider = Web3ThunkProviderFactory('AutId', {
   provider: Web3AutIDProvider,
+  updateErrorStateAction: (message, dispatch) => {
+    dispatch(updateErrorState(message));
+  },
 });
 
 export const fetchCommunity = communityProvider(
@@ -31,12 +37,12 @@ export const fetchCommunity = communityProvider(
   },
   async (contract) => {
     const resp = await contract.getDAOData();
-    console.log(resp);
+    // console.log(resp);
     // const communityMetadata = await fetch(cidToHttpUrl(`${resp[2]}/metadata.json`));
     const communityMetadata = await fetch(ipfsCIDToHttpUrl(resp[2]));
     const communityJson = await communityMetadata.json();
-    console.log(communityJson);
-    console.log(communityJson.properties.rolesSets[0].roles);
+    // console.log(communityJson);
+    // console.log(communityJson.properties.rolesSets[0].roles);
     return {
       // address: communityAddress,
       // image: ipfsCIDToHttpUrl(communityJson.image, false),
@@ -58,12 +64,13 @@ export const mintMembership = autIdProvider(
   {
     type: 'membership/mint',
   },
-  () => {
-    return Promise.resolve(env.AUTID_CONTRACT);
+  (thunkAPI) => {
+    const { walletProvider } = thunkAPI.getState();
+    return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args, thunkAPI) => {
     const { userData } = thunkAPI.getState();
-    console.log(userData);
+    // console.log(userData);
     const { username, picture, role, commitment } = userData;
     const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
 
@@ -90,12 +97,12 @@ export const mintMembership = autIdProvider(
     const cid = await storeMetadata(metadataJson);
     const metadata = await fetch(ipfsCIDToHttpUrl(cid));
     const metadataJsons = await metadata.json();
-    console.log(metadataJsons);
-    console.log(metadata);
-    console.log('Generated AutID -> ', ipfsCIDToHttpUrl(cid));
-    console.log('Avatar -> ', ipfsCIDToHttpUrl(avatarCid));
-    console.log('Role -> ', role);
-    console.log('Commitment -> ', commitment);
+    // console.log(metadataJsons);
+    // console.log(metadata);
+    // console.log('Generated AutID -> ', ipfsCIDToHttpUrl(cid));
+    // console.log('Avatar -> ', ipfsCIDToHttpUrl(avatarCid));
+    // console.log('Role -> ', role);
+    // console.log('Commitment -> ', commitment);
 
     const { aut } = thunkAPI.getState();
 
@@ -113,8 +120,8 @@ export const joinCommunity = autIdProvider(
     type: 'membership/join',
   },
   (thunkAPI) => {
-    // return Promise.resolve('0xCeb3300b7de5061c633555Ac593C84774D160309');
-    return Promise.resolve(env.AUTID_CONTRACT);
+    const { walletProvider } = thunkAPI.getState();
+    return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args, thunkAPI) => {
     const { aut } = thunkAPI.getState();
@@ -125,54 +132,29 @@ export const joinCommunity = autIdProvider(
   }
 );
 
-export const injectMetamask = createAsyncThunk('metamask/inject', async (arg, thunkAPI) => {
-  try {
-    await EnableAndChangeNetwork();
-
-    console.log('NO ERROR');
-  } catch (error) {
-    console.log('ERROR');
-    return thunkAPI.rejectWithValue(ParseErrorMessage(error));
-    return ParseErrorMessage(error);
-  }
-});
-
-const determineSelectedAddress = (autState) => {
-  let selectedAddress;
-  if (autState.isWalletConnect) {
-    [selectedAddress] = autState.provider.accounts;
-  } else {
-    selectedAddress = autState.provider.selectedAddress;
-  }
-  return selectedAddress;
-};
-
 export const getAutId = autIdProvider(
   {
     type: 'membership/get',
   },
   (thunkAPI) => {
-    // return Promise.resolve('0xCeb3300b7de5061c633555Ac593C84774D160309');
-    // console.log(env.AUTID_CONTRACT);
-    return Promise.resolve(env.AUTID_CONTRACT);
+    const { walletProvider } = thunkAPI.getState();
+    return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args, thunkAPI) => {
-    const { aut } = thunkAPI.getState();
-    const selectedAddress = determineSelectedAddress(aut);
-    //  const { selectedAddress } = aut;
+    const { aut, walletProvider } = thunkAPI.getState();
+    const { selectedAddress } = aut;
     const tokenId = await contract.getAutIDByOwner(selectedAddress);
     const tokenURI = await contract.tokenURI(tokenId);
     const response = await fetch(ipfsCIDToHttpUrl(tokenURI));
     const autId = await response.json();
     const holderCommunities = await contract.getHolderDAOs(selectedAddress);
-    const communityRegistryContract = await Web3DAOExpanderRegistryProvider(env.COMMUNITY_REGISTRY_CONTRACT);
-
+    const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
     const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
-    console.log('holderCommunities', holderCommunities);
-    console.log(communitiesByDeployer);
+    // console.log('holderCommunities', holderCommunities);
+    // console.log(communitiesByDeployer);
     for (const address of communitiesByDeployer) {
       if (!(holderCommunities as unknown as string[]).includes(address)) {
-        console.log(address);
+        // console.log(address);
         await thunkAPI.dispatch(setJustJoining(true));
         await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
         throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
@@ -275,7 +257,8 @@ export const getAutId = autIdProvider(
       })
     );
     autId.properties.communities = communities;
-    console.log(autId);
+    autId.loginTimestamp = new Date().getTime();
+    // console.log(autId);
     window.sessionStorage.setItem('aut-data', JSON.stringify(autId));
     return autId;
   }
@@ -286,12 +269,12 @@ export const checkIfNameTaken = autIdProvider(
     type: 'membership/nametaken',
   },
   (thunkAPI) => {
-    const { aut } = thunkAPI.getState();
-    return Promise.resolve(aut.communityExtensionAddress);
+    const { walletProvider } = thunkAPI.getState();
+    return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args) => {
     const tokenId = await contract.autIDUsername(args.username);
-    if (tokenId === ethers.constants.AddressZero) {
+    if (tokenId !== ethers.constants.AddressZero) {
       throw new Error(InternalErrorTypes.UsernameAlreadyTaken);
     }
     return false;
@@ -303,13 +286,13 @@ export const checkIfAutIdExists = autIdProvider(
     type: 'membership/exists',
   },
   (thunkAPI) => {
-    return Promise.resolve(env.AUTID_CONTRACT);
+    const { walletProvider } = thunkAPI.getState();
+    return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args, thunkAPI) => {
     const { aut } = thunkAPI.getState();
-    const selectedAddress = determineSelectedAddress(aut);
+    const { selectedAddress } = aut;
     const balanceOf = await contract.balanceOf(selectedAddress);
-    debugger;
     let hasAutId;
     if (balanceOf > 0) {
       hasAutId = true;
@@ -321,7 +304,7 @@ export const checkIfAutIdExists = autIdProvider(
       holderCommunities = await contract.getHolderDAOs(selectedAddress);
     } catch (e) {
       // if (e?.data?.message?.toString().includes(`AutID: Doesn't have a SW.`)) {
-      console.log(e);
+      // console.log(e);
       // } else {
       //   throw e;
       // }
@@ -350,7 +333,7 @@ export const checkIfAutIdExists = autIdProvider(
     //   if (error?.code === 'CALL_EXCEPTION') {
     //     if (error?.reason?.toString().includes('The AutID owner is invalid')) return false;
     //   }
-    //   console.log(error);
+    //   // console.log(error);
     //   throw error;
     // }
   }

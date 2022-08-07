@@ -18,16 +18,6 @@ const UserRole: React.FunctionComponent = (props) => {
   const history = useHistory();
   const communityData = useSelector(community);
 
-  //  const onSubmit = async (data: any) => {};
-
-  useEffect(() => {
-    const fetchData = async () => {
-      dipsatch(fetchCommunity(null));
-      console.log('use Effect');
-    };
-    fetchData();
-  }, []);
-
   const handleRoleSelect = (role) => {
     dipsatch(setUserData({ role: role.id, roleName: role.roleName }));
     history.push('commitment');

@@ -4,7 +4,7 @@ import { AutButton } from './AutButton';
 
 const ErrorBox = ({ errorData }) => {
   const handleOnClick = () => {
-    console.log(errorData);
+    // console.log(errorData);
     if (errorData) {
       errorData.action();
     }

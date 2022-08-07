@@ -88,7 +88,7 @@ export const extractAttributes = (nodeMap: HTMLElement): SwAttributes => {
     return prev;
   }, {});
 
-  console.log('Attributes: ', attributes);
+  // console.log('Attributes: ', attributes);
   return attributes as SwAttributes;
 };
 

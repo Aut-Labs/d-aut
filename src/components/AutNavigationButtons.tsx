@@ -58,13 +58,11 @@ export const AutNavigationButtons = ({ hideBack = false, hideClose = false }) =>
         display: 'flex',
         alignItems: 'center',
         justifyContent: !hideBack && !hideClose ? 'space-between' : hideBack && !hideClose ? 'flex-end' : 'flex-start',
-        padding: '0 20px',
+        padding: '10px 20px',
         width: 'calc(100% - 40px)',
       }}
     >
-      <StyledButton sx={{ display: hideBack ? 'none' : '' }} onClick={() => handleClick()}>
-        Back
-      </StyledButton>
+      <StyledButton sx={{ display: hideBack ? 'none' : '' }} onClick={() => handleClick()} />
       <StyledCrossButton sx={{ display: hideClose ? 'none' : '' }} onClick={() => handleClose()}>
         <CrossIcon />
       </StyledCrossButton>
