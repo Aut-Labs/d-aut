@@ -9,6 +9,7 @@ Each user will add their nickname and avatar, and pick a Role in your DAO - afte
 # Web Component Developer notes
 
 When a user successfully logs in their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'.
+Don't forget to add the attributes: dao-expander, button-type, and network
 
 # Pre-requisite: obtain your DAO Expander Address
 
@@ -161,4 +162,4 @@ Init();
 
 3. `button-type`
    Allows to pick from different button styles. Currently supported styles: simple, round-bright, square-bright,
-   square-dark, round-dark, round-light, square-light - default is round-bright
+   square-dark, round-dark, round-light, square-light - default is simple

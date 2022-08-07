@@ -184,13 +184,12 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
   const userData = useSelector(user);
   return (
     <>
-      {props.buttontype === 'simple' && (
-        <SquareButtonGradienBorder
+      {props.buttontype === 'round-bright' && (
+        <RoundedButton
           {...props}
           sx={{
-            background: '#000',
             ':hover': {
-              background: '#000',
+              background: '#009ADE',
             },
             '&&.MuiTouchRipple-child': {
               backgroundColor: '#5A2583',
@@ -219,7 +218,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="body1">
+                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
                     {userData.name}
                   </Typography>
                   <Box
@@ -234,13 +233,21 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                   />
                 </Box>
               ) : (
-                <Typography textAlign="center" sx={{ width: '100%', color: '#FFF' }} variant="body1">
+                <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
                   Connect with āut
                 </Typography>
               )}
             </Box>
+            <Box sx={{ zIndex: '100', position: 'absolute' }}>
+              <Box sx={{ transform: 'translate(116px, -109px)' }}>
+                <Oval />
+              </Box>
+              <Box sx={{ transform: 'translate(157px, -230px)' }}>
+                <DarkOval />
+              </Box>
+            </Box>
           </Box>
-        </SquareButtonGradienBorder>
+        </RoundedButton>
       )}
       {props.buttontype === 'square-bright' && (
         <SquareButton
@@ -573,12 +580,13 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
           </Box>
         </SquareButtonWhiteBorder>
       )}
-      {(props.buttontype === null || props.buttontype === 'round-bright') && (
-        <RoundedButton
+      {(props.buttontype === null || props.buttontype === 'simple') && (
+        <SquareButtonGradienBorder
           {...props}
           sx={{
+            background: '#000',
             ':hover': {
-              background: '#009ADE',
+              background: '#000',
             },
             '&&.MuiTouchRipple-child': {
               backgroundColor: '#5A2583',
@@ -607,7 +615,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
+                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="body1">
                     {userData.name}
                   </Typography>
                   <Box
@@ -622,21 +630,13 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                   />
                 </Box>
               ) : (
-                <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
+                <Typography textAlign="center" sx={{ width: '100%', color: '#FFF' }} variant="body1">
                   Connect with āut
                 </Typography>
               )}
             </Box>
-            <Box sx={{ zIndex: '100', position: 'absolute' }}>
-              <Box sx={{ transform: 'translate(116px, -109px)' }}>
-                <Oval />
-              </Box>
-              <Box sx={{ transform: 'translate(157px, -230px)' }}>
-                <DarkOval />
-              </Box>
-            </Box>
           </Box>
-        </RoundedButton>
+        </SquareButtonGradienBorder>
       )}
     </>
   );
