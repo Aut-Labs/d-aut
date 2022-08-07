@@ -573,72 +573,71 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
           </Box>
         </SquareButtonWhiteBorder>
       )}
-      {props.buttontype === null ||
-        (props.buttontype === 'round-bright' && (
-          <RoundedButton
-            {...props}
-            sx={{
-              ':hover': {
-                background: '#009ADE',
-              },
-              '&&.MuiTouchRipple-child': {
-                backgroundColor: '#5A2583',
-              },
-            }}
-          >
-            <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
-              <Box
-                sx={{
-                  width: '100%',
-                  height: '100%',
-                  position: 'relative',
-                  zIndex: '101',
-                  display: 'flex',
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                }}
-              >
-                {userData ? (
-                  <Box
-                    sx={{
-                      height: '100%',
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
-                      {userData.name}
-                    </Typography>
-                    <Box
-                      component="img"
-                      sx={{
-                        width: '77px',
-                        maxWidth: '100%',
-                      }}
-                      alt="User image."
-                      // Make this not the badge
-                      src={ipfsCIDToHttpUrl(userData.properties.avatar)}
-                    />
-                  </Box>
-                ) : (
+      {(props.buttontype === null || props.buttontype === 'round-bright') && (
+        <RoundedButton
+          {...props}
+          sx={{
+            ':hover': {
+              background: '#009ADE',
+            },
+            '&&.MuiTouchRipple-child': {
+              backgroundColor: '#5A2583',
+            },
+          }}
+        >
+          <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
+            <Box
+              sx={{
+                width: '100%',
+                height: '100%',
+                position: 'relative',
+                zIndex: '101',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              }}
+            >
+              {userData ? (
+                <Box
+                  sx={{
+                    height: '100%',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
                   <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
-                    Connect with āut
+                    {userData.name}
                   </Typography>
-                )}
+                  <Box
+                    component="img"
+                    sx={{
+                      width: '77px',
+                      maxWidth: '100%',
+                    }}
+                    alt="User image."
+                    // Make this not the badge
+                    src={ipfsCIDToHttpUrl(userData.properties.avatar)}
+                  />
+                </Box>
+              ) : (
+                <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
+                  Connect with āut
+                </Typography>
+              )}
+            </Box>
+            <Box sx={{ zIndex: '100', position: 'absolute' }}>
+              <Box sx={{ transform: 'translate(116px, -109px)' }}>
+                <Oval />
               </Box>
-              <Box sx={{ zIndex: '100', position: 'absolute' }}>
-                <Box sx={{ transform: 'translate(116px, -109px)' }}>
-                  <Oval />
-                </Box>
-                <Box sx={{ transform: 'translate(157px, -230px)' }}>
-                  <DarkOval />
-                </Box>
+              <Box sx={{ transform: 'translate(157px, -230px)' }}>
+                <DarkOval />
               </Box>
             </Box>
-          </RoundedButton>
-        ))}
+          </Box>
+        </RoundedButton>
+      )}
     </>
   );
 };
