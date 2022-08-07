@@ -32,7 +32,7 @@ const Commitment: React.FunctionComponent = (props) => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
+    // console.log(data);
     if (coreState.justJoin) {
       const result = await dispatch(joinCommunity(null));
       history.push('congrats');

@@ -70,13 +70,13 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
 
   const setAttributes = () => {
     if (attributes.communityAddress) {
-      console.log(attributes.communityAddress);
+      // console.log(attributes.communityAddress);
       dispatch(setCommunityExtesnionAddress(attributes.communityAddress as string));
     } else {
-      console.log('nocommunity extension');
+      // console.log('nocommunity extension');
     }
     if (attributes.buttonType) {
-      console.log(attributes.buttonType);
+      // console.log(attributes.buttonType);
       setButtonType(attributes.buttonType as string);
     } else {
       setButtonType(null);

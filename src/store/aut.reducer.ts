@@ -94,7 +94,7 @@ export const autSlice = createSlice({
         state.status = ResultState.Loading;
       })
       .addCase(fetchCommunity.fulfilled, (state, action) => {
-        console.log(action.payload);
+        // console.log(action.payload);
         state.community = action.payload;
         state.status = ResultState.Idle;
       })

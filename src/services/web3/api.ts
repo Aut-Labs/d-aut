@@ -37,12 +37,12 @@ export const fetchCommunity = communityProvider(
   },
   async (contract) => {
     const resp = await contract.getDAOData();
-    console.log(resp);
+    // console.log(resp);
     // const communityMetadata = await fetch(cidToHttpUrl(`${resp[2]}/metadata.json`));
     const communityMetadata = await fetch(ipfsCIDToHttpUrl(resp[2]));
     const communityJson = await communityMetadata.json();
-    console.log(communityJson);
-    console.log(communityJson.properties.rolesSets[0].roles);
+    // console.log(communityJson);
+    // console.log(communityJson.properties.rolesSets[0].roles);
     return {
       // address: communityAddress,
       // image: ipfsCIDToHttpUrl(communityJson.image, false),
@@ -70,7 +70,7 @@ export const mintMembership = autIdProvider(
   },
   async (contract, args, thunkAPI) => {
     const { userData } = thunkAPI.getState();
-    console.log(userData);
+    // console.log(userData);
     const { username, picture, role, commitment } = userData;
     const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
 
@@ -97,12 +97,12 @@ export const mintMembership = autIdProvider(
     const cid = await storeMetadata(metadataJson);
     const metadata = await fetch(ipfsCIDToHttpUrl(cid));
     const metadataJsons = await metadata.json();
-    console.log(metadataJsons);
-    console.log(metadata);
-    console.log('Generated AutID -> ', ipfsCIDToHttpUrl(cid));
-    console.log('Avatar -> ', ipfsCIDToHttpUrl(avatarCid));
-    console.log('Role -> ', role);
-    console.log('Commitment -> ', commitment);
+    // console.log(metadataJsons);
+    // console.log(metadata);
+    // console.log('Generated AutID -> ', ipfsCIDToHttpUrl(cid));
+    // console.log('Avatar -> ', ipfsCIDToHttpUrl(avatarCid));
+    // console.log('Role -> ', role);
+    // console.log('Commitment -> ', commitment);
 
     const { aut } = thunkAPI.getState();
 
@@ -150,11 +150,11 @@ export const getAutId = autIdProvider(
     const holderCommunities = await contract.getHolderDAOs(selectedAddress);
     const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
     const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
-    console.log('holderCommunities', holderCommunities);
-    console.log(communitiesByDeployer);
+    // console.log('holderCommunities', holderCommunities);
+    // console.log(communitiesByDeployer);
     for (const address of communitiesByDeployer) {
       if (!(holderCommunities as unknown as string[]).includes(address)) {
-        console.log(address);
+        // console.log(address);
         await thunkAPI.dispatch(setJustJoining(true));
         await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
         throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
@@ -258,7 +258,7 @@ export const getAutId = autIdProvider(
     );
     autId.properties.communities = communities;
     autId.loginTimestamp = new Date().getTime();
-    console.log(autId);
+    // console.log(autId);
     window.sessionStorage.setItem('aut-data', JSON.stringify(autId));
     return autId;
   }
@@ -304,7 +304,7 @@ export const checkIfAutIdExists = autIdProvider(
       holderCommunities = await contract.getHolderDAOs(selectedAddress);
     } catch (e) {
       // if (e?.data?.message?.toString().includes(`AutID: Doesn't have a SW.`)) {
-      console.log(e);
+      // console.log(e);
       // } else {
       //   throw e;
       // }
@@ -333,7 +333,7 @@ export const checkIfAutIdExists = autIdProvider(
     //   if (error?.code === 'CALL_EXCEPTION') {
     //     if (error?.reason?.toString().includes('The AutID owner is invalid')) return false;
     //   }
-    //   console.log(error);
+    //   // console.log(error);
     //   throw error;
     // }
   }

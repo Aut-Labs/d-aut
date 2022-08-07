@@ -47,7 +47,7 @@ const LoginWithSkillWallet: React.FunctionComponent = (props) => {
   // }, [autData.provider]);
 
   useEffect(() => {
-    console.log(isActive);
+    // console.log(isActive);
     const activate = async () => {
       if (isActive) {
         const res = await dispatch(setSelectedAddress(account));

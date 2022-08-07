@@ -110,17 +110,17 @@ export const ParseErrorMessage = (error: any) => {
   }
 
   const metamaskError = METAMASK_POSSIBLE_ERRORS[error?.code];
-  console.log(error.code);
-  console.log(error.reason);
-  console.log(error);
-  console.log(metamaskError);
+  // console.log(error.code);
+  // console.log(error.reason);
+  // console.log(error);
+  // console.log(metamaskError);
   debugger;
   if (metamaskError) {
     return metamaskError.message;
   }
   if (isJson(error)) {
     error = JSON.parse(JSON.stringify(error));
-    console.log(error);
+    // console.log(error);
   }
 
   if (error?.code === 'CALL_EXCEPTION') {

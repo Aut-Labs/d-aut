@@ -15,7 +15,7 @@ const appReducer = combineReducers({
 
 const rootReducer = (state, action) => {
   if (action.type === 'RESET_UI') {
-    console.log(state);
+    // console.log(state);
     state = {
       aut: {
         ...initAutState,
