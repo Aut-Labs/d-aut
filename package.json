@@ -1,6 +1,6 @@
 {
   "name": "@aut-protocol/d-aut",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "build/cjs/index.js",
   "module": "build/ems/index.js",
   "types": "build/index.d.ts",
