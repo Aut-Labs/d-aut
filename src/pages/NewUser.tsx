@@ -67,7 +67,7 @@ const NewUser: React.FunctionComponent = (props) => {
 
   const handleInjectFromMetamaskClick = async () => {
     await metamaskConnector.activate();
-    await dispatch(setWallet('injected'));
+    await dispatch(setWallet('metamask'));
     await EnableAndChangeNetwork(metamaskConnector.provider, networkConfig);
   };
 

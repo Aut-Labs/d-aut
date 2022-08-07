@@ -441,7 +441,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
           </Box>
         </RoundedButtonBlackBorder>
       )}
-      {props.buttontype === 'round-white' && (
+      {props.buttontype === 'round-light' && (
         <RoundedButtonWhiteBorder
           {...props}
           sx={{
@@ -476,7 +476,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="body1">
+                  <Typography sx={{ ml: '18px', color: '#000' }} variant="body1">
                     {userData.name}
                   </Typography>
                   <Box
@@ -491,7 +491,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                   />
                 </Box>
               ) : (
-                <Typography textAlign="center" sx={{ width: '100%', color: '#FFF' }} variant="body1">
+                <Typography textAlign="center" sx={{ width: '100%', color: '#000' }} variant="body1">
                   Connect with āut
                 </Typography>
               )}
@@ -507,7 +507,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
           </Box>
         </RoundedButtonWhiteBorder>
       )}
-      {props.buttontype === 'square-white' && (
+      {props.buttontype === 'square-light' && (
         <SquareButtonWhiteBorder
           {...props}
           sx={{
@@ -542,7 +542,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="body1">
+                  <Typography sx={{ ml: '18px', color: '#000' }} variant="body1">
                     {userData.name}
                   </Typography>
                   <Box
@@ -557,7 +557,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                   />
                 </Box>
               ) : (
-                <Typography textAlign="center" sx={{ width: '100%', color: '#FFF' }} variant="body1">
+                <Typography textAlign="center" sx={{ width: '100%', color: '#000' }} variant="body1">
                   Connect with āut
                 </Typography>
               )}
@@ -573,71 +573,72 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
           </Box>
         </SquareButtonWhiteBorder>
       )}
-      {props.buttontype === null && (
-        <RoundedButton
-          {...props}
-          sx={{
-            ':hover': {
-              background: '#009ADE',
-            },
-            '&&.MuiTouchRipple-child': {
-              backgroundColor: '#5A2583',
-            },
-          }}
-        >
-          <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
-            <Box
-              sx={{
-                width: '100%',
-                height: '100%',
-                position: 'relative',
-                zIndex: '101',
-                display: 'flex',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-              }}
-            >
-              {userData ? (
-                <Box
-                  sx={{
-                    height: '100%',
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
-                    {userData.name}
-                  </Typography>
+      {props.buttontype === null ||
+        (props.buttontype === 'round-bright' && (
+          <RoundedButton
+            {...props}
+            sx={{
+              ':hover': {
+                background: '#009ADE',
+              },
+              '&&.MuiTouchRipple-child': {
+                backgroundColor: '#5A2583',
+              },
+            }}
+          >
+            <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
+              <Box
+                sx={{
+                  width: '100%',
+                  height: '100%',
+                  position: 'relative',
+                  zIndex: '101',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                }}
+              >
+                {userData ? (
                   <Box
-                    component="img"
                     sx={{
-                      width: '77px',
-                      maxWidth: '100%',
+                      height: '100%',
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
                     }}
-                    alt="User image."
-                    // Make this not the badge
-                    src={ipfsCIDToHttpUrl(userData.properties.avatar)}
-                  />
+                  >
+                    <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
+                      {userData.name}
+                    </Typography>
+                    <Box
+                      component="img"
+                      sx={{
+                        width: '77px',
+                        maxWidth: '100%',
+                      }}
+                      alt="User image."
+                      // Make this not the badge
+                      src={ipfsCIDToHttpUrl(userData.properties.avatar)}
+                    />
+                  </Box>
+                ) : (
+                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
+                    Connect with āut
+                  </Typography>
+                )}
+              </Box>
+              <Box sx={{ zIndex: '100', position: 'absolute' }}>
+                <Box sx={{ transform: 'translate(116px, -109px)' }}>
+                  <Oval />
                 </Box>
-              ) : (
-                <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
-                  Connect with āut
-                </Typography>
-              )}
-            </Box>
-            <Box sx={{ zIndex: '100', position: 'absolute' }}>
-              <Box sx={{ transform: 'translate(116px, -109px)' }}>
-                <Oval />
-              </Box>
-              <Box sx={{ transform: 'translate(157px, -230px)' }}>
-                <DarkOval />
+                <Box sx={{ transform: 'translate(157px, -230px)' }}>
+                  <DarkOval />
+                </Box>
               </Box>
             </Box>
-          </Box>
-        </RoundedButton>
-      )}
+          </RoundedButton>
+        ))}
     </>
   );
 };

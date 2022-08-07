@@ -4,7 +4,7 @@ import { env, getNetwork } from '../services/web3/env';
 
 export interface WalletProviderState {
   signer: ethers.providers.JsonRpcSigner;
-  selectedWalletType: 'injected' | 'walletConnect';
+  selectedWalletType: 'metamask' | 'walletConnect';
   selectedNetwork: string;
   networkConfig: any;
   isOpen: boolean;

@@ -68,7 +68,7 @@ const LoginWithSkillWallet: React.FunctionComponent = (props) => {
 
   const handleMetamaskClick = async () => {
     await metamaskConnector.activate();
-    await dispatch(setWallet('injected'));
+    await dispatch(setWallet('metamask'));
     await EnableAndChangeNetwork(metamaskConnector.provider, networkConfig);
 
     // await dispatch(switchToMetaMask());
