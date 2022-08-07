@@ -11,7 +11,7 @@ export enum AttributesDefinitions {
   'use-button-options' = 'boolean',
   'disable-create-new-user' = 'boolean',
   'partner-key' = 'string',
-  'community-address' = 'string',
+  'dao-expander' = 'string',
   'network' = 'string',
   'hide-button' = 'boolean',
   'button-type' = 'string',

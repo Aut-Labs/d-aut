@@ -69,9 +69,9 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   };
 
   const setAttributes = () => {
-    if (attributes.communityAddress) {
-      // console.log(attributes.communityAddress);
-      dispatch(setCommunityExtesnionAddress(attributes.communityAddress as string));
+    if (attributes.daoExpander) {
+      // console.log(attributes.daoExpander);
+      dispatch(setCommunityExtesnionAddress(attributes.daoExpander as string));
     } else {
       // console.log('nocommunity extension');
     }
