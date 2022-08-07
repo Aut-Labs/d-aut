@@ -56,6 +56,14 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     }
   }, [chainId, provider]);
 
+  useEffect(() => {
+    setAttrCallback(async (name: string, value: string, newVal: string) => {
+      if (name === 'network') {
+        await dispatch(setNetwork(attributes.network as string));
+      }
+    });
+  });
+
   const selectEnvironment = async () => {
     await dispatch(setNetwork(attributes.network as string));
   };
