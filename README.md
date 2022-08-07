@@ -10,7 +10,7 @@ Each user will add their nickname and avatar, and pick a Role in your DAO - afte
 
 When a user successfully logs in their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'.
 
-# Pre-requisite: obtain your Partner's Key
+# Pre-requisite: obtain your DAO Expander Address
 
 This Web Component is cross-platform, and can be integrated on any Web framework.  
 In order to use it, though, you **will need to have a DAO Expander Address** - you can get deploy your DAO expander contract, and receive your DAO expander key directly on our [Integrate App](https://partners.skillwallet.id).
