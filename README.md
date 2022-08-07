@@ -160,4 +160,5 @@ Init();
    The network your contracts are deployed to. Currently Goerli and Mumbai are supported.
 
 3. `button-type`
-   Allows to pick from different button styles. Currently supported styles: simple, square-bright, square-dark, round-dark, round-white, square-white - default is round-bright
+   Allows to pick from different button styles. Currently supported styles: simple, round-bright, square-bright,
+   square-dark, round-dark, round-light, square-light - default is round-bright
