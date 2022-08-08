@@ -5,13 +5,16 @@ import Portal from '@mui/material/Portal';
 import { CSSObject } from '@emotion/react';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
-import { setUseDev } from './services/web3/env';
 import { dispatchEvent } from './utils/utils';
 import { AutButtonProps } from './types/sw-auth-config';
 import { OutputEventTypes } from './types/event-types';
-import { autState, setCommunityExtesnionAddress, showDialog } from './store/aut.reducer';
+import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { RoundedWebButton } from './components/WebButton';
+import { SelectedNetworkConfig, setNetwork, setSigner } from './store/wallet-provider';
+import { getNetwork } from './services/web3/env';
+import { EnableAndChangeNetwork } from './services/ProviderFactory/web3.network';
+import { useWeb3React } from '@web3-react/core';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
@@ -43,66 +46,62 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   // const currentUser = useSelector(currentUserState);
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [buttonType, setButtonType] = useState('simple');
   const [buttonHidden, setButtonHidden] = useState(false);
+  const { connector, isActive, chainId, provider } = useWeb3React();
 
-  const selectEnvironment = () => {
-    if (attributes.useDev) {
-      setUseDev(attributes.useDev as boolean);
-    } else {
-      // dispatch(startValidatingDomain());
-      // try {
-      //   const isValid = await validateDomain(attributes.partnerKey);
-      //   if (!isValid) {
-      //     dispatch(showGlobalError('Invalid domain. Please add the URL throught the dashboard.'));
-      //   }
-      // } catch (e) {
-      //   dispatch(showGlobalError('Failed to validate domain.'));
-      // } finally {
-      //   dispatch(finishValidatingDomain());
-      // }
+  useEffect(() => {
+    if (provider) {
+      dispatch(setSigner(provider.getSigner()));
     }
+  }, [chainId, provider]);
+
+  useEffect(() => {
+    setAttrCallback(async (name: string, value: string, newVal: string) => {
+      if (name === 'network') {
+        await dispatch(setNetwork(newVal as string));
+      }
+    });
+  });
+
+  const selectEnvironment = async () => {
+    await dispatch(setNetwork(attributes.network as string));
   };
 
   const setAttributes = () => {
-    if (attributes.communityAddress) {
-      console.log(attributes.communityAddress);
-      dispatch(setCommunityExtesnionAddress(attributes.communityAddress as string));
+    if (attributes.daoExpander) {
+      // console.log(attributes.daoExpander);
+      dispatch(setCommunityExtesnionAddress(attributes.daoExpander as string));
     } else {
-      console.log('nocommunity extension');
+      // console.log('nocommunity extension');
+    }
+    if (attributes.buttonType) {
+      // console.log(attributes.buttonType);
+      setButtonType(attributes.buttonType as string);
+    } else {
+      setButtonType(null);
     }
     selectEnvironment();
   };
 
   const initializeAut = async () => {
     // check timestamp
-    // const sw = JSON.parse(sessionStorage.getItem('aut-data'));
-    // if (sw) {
-    //   const currentTime = new Date().getTime();
-    //   // 8 Hours
-    //   const sessionLength = new Date(8 * 60 * 60 * 1000 + sw.timestamp).getTime();
-    //   if (currentTime < sessionLength) {
-    //     const isLoggedIn = true;
-    //     dispatch(
-    //       setUserData({
-    //         username: sw.nickname,
-    //         profileImageUrl: sw.imageUrl,
-    //         isLoggedIn,
-    //       })
-    //     );
-    //     dispatchSwEvent(OutputEventTypes.Login, isLoggedIn);
-    //   } else {
-    //     const isLoggedIn = false;
-    //     window.sessionStorage.removeItem('skillWallet');
-    //     dispatch(resetUIState);
-    //     dispatch(setLoggedIn(isLoggedIn));
-    //     dispatchSwEvent(OutputEventTypes.Login, isLoggedIn);
-    //   }
-    // }
+    const autId = JSON.parse(sessionStorage.getItem('aut-data'));
+    if (autId) {
+      const currentTime = new Date().getTime();
+      // 8 Hours
+      const sessionLength = new Date(8 * 60 * 60 * 1000 + autId.loginTimestamp).getTime();
+      if (currentTime < sessionLength) {
+        dispatch(setUser(autId));
+      } else {
+        window.sessionStorage.removeItem('aut-data');
+        dispatch(resetUIState);
+      }
+    }
   };
 
   const handleButtonClick = async () => {
     // if (currentUser.isLoggedIn) {
-
     if (uiState.user) {
       // if (!attributes.useButtonOptions) {
       window.sessionStorage.removeItem('aut-data');
@@ -110,7 +109,14 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
       dispatchEvent(OutputEventTypes.Disconnected, false);
     } else {
       history.push('/');
-      await uiState?.provider?.disconnect();
+
+      if (isActive) {
+        await connector.deactivate();
+        // dispatch(setSigner(provider.getSigner()));
+      }
+      if (uiState?.provider?.disconnect) {
+        await uiState?.provider?.disconnect();
+      }
       await dispatch(resetUIState);
       dispatch(showDialog(true));
     }
@@ -162,7 +168,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
       <Portal container={container}>
         {!buttonHidden && (
           <>
-            <RoundedWebButton userData={uiState.user} onClick={handleButtonClick} onMouseEnter={handleMouseEnter} />
+            <RoundedWebButton buttontype={buttonType} onClick={handleButtonClick} onMouseEnter={handleMouseEnter} />
           </>
         )}
       </Portal>

@@ -1,40 +1,27 @@
 // import { environment, EnvMode } from '@api/environment';
 import { env } from '../web3/env';
 
-const nativeCurrency = {
-  name: 'Matic',
-  symbol: 'MATIC',
-  decimals: 18,
+const toHex = (num) => {
+  const val = Number(num);
+  return `0x${val.toString(16)}`;
 };
 
-// const prodConfigParams = [
-//   {
-//     chainId: '0x89',
-//     chainName: 'Polygon',
-//     nativeCurrency,
-//     rpcUrls: environment.rpcUrls?.split(','),
-//     blockExplorerUrls: ['https://polygonscan.com/'],
-//   },
-// ];
+export const EnableAndChangeNetwork = async (provider: any, config: any) => {
+  console.info('Changing Network', config);
+  const params = [
+    {
+      chainId: toHex(config.network.chainId),
+      chainName: config.network.name,
+      rpcUrls: config.network.rpcUrls,
+      blockExplorerUrls: config.network.blockExplorerUrls,
+    },
+  ];
 
-// const devConfigParams = [
-//   {
-//     chainId: '0x13881',
-//     chainName: 'Mumbai',
-//     nativeCurrency,
-//     rpcUrls: environment.rpcUrls?.split(','),
-//     blockExplorerUrls: ['https://explorer-mumbai.maticvigil.com/'],
-//   },
-// ];
-
-export const EnableAndChangeNetwork = async () => {
-  console.info('Changing Network');
-  const params = env.NETWORK_METADATA_PARAMS;
   const [{ chainId }] = params;
 
   try {
-    await window.ethereum.request({ method: 'eth_requestAccounts' });
-    await window.ethereum.request({
+    await provider.request({ method: 'eth_requestAccounts' });
+    await provider.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId }],
     });
@@ -42,16 +29,15 @@ export const EnableAndChangeNetwork = async () => {
     // This error code indicates that the chain has not been added to MetaMask.
     if (switchError.code === 4902) {
       try {
-        await window.ethereum.request({
+        await provider.request({
           method: 'wallet_addEthereumChain',
           params,
         });
       } catch (addError) {
-        console.log('Add Error', addError);
         throw new Error(addError);
       }
     } else {
-      throw switchError;
+      throw new Error(switchError);
     }
   }
 };

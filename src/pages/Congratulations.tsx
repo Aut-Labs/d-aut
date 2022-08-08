@@ -17,11 +17,11 @@ const Congratulations: React.FunctionComponent = () => {
   const userInput = useSelector(userData);
 
   const handleShareClicked = () => {
-    console.log('SHARE');
+    // console.log('SHARE');
   };
 
   const handleSeeProfile = () => {
-    console.log('Seeprofile');
+    // console.log('Seeprofile');
   };
 
   return (

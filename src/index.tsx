@@ -11,6 +11,7 @@ import { EventsHandlerWrapper } from './components/EventsHandlerWrapper';
 import SwAuthModal, { AutButton } from './Aut';
 import { AttributeCallbackFn, SwAuthConfig } from './types/sw-auth-config';
 import { AttributeNames, createShadowElement, extractAttributes, isElement } from './utils/utils';
+import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
 
 export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
   const TAG_NAME = 'd-aut';
@@ -99,9 +100,9 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             <ThemeProvider theme={AutTheme()}>
               <Provider store={store}>
                 <Router initialEntries={['/']}>
-                  <EventsHandlerWrapper>
+                  <Web3AutProvider>
                     <StylesProvider jss={jss}>{content}</StylesProvider>
-                  </EventsHandlerWrapper>
+                  </Web3AutProvider>
                 </Router>
               </Provider>
             </ThemeProvider>

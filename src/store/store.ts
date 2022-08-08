@@ -5,15 +5,17 @@ import { combineReducers } from 'redux';
 import autSliceReducer, { initialState as initAutState } from './aut.reducer';
 // import swUserDataReducer, { initialState as initUserDataState } from './sw-user-data.reducer';
 import userDataReducer, { initialState as initUserDataState } from './user-data.reducer';
+import walletProvider from './wallet-provider';
 
 const appReducer = combineReducers({
   aut: autSliceReducer,
   userData: userDataReducer,
+  walletProvider,
 });
 
 const rootReducer = (state, action) => {
   if (action.type === 'RESET_UI') {
-    console.log(state);
+    // console.log(state);
     state = {
       aut: {
         ...initAutState,
@@ -23,6 +25,7 @@ const rootReducer = (state, action) => {
       userData: {
         ...initUserDataState,
       },
+      walletProvider: state.walletProvider,
     };
   }
   return appReducer(state, action);
