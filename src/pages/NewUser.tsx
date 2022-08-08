@@ -62,13 +62,11 @@ const NewUser: React.FunctionComponent = (props) => {
   const handleWalletConnectClick = async () => {
     await wcConnector.activate();
     await dispatch(setWallet('walletConnect'));
-    await EnableAndChangeNetwork(wcConnector.provider, networkConfig.network);
   };
 
   const handleInjectFromMetamaskClick = async () => {
     await metamaskConnector.activate();
     await dispatch(setWallet('metamask'));
-    await EnableAndChangeNetwork(metamaskConnector.provider, networkConfig);
   };
 
   return (

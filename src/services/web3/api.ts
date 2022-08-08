@@ -12,6 +12,7 @@ import { setCommunityExtesnionAddress, setJustJoining, updateErrorState } from '
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
 import { base64toFile } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
+import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
 
 const communityProvider = Web3ThunkProviderFactory('Community', {
   provider: Web3DAOExpanderProvider,
@@ -69,15 +70,17 @@ export const mintMembership = autIdProvider(
     return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args, thunkAPI) => {
-    const { userData } = thunkAPI.getState();
+    const { userData, walletProvider } = thunkAPI.getState();
     // console.log(userData);
     const { username, picture, role, commitment } = userData;
     const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
 
     const config = {
       title: `${username}`,
-      timestamp: `#${1} | ${timeStamp}`,
-    };
+      hash: '#1',
+      network: walletProvider.networkConfig.network.chainName.toLowerCase(),
+      timestamp: `${timeStamp}`,
+    } as SWIDParams;
 
     const { toFile } = await AutIDBadgeGenerator(config);
     const badgeFile = await toFile();

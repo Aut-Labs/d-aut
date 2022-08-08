@@ -40,11 +40,14 @@ StyledButton.defaultProps = {
   startIcon: <BackIcon />,
 };
 
-export const AutNavigationButtons = ({ hideBack = false, hideClose = false }) => {
+export const AutNavigationButtons = ({ hideBack = false, hideClose = false, backAction = null }) => {
   const history = useHistory();
   const dispatch = useAppDispatch();
 
-  const handleClick = () => {
+  const handleClick = async () => {
+    if (backAction) {
+      await backAction();
+    }
     history.goBack();
   };
 

@@ -1,17 +1,28 @@
 import { ContentConfig, SWIDParams, SWIDOutput } from './Badge.model';
 import { FindTextCenter } from './FindCenter';
 import { LoadImage } from './ImageLoader';
-import { SwBackgroundSvg } from './SwBackgroundSvg';
+import { AutBackgroundGoerliSvg, AutBackgroundMumbaiSvg } from './SwBackgroundSvg';
 
 const drawCanvasElements = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, config: ContentConfig) => {
-  const { title, timestamp, canvasFont, qrImage, width } = config;
+  const { title, timestamp, canvasFont, hash, qrImage, width } = config;
 
-  const drawBackground = async () => {
-    const url = SwBackgroundSvg({
-      title: title.text,
-      width,
-      timestamp: timestamp.text,
-    });
+  const drawBackground = async (network: string) => {
+    let url = null;
+    if (network === 'mumbai') {
+      url = AutBackgroundMumbaiSvg({
+        title: title.text,
+        hash: hash.text,
+        width,
+        timestamp: timestamp.text,
+      });
+    } else if (network === 'goerli') {
+      url = AutBackgroundGoerliSvg({
+        title: title.text,
+        hash: hash.text,
+        width,
+        timestamp: timestamp.text,
+      });
+    }
     const backgroundImage = await LoadImage(url);
     ctx.drawImage(backgroundImage, 0, 0);
   };
@@ -42,7 +53,14 @@ const drawCanvasElements = (canvas: HTMLCanvasElement, ctx: CanvasRenderingConte
   };
 };
 
-const defaulConfig = (config: ContentConfig, avatar: string, tokenId: string, title: string, timestamp: string): ContentConfig => {
+const defaulConfig = (
+  config: ContentConfig,
+  avatar: string,
+  tokenId: string,
+  title: string,
+  timestamp: string,
+  hash: string
+): ContentConfig => {
   const WIDTH = config?.width || 440;
   const HEIGHT = config?.height || 694;
   return {
@@ -71,6 +89,9 @@ const defaulConfig = (config: ContentConfig, avatar: string, tokenId: string, ti
       top: HEIGHT - 20,
       color: '#white',
     },
+    hash: {
+      text: hash,
+    },
     timestamp: {
       color: '#white',
       fontWeight: '100',
@@ -82,18 +103,27 @@ const defaulConfig = (config: ContentConfig, avatar: string, tokenId: string, ti
   };
 };
 
-export const AutIDBadgeGenerator = async ({ canvas, avatar, tokenId, title, timestamp, config }: SWIDParams): Promise<SWIDOutput> => {
+export const AutIDBadgeGenerator = async ({
+  canvas,
+  avatar,
+  tokenId,
+  title,
+  timestamp,
+  hash,
+  config,
+  network,
+}: SWIDParams): Promise<SWIDOutput> => {
   canvas = canvas || document.createElement('canvas');
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  config = defaulConfig(config, avatar, tokenId, title, timestamp);
+  config = defaulConfig(config, avatar, tokenId, title, timestamp, hash);
 
   canvas.width = config.width;
   canvas.height = config.height;
   const ctxContents = drawCanvasElements(canvas, ctx, config);
-  await ctxContents.drawBackground();
+  await ctxContents.drawBackground(network);
   // await ctxContents.drawNameAndTime();
 
   return {
