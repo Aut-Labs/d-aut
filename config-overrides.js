@@ -2,7 +2,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
 const { alias } = require('react-app-rewire-alias');
-const webpack = require('webpack');
 
 const COMMON_JS = process.env.BUILD_CJS === 'true';
 
@@ -60,22 +59,6 @@ module.exports = {
       configuration = devUtils.lib(configuration);
       configuration = devUtils.aliases(configuration);
     }
-    const fallback = configuration.resolve.fallback || {};
-    Object.assign(fallback, {
-      crypto: require.resolve('crypto-browserify'),
-      stream: require.resolve('stream-browserify'),
-      assert: require.resolve('assert'),
-      http: require.resolve('stream-http'),
-      https: require.resolve('https-browserify'),
-      os: require.resolve('os-browserify'),
-      url: require.resolve('url'),
-    });
-    configuration.resolve.fallback = fallback;
-    configuration.plugins = (configuration.plugins || []).concat([
-      new webpack.ProvidePlugin({
-        Buffer: ['buffer', 'Buffer'],
-      }),
-    ]);
     return configuration;
   },
   paths(paths, env) {
