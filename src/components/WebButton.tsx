@@ -180,6 +180,8 @@ interface WebCompButtonProps extends ButtonProps {
   buttontype?: string;
 }
 
+const buttonTypes = ['round-bright', 'square-bright', 'square-dark', 'round-dark', 'round-light', 'square-light', 'simple'];
+
 export const RoundedWebButton = (props: WebCompButtonProps) => {
   const userData = useSelector(user);
   return (
@@ -580,7 +582,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
           </Box>
         </SquareButtonWhiteBorder>
       )}
-      {(props.buttontype === null || props.buttontype === 'simple') && (
+      {(props.buttontype === 'simple' || !buttonTypes.includes(props.buttontype)) && (
         <SquareButtonGradienBorder
           {...props}
           sx={{
