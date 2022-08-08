@@ -5,8 +5,6 @@ export interface SWIDParams {
   tokenId?: string;
   canvas?: HTMLCanvasElement;
   config?: ContentConfig;
-  hash: string;
-  network: 'mumbai' | 'goerli';
 }
 
 export interface SWIDOutput {
@@ -37,25 +35,18 @@ export interface ContentConfig {
     fontFamily: string;
   };
   qrImage: QRConfig;
-  hash: Partial<{
-    fontSize?: string;
-    fontWeight?: string;
+  title: {
+    fontSize: string;
+    fontWeight: string;
     text: string;
-    top?: number;
-    color?: string;
-  }>;
-  title: Partial<{
-    fontSize?: string;
-    fontWeight?: string;
+    top: number;
+    color: string;
+  };
+  timestamp: {
+    fontSize: string;
+    fontWeight: string;
     text: string;
-    top?: number;
-    color?: string;
-  }>;
-  timestamp: Partial<{
-    fontSize?: string;
-    fontWeight?: string;
-    text: string;
-    top?: number;
-    color?: string;
-  }>;
+    top: number;
+    color: string;
+  };
 }
