@@ -15,6 +15,7 @@ import { InternalErrorTypes } from '../utils/error-parser';
 import { toBase64 } from '../utils/utils';
 import { FormWrapper, FormContent, FormAction } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
+import { useWeb3React } from '@web3-react/core';
 
 interface Values {
   picture?: File;
@@ -25,6 +26,7 @@ const UserDetails: React.FunctionComponent = (props) => {
   const history = useHistory();
   const userInput = useSelector(userData);
   const dispatch = useAppDispatch();
+  const { connector } = useWeb3React();
   const {
     handleSubmit,
     control,
@@ -43,9 +45,15 @@ const UserDetails: React.FunctionComponent = (props) => {
     }
   };
 
+  const deactivateConnector = async () => {
+    if (connector) {
+      await connector.deactivate();
+    }
+  };
+
   return (
     <AutPageBox>
-      <AutHeader logoId="user-details-logo" title="TELL US ABOUT YOU" />
+      <AutHeader logoId="user-details-logo" title="TELL US ABOUT YOU" backAction={deactivateConnector} />
       <FormWrapper onSubmit={handleSubmit(onSubmit)}>
         <FormContent>
           <Controller

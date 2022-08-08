@@ -168,7 +168,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
       <Portal container={container}>
         {!buttonHidden && (
           <>
-            <RoundedWebButton buttontype={buttonType} onClick={handleButtonClick} onMouseEnter={handleMouseEnter} />
+            <RoundedWebButton buttontype={buttonType?.toLowerCase()} onClick={handleButtonClick} onMouseEnter={handleMouseEnter} />
           </>
         )}
       </Portal>

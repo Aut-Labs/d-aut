@@ -109,6 +109,10 @@ export const ParseErrorMessage = (error: any) => {
     return InternalErrorTypes.UserHasUnjoinedCommunities;
   }
 
+  if (error.message === InternalErrorTypes.UsernameAlreadyTaken) {
+    return InternalErrorTypes.UsernameAlreadyTaken;
+  }
+
   const metamaskError = METAMASK_POSSIBLE_ERRORS[error?.code];
   // console.log(error.code);
   // console.log(error.reason);
@@ -135,6 +139,7 @@ export const ParseErrorMessage = (error: any) => {
   }
 
   if (error?.reason === 'transaction failed') {
+    console.error(error);
     return 'Something went wrong.';
   }
 
@@ -156,7 +161,7 @@ export const ParseErrorMessage = (error: any) => {
 
   if (typeof error !== 'string') {
     console.error(error);
-    throw new Error('Smart contract error message is not a string!');
+    return 'Something went wrong';
   }
 
   const [mainMsg, fullSwMsg] = error.split('execution reverted:');

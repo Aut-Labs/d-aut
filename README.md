@@ -8,8 +8,7 @@ Each user will add their nickname and avatar, and pick a Role in your DAO - afte
 
 # Web Component Developer notes
 
-When a user successfully logs in their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'.
-Don't forget to add the attributes: dao-expander, button-type, and network
+When a user successfully connects with dĀut their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'. Don't forget to add the attributes: dao-expander, button-type, and network
 
 # Pre-requisite: obtain your DAO Expander Address
 
