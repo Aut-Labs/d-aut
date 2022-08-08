@@ -14,7 +14,7 @@ Don't forget to add the attributes: dao-expander, button-type, and network
 # Pre-requisite: obtain your DAO Expander Address
 
 This Web Component is cross-platform, and can be integrated on any Web framework.  
-In order to use it, though, you **will need to have a DAO Expander Address** - you can get deploy your DAO expander contract, and receive your DAO expander key directly on our [Integrate App](https://partners.skillwallet.id).
+In order to use it, though, you **will need to have a DAO Expander Address** - you can get deploy your DAO expander contract, and receive your DAO expander key directly on our [Integrate App](https://docs.aut.id/v2/product-suite/aut-exp.).
 
 # Web Component installation
 
