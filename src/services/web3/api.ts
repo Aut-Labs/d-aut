@@ -70,7 +70,7 @@ export const mintMembership = autIdProvider(
     return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args, thunkAPI) => {
-    const { userData, walletProvider } = thunkAPI.getState();
+    const { userData } = thunkAPI.getState();
     // console.log(userData);
     const { username, picture, role, commitment } = userData;
     const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
@@ -78,7 +78,7 @@ export const mintMembership = autIdProvider(
     const config = {
       title: `${username}`,
       hash: '#1',
-      network: walletProvider.selectedNetwork,
+      network: 'mumbai',
       timestamp: `${timeStamp}`,
     } as SWIDParams;
 
