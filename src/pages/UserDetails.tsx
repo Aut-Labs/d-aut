@@ -35,7 +35,7 @@ const UserDetails: React.FunctionComponent = (props) => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
     const result = await dispatch(checkIfNameTaken({ username: data.username }));
     if (result.payload !== InternalErrorTypes.UsernameAlreadyTaken) {
       await dispatch(setUserData(data));

@@ -11,9 +11,10 @@ export enum AttributesDefinitions {
   'use-button-options' = 'boolean',
   'disable-create-new-user' = 'boolean',
   'partner-key' = 'string',
-  'community-address' = 'string',
-  'use-dev' = 'boolean',
+  'dao-expander' = 'string',
+  'network' = 'string',
   'hide-button' = 'boolean',
+  'button-type' = 'string',
 }
 
 type EnumKeys = keyof typeof AttributesDefinitions;

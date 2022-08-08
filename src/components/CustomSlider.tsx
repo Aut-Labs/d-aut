@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Controller } from 'react-hook-form';
 
 export const CustomSlider = ({ name, control, setValue, rules, onValueChange, defaultValue }) => {
-  console.log(defaultValue);
+  // console.log(defaultValue);
   const [sliderValue, setSliderValue] = React.useState(defaultValue);
 
   useEffect(() => {

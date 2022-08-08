@@ -15,16 +15,7 @@ export const LoadingProgress = () => {
       }}
     >
       <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-        <AutHeader
-          hideCloseBtn
-          hideBackBtn
-          title="LOADING ..."
-          subtitle={
-            <>
-              Funny words here that change <br /> as the loading process happens
-            </>
-          }
-        />
+        <AutHeader hideCloseBtn hideBackBtn title="LOADING ..." />
       </Box>
       <Box
         sx={{

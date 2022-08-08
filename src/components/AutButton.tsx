@@ -4,7 +4,7 @@ import { pxToRem } from '../services/web3/utils';
 
 export const AutButton = styled<ButtonProps<'button', any>>(Button)(() => ({
   '&.MuiButton-root': {
-    height: '75px',
+    height: '60px',
     width: '275px',
     border: `${pxToRem(3)} solid #009FE3`,
     borderRadius: '50px',
