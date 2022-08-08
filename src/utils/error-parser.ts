@@ -118,7 +118,6 @@ export const ParseErrorMessage = (error: any) => {
   // console.log(error.reason);
   // console.log(error);
   // console.log(metamaskError);
-  debugger;
   if (metamaskError) {
     return metamaskError.message;
   }
