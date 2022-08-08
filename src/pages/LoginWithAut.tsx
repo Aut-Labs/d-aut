@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { autState, setSelectedAddress } from '../store/aut.reducer';
 import { Box } from '@mui/material';
-import WalletConnectProvider from '@walletconnect/web3-provider';
-import { providers } from 'ethers';
 import { ReactComponent as Metamask } from '../assets/metamask.svg';
 import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
 import { useAppDispatch } from '../store/store.model';

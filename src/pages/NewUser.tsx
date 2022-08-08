@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box, Button, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
-import WalletConnectProvider from '@walletconnect/web3-provider';
 import { ReactComponent as Metamask } from '../assets/metamask.svg';
 import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
 import AutLogo from '../components/AutLogo';

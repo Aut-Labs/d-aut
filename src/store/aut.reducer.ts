@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import WalletConnectProvider from '@walletconnect/web3-provider';
 import { createSelector } from 'reselect';
 import { checkIfAutIdExists, checkIfNameTaken, fetchCommunity, getAutId, joinCommunity, mintMembership } from '../services/web3/api';
 import { BaseNFTModel } from '../services/web3/models';
