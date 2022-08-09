@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/Aut-Protocol/d-aut/compare/v1.1.0...v1.1.1) (2022-08-09)
+
+
+### Bug Fixes
+
+* fixes on the docs & added package json missing metadata ([48732a8](https://github.com/Aut-Protocol/d-aut/commit/48732a84031b0b01a5e924a76373dc5f2dcc2ac1))
+
 # [1.1.0](https://github.com/Aut-Protocol/d-aut/compare/v1.0.0...v1.1.0) (2022-08-09)
 
 
