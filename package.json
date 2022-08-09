@@ -1,6 +1,6 @@
 {
   "name": "@aut-protocol/d-aut",
-  "version": "0.0.5",
+  "version": "1.0.0",
   "main": "build/cjs/index.js",
   "module": "build/ems/index.js",
   "types": "build/index.d.ts",
@@ -45,7 +45,9 @@
     "@semantic-release/git"
   ],
   "release": {
-    "branches": ["dev"],
+    "branches": [
+      "dev"
+    ],
     "prepare": [
       "@semantic-release/changelog",
       "@semantic-release/npm",
