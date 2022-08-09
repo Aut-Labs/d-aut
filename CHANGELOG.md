@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/Aut-Protocol/d-aut/compare/v1.0.0...v1.1.0) (2022-08-09)
+
+
+### Features
+
+* added commit hooks ([d893d1b](https://github.com/Aut-Protocol/d-aut/commit/d893d1b9eac8da39b6529671b5578064ba13318e))
+* added commit hooks ([0c292a2](https://github.com/Aut-Protocol/d-aut/commit/0c292a22555ed05e80606f9376b51b8837ff807b))
+
 # 1.0.0 (2022-08-09)
 
 
