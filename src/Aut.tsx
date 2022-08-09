@@ -123,8 +123,8 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   };
 
   const handleMouseEnter = (event) => {
-    if (anchorEl !== event.currentTarget && attributes.useButtonOptions && false) {
-      setAnchorEl(container);
+    if (anchorEl !== event.currentTarget && attributes.useButtonOptions) {
+      // setAnchorEl(container);
     }
   };
 
