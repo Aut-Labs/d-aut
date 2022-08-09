@@ -45,6 +45,7 @@
     "@semantic-release/git"
   ],
   "release": {
+    "branches": ["dev"],
     "prepare": [
       "@semantic-release/changelog",
       "@semantic-release/npm",
