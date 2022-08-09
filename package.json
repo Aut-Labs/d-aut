@@ -7,6 +7,24 @@
   "files": [
     "build"
   ],
+  "bugs": {
+    "url": "https://github.com/Aut-Protocol/d-aut/issues"
+  },
+  "author": "Aut",
+  "homepage": "https://github.com/Aut-Protocol/d-aut#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aut-Protocol/d-aut.git"
+  },
+  "keywords": [
+    "aut",
+    "identity",
+    "blockchain",
+    "self-sovereign",
+    "non-transferable nft",
+    "own your own identity",
+    "shareable social profile"
+  ],
   "scripts": {
     "commit": "git-cz",
     "build": "npm run build-cjs && npm run build-ems && tsc",
