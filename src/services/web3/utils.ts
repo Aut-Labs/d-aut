@@ -120,19 +120,3 @@ export const pxToRem = (px: number | string) => {
   const rem = `${(1 / x) * Number(px)}rem`;
   return rem;
 };
-
-export function debounce(func, wait, immediate?) {
-  let timeout;
-  return function () {
-    /* eslint-disable prefer-rest-params */
-    const args = arguments;
-    const later = function () {
-      timeout = null;
-      if (!immediate) func.apply(this, args);
-    };
-    const callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(this, args);
-  };
-}
