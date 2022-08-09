@@ -8,6 +8,7 @@
     "build"
   ],
   "scripts": {
+    "commit": "git-cz",
     "build": "npm run build-cjs && npm run build-ems && tsc",
     "deploy": "gh-pages -d build",
     "eject": "react-app-rewired eject",
@@ -16,19 +17,13 @@
     "start": "react-app-rewired start",
     "test": "react-app-rewired test",
     "build-cjs": "cross-env BUILD_CJS=true react-app-rewired build",
-    "build-ems": "cross-env BUILD_CJS=false react-app-rewired build"
+    "build-ems": "cross-env BUILD_CJS=false react-app-rewired build",
+    "postinstall": "husky install"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "eslintConfig": {
     "extends": [
@@ -45,7 +40,9 @@
     "@semantic-release/git"
   ],
   "release": {
-    "branches": ["dev"],
+    "branches": [
+      "dev"
+    ],
     "prepare": [
       "@semantic-release/changelog",
       "@semantic-release/npm",
@@ -60,8 +57,16 @@
       }
     ]
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "devDependencies": {
     "@aut-protocol/abi-types": "^0.0.57",
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
     "@emotion/cache": "^11.7.1",
     "@emotion/react": "~11.7.0",
     "@emotion/styled": "~11.6.0",
@@ -88,9 +93,11 @@
     "assert": "^2.0.0",
     "axios": "^0.24.0",
     "buffer": "^6.0.3",
+    "commitizen": "^4.2.5",
     "cross-env": "^7.0.3",
     "crypto-browserify": "^3.12.0",
     "customize-cra": "~1.0.0",
+    "cz-conventional-changelog": "^3.3.0",
     "dateformat": "^5.0.2",
     "eslint": "~8.5.0",
     "eslint-config-airbnb": "~19.0.4",
@@ -105,6 +112,7 @@
     "ethers": "~5.5.2",
     "ethers-typescript-typings": "0.0.4",
     "https-browserify": "^1.0.0",
+    "husky": "^8.0.1",
     "jss": "^10.9.0",
     "nft.storage": "^5.2.0",
     "os-browserify": "^0.3.0",
