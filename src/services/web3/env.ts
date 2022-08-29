@@ -5,6 +5,22 @@ export const env = {
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDIwQkEyNDNhNTU1YmY4YzI0MzViNzVmMTk0NmFDNWQ2QTY4QUQzMjgiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY0MzkwMjIzNDA2NywibmFtZSI6IlBhcnRuZXJzQXBwIn0.sG-6S0mNp0FQ_4SIimMChrMj4250ymEH58V09eXNY4o',
 };
 
+export interface NetworkConfig {
+  autIdAddress: string;
+  communityRegistryAddress: string;
+  network: {
+    chainId: string;
+    chainName: string;
+    nativeCurrency: {
+      name: string;
+      symbol: string;
+      decimals: number;
+    };
+    rpcUrls: string[];
+    blockExplorerUrls: string[];
+  };
+}
+
 export const supportedNetworks = [
   {
     autIdAddress: '0xc22d41B54671703349C3Aa26dAf286E30059874B',
@@ -38,7 +54,7 @@ export const supportedNetworks = [
   },
 ];
 
-export const getNetwork = (name: string) => {
+export const getNetwork = (name: string): NetworkConfig => {
   if (name.toLowerCase() === 'goerli') {
     return supportedNetworks.find((x) => x.network.chainName.toLowerCase() === 'goerli');
   }

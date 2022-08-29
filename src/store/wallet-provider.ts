@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ethers } from 'ethers';
-import { env, getNetwork } from '../services/web3/env';
+import { env, getNetwork, NetworkConfig } from '../services/web3/env';
 
 export interface WalletProviderState {
   signer: ethers.providers.JsonRpcSigner;
   selectedWalletType: 'metamask' | 'walletConnect';
   selectedNetwork: string;
-  networkConfig: any;
+  networkConfig: NetworkConfig;
   isOpen: boolean;
 }
 
@@ -43,6 +43,6 @@ export const { setSigner, setWallet, setNetwork, setProviderIsOpen } = walletPro
 export const NetworkSelectorIsOpen = (state: any) => state.walletProvider.isOpen as boolean;
 export const SelectedWalletType = (state: any) => state.walletProvider.selectedWalletType as string;
 export const NetworkSigner = (state: any) => state.walletProvider.signer as ethers.providers.JsonRpcSigner;
-export const SelectedNetworkConfig = (state: any) => state.walletProvider.networkConfig as any;
+export const SelectedNetworkConfig = (state: any) => state.walletProvider.networkConfig as NetworkConfig;
 
 export default walletProviderSlice.reducer;

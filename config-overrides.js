@@ -52,15 +52,32 @@ const devUtils = {
 };
 
 module.exports = {
-  webpack: (configuration) => {
-    const production = configuration.mode === 'production';
+  webpack: (config) => {
+    const production = config.mode === 'production';
     if (production) {
-      configuration = prodUtils.lib(configuration);
+      config = prodUtils.lib(config);
     } else {
-      configuration = devUtils.lib(configuration);
-      configuration = devUtils.aliases(configuration);
+      config = devUtils.lib(config);
+      config = devUtils.aliases(config);
     }
-    const fallback = configuration.resolve.fallback || {};
+    // const fallback = config.resolve.fallback || {};
+    // Object.assign(fallback, {
+    //   crypto: require.resolve('crypto-browserify'),
+    //   stream: require.resolve('stream-browserify'),
+    //   assert: require.resolve('assert'),
+    //   http: require.resolve('stream-http'),
+    //   https: require.resolve('https-browserify'),
+    //   os: require.resolve('os-browserify'),
+    //   url: require.resolve('url'),
+    // });
+    // config.resolve.fallback = fallback;
+    // config.plugins = (config.plugins || []).concat([
+    //   new webpack.ProvidePlugin({
+    //     Buffer: ['buffer', 'Buffer'],
+    //   }),
+    // ]);
+
+    const fallback = config.resolve.fallback || {};
     Object.assign(fallback, {
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
@@ -70,13 +87,21 @@ module.exports = {
       os: require.resolve('os-browserify'),
       url: require.resolve('url'),
     });
-    configuration.resolve.fallback = fallback;
-    configuration.plugins = (configuration.plugins || []).concat([
+    config.ignoreWarnings = [/Failed to parse source map/];
+    config.resolve.fallback = fallback;
+    config.plugins = (config.plugins || []).concat([
       new webpack.ProvidePlugin({
+        process: 'process/browser',
         Buffer: ['buffer', 'Buffer'],
       }),
     ]);
-    return configuration;
+    config.module.rules.unshift({
+      test: /\.m?js$/,
+      resolve: {
+        fullySpecified: false, // disable the behaviour
+      },
+    });
+    return config;
   },
   paths(paths, env) {
     const production = env === 'production';
