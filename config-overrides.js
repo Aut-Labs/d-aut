@@ -70,6 +70,7 @@ module.exports = {
       os: require.resolve('os-browserify'),
       url: require.resolve('url'),
     });
+    configuration.ignoreWarnings = [/Failed to parse source map/];
     configuration.resolve.fallback = fallback;
     configuration.plugins = (configuration.plugins || []).concat([
       new webpack.ProvidePlugin({

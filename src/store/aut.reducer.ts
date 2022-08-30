@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import { createSelector } from 'reselect';
 import { checkIfAutIdExists, checkIfNameTaken, fetchCommunity, getAutId, joinCommunity, mintMembership } from '../services/web3/api';
@@ -109,8 +109,13 @@ export const autSlice = createSlice({
         state.user = action.payload;
         dispatchEvent(OutputEventTypes.Connected, action.payload);
       })
-      .addCase(getAutId.rejected, (state) => {
-        state.status = ResultState.Failed;
+      .addCase(getAutId.rejected, (state, action) => {
+        debugger;
+        if (action.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
+          state.status = ResultState.Idle;
+        } else {
+          state.status = ResultState.Failed;
+        }
       })
       .addCase(mintMembership.pending, (state) => {
         state.status = ResultState.Loading;

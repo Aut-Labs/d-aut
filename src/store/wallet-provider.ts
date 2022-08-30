@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { debug } from 'console';
 import { ethers } from 'ethers';
 import { env, getNetwork } from '../services/web3/env';
 
@@ -31,14 +32,27 @@ export const walletProviderSlice = createSlice({
     setProviderIsOpen(state, action) {
       state.isOpen = action.payload;
     },
-    setNetwork(state, action) {
-      state.networkConfig = getNetwork(action.payload);
+    setNetworkConfig(state, action) {
+      state.networkConfig = action.payload;
     },
     resetWalletProviderState: () => initialState,
   },
 });
 
-export const { setSigner, setWallet, setNetwork, setProviderIsOpen } = walletProviderSlice.actions;
+export const setNetwork = createAsyncThunk('config/fetch', async (network: string, thunkAPI) => {
+  const state = thunkAPI.getState() as any;
+  const selectedNetwork = getNetwork(network);
+  const response = await fetch(`https://api.skillwallet.id/api/autid/config/${network}`);
+  const data = await response.json();
+  selectedNetwork.autIdAddress = data.autIDAddress;
+  selectedNetwork.communityRegistryAddress = data.daoExpanderRegistryAddress;
+  // state.walletProvider.networkConfig = selectedNetwork;
+  // walletProvider.networkConfig = selectedNetwork;
+  await thunkAPI.dispatch(walletProviderSlice.actions.setNetworkConfig(selectedNetwork));
+  return response;
+});
+
+export const { setSigner, setWallet, setProviderIsOpen } = walletProviderSlice.actions;
 
 export const NetworkSelectorIsOpen = (state: any) => state.walletProvider.isOpen as boolean;
 export const SelectedWalletType = (state: any) => state.walletProvider.selectedWalletType as string;

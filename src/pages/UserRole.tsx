@@ -14,14 +14,24 @@ import { FormWrapper } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
 
 const UserRole: React.FunctionComponent = (props) => {
-  const dipsatch = useAppDispatch();
+  const dispatch = useAppDispatch();
   const history = useHistory();
   const communityData = useSelector(community);
 
   const handleRoleSelect = (role) => {
-    dipsatch(setUserData({ role: role.id, roleName: role.roleName }));
+    dispatch(setUserData({ role: role.id, roleName: role.roleName }));
     history.push('commitment');
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      debugger;
+      await dispatch(fetchCommunity(null));
+    };
+    if (!communityData) {
+      fetchData();
+    }
+  }, []);
 
   const handleBackClick = async () => {
     history.goBack();

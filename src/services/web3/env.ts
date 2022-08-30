@@ -7,8 +7,8 @@ export const env = {
 
 export const supportedNetworks = [
   {
-    autIdAddress: '0xc22d41B54671703349C3Aa26dAf286E30059874B',
-    communityRegistryAddress: '0x073E8B270844E6AB2Fd7d0aD9849D21aE75220c1',
+    autIdAddress: '',
+    communityRegistryAddress: '',
     network: {
       chainId: '5',
       chainName: 'Goerli',
@@ -22,8 +22,8 @@ export const supportedNetworks = [
     },
   },
   {
-    autIdAddress: '0xbA51C34E02d72C0F67c448dB08d95AD950976fB6',
-    communityRegistryAddress: '0x36221Bfcb46e6e0388677A6BC6b51D27d00e2cfA',
+    autIdAddress: '',
+    communityRegistryAddress: '',
     network: {
       chainId: '80001',
       chainName: 'Mumbai',
@@ -44,8 +44,3 @@ export const getNetwork = (name: string) => {
   }
   return supportedNetworks.find((x) => x.network.chainName.toLowerCase() === 'mumbai');
 };
-
-// export const SKILL_WALLET_API = `https://${useDev ? 'dev.' : ''}api.skillwallet.id/api`;
-// export const DITO_API = `https://${useDev ? 'dev.' : ''}api.distributed.town/api`;
-// export const RPCs = useDev ? ['https://matic-mumbai.chainstacklabs.com', 'https://rpc-mumbai.matic.today'] : ['https://polygon-rpc.com'];
-// export const BLOCKED_EXPLORER_URLS = useDev ? ['https://explorer-mumbai.maticvigil.com/'] : ['https://polygonscan.com/'];
