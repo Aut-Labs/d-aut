@@ -10,10 +10,12 @@ import { autState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { pxToRem } from '../services/web3/utils';
 import { userData } from '../store/user-data.reducer';
+import { SelectedNetwork } from '../store/wallet-provider';
 
 const Congratulations: React.FunctionComponent = () => {
   const history = useHistory();
   const autData = useSelector(autState);
+  const selectedNetwork = useSelector(SelectedNetwork);
   const userInput = useSelector(userData);
 
   const handleShareClicked = () => {
@@ -55,7 +57,7 @@ const Congratulations: React.FunctionComponent = () => {
         }}
       >
         <TwitterShareButton
-          url={`https://my.aut.id/${userInput.username}`}
+          url={`https://my.aut.id/${selectedNetwork}/${userInput.username}`}
           title={`I just joined ${autData.community.name}. Check out my AutId!`}
           hashtags={['Aut', 'DAO', 'Blockchain']}
           className="social-button"

@@ -9,10 +9,12 @@ import { userData } from '../store/user-data.reducer';
 import { autState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { FormAction } from '../components/FormHelpers';
+import { SelectedNetwork } from '../store/wallet-provider';
 
 const MintSuccess: React.FunctionComponent = () => {
   const history = useHistory();
   const userInput = useSelector(userData);
+  const selectedNetwork = useSelector(SelectedNetwork);
   const autData = useSelector(autState);
 
   return (
@@ -36,7 +38,7 @@ const MintSuccess: React.FunctionComponent = () => {
               <br /> Look at my self-sovereign AutID,
               <br /> and follow my journey 🖖
               <br />
-              <br /> https://my.aut.id/{userInput.username}
+              <br /> https://my.aut.id/{selectedNetwork}/{userInput.username}
             </Typography>
           </Box>
           <Box

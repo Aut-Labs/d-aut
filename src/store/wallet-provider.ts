@@ -33,6 +33,7 @@ export const walletProviderSlice = createSlice({
       state.isOpen = action.payload;
     },
     setNetworkConfig(state, action) {
+      state.selectedNetwork = action.payload.network.chainName.toLowerCase();
       state.networkConfig = action.payload;
     },
     resetWalletProviderState: () => initialState,
@@ -40,14 +41,13 @@ export const walletProviderSlice = createSlice({
 });
 
 export const setNetwork = createAsyncThunk('config/fetch', async (network: string, thunkAPI) => {
+  const ntwrk = network === 'goerli' ? network : 'mumbai';
   const state = thunkAPI.getState() as any;
-  const selectedNetwork = getNetwork(network);
-  const response = await fetch(`https://api.skillwallet.id/api/autid/config/${network}`);
+  const selectedNetwork = getNetwork(ntwrk);
+  const response = await fetch(`https://api.skillwallet.id/api/autid/config/${ntwrk}`);
   const data = await response.json();
   selectedNetwork.autIdAddress = data.autIDAddress;
   selectedNetwork.communityRegistryAddress = data.daoExpanderRegistryAddress;
-  // state.walletProvider.networkConfig = selectedNetwork;
-  // walletProvider.networkConfig = selectedNetwork;
   await thunkAPI.dispatch(walletProviderSlice.actions.setNetworkConfig(selectedNetwork));
   return response;
 });
@@ -56,6 +56,7 @@ export const { setSigner, setWallet, setProviderIsOpen } = walletProviderSlice.a
 
 export const NetworkSelectorIsOpen = (state: any) => state.walletProvider.isOpen as boolean;
 export const SelectedWalletType = (state: any) => state.walletProvider.selectedWalletType as string;
+export const SelectedNetwork = (state: any) => state.walletProvider.selectedNetwork as string;
 export const NetworkSigner = (state: any) => state.walletProvider.signer as ethers.providers.JsonRpcSigner;
 export const SelectedNetworkConfig = (state: any) => state.walletProvider.networkConfig as any;
 
