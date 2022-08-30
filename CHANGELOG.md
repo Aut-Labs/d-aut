@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/Aut-Protocol/d-aut/compare/v1.2.0...v1.3.0) (2022-08-30)
+
+
+### Bug Fixes
+
+* bumped version ([f1874b1](https://github.com/Aut-Protocol/d-aut/commit/f1874b18812238a114668b00eca5665895d574c4))
+
+
+### Features
+
+* add network to shate link ([2946ede](https://github.com/Aut-Protocol/d-aut/commit/2946ede35daa458bec8071c40bf38aef4be28eb1))
+
 # [1.2.0](https://github.com/Aut-Protocol/d-aut/compare/v1.1.1...v1.2.0) (2022-08-30)
 
 
