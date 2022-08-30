@@ -110,7 +110,6 @@ export const autSlice = createSlice({
         dispatchEvent(OutputEventTypes.Connected, action.payload);
       })
       .addCase(getAutId.rejected, (state, action) => {
-        debugger;
         if (action.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
           state.status = ResultState.Idle;
         } else {
