@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/Aut-Protocol/d-aut/compare/v1.1.1...v1.2.0) (2022-08-30)
+
+
+### Bug Fixes
+
+* bumped version, removed debuggers ([0ad09df](https://github.com/Aut-Protocol/d-aut/commit/0ad09df987c29fb53a9b9ff999706fa8f03f4958))
+
+
+### Features
+
+* added backend config fetching ([9af9371](https://github.com/Aut-Protocol/d-aut/commit/9af9371b4af5401473ab23bee5d20322a2c02823))
+
 ## [1.1.1](https://github.com/Aut-Protocol/d-aut/compare/v1.1.0...v1.1.1) (2022-08-09)
 
 
