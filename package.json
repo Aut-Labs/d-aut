@@ -1,6 +1,6 @@
 {
   "name": "@aut-protocol/d-aut",
-  "version": "1.3.0",
+  "version": "1.3.15",
   "main": "build/cjs/index.js",
   "module": "build/ems/index.js",
   "types": "build/index.d.ts",
@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "commit": "git-cz",
-    "build": "npm run build-cjs && npm run build-ems && tsc",
+    "build": "npm run clear:babel-cache && npm run build-cjs && npm run build-ems && tsc",
     "deploy": "gh-pages -d build",
     "eject": "react-app-rewired eject",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
@@ -35,7 +35,8 @@
     "test": "react-app-rewired test",
     "build-cjs": "cross-env BUILD_CJS=true react-app-rewired build",
     "build-ems": "cross-env BUILD_CJS=false react-app-rewired build",
-    "husky-install": "husky install"
+    "husky-install": "husky install",
+    "clear:babel-cache": "rimraf -rf ./node_modules/.cache && node patch.js"
   },
   "config": {
     "commitizen": {
@@ -84,9 +85,9 @@
     "@aut-protocol/abi-types": "^0.0.57",
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
-    "@emotion/cache": "^11.7.1",
-    "@emotion/react": "~11.7.0",
-    "@emotion/styled": "~11.6.0",
+    "@emotion/cache": "^11.10.3",
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@lottiefiles/lottie-player": "^1.5.7",
     "@lottiefiles/react-lottie-player": "^3.4.7",
     "@mui/icons-material": "~5.2.1",

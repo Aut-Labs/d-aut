@@ -48,7 +48,6 @@ setTimeout(() => {
             mt: '4px',
           },
         },
-
         height: '40px',
         width: '180px',
         border: '0px',
@@ -60,9 +59,9 @@ setTimeout(() => {
       boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px',
     },
   });
-  // setInterval(() => {
-  //   const el: HTMLElement = document.getElementById('sw-auth');
-  //   const hide = el.getAttribute('disable-create-new-user');
-  //   el.setAttribute('disable-create-new-user', hide === 'true' ? 'false' : 'true');
-  // }, 1000);
+  setInterval(() => {
+    const el: HTMLElement = document.getElementById('sw-auth');
+    const hide = el.getAttribute('disable-create-new-user');
+    el.setAttribute('disable-create-new-user', hide === 'true' ? 'false' : 'true');
+  }, 1000);
 }, 100);
