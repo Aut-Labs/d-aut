@@ -3,7 +3,7 @@ import { OutputEventTypes } from '../types/event-types';
 import { AttributesDefinitions, ShadowRootConfig, SwAttributes } from '../types/sw-auth-config';
 
 export const createShadowElement = ({ container, className }): ShadowRootConfig<EmotionCache> => {
-  const shadowRoot = container.attachShadow({ mode: 'open' });
+  const shadowRoot = container.attachShadow({ mode: 'closed' });
   const emotionRoot = document.createElement('style');
 
   const fontLink = document.createElement('link');

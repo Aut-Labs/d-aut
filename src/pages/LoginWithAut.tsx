@@ -20,10 +20,10 @@ import { useWeb3React } from '@web3-react/core';
 //     80001: 'https://matic-mumbai.chainstacklabs.com',
 //   },
 // });
+const [metamaskConnector] = metaMaskConnector;
+const [wcConnector] = walletConnectConnector;
 
 const LoginWithSkillWallet: React.FunctionComponent = (props) => {
-  const [metamaskConnector] = metaMaskConnector;
-  const [wcConnector] = walletConnectConnector;
   const dispatch = useAppDispatch();
   const autData = useSelector(autState);
   const networkConfig = useSelector(SelectedNetworkConfig);

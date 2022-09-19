@@ -127,8 +127,8 @@ export const joinCommunity = autIdProvider(
     return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args, thunkAPI) => {
-    const { aut } = thunkAPI.getState();
-    await contract.joinDAO(args.userData.role, args.commitment, aut.communityExtensionAddress, {
+    const { aut, userData } = thunkAPI.getState();
+    await contract.joinDAO(userData.role, userData.commitment, aut.communityExtensionAddress, {
       gasLimit: 2000000,
     });
     return true;

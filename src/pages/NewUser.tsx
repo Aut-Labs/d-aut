@@ -8,15 +8,16 @@ import { AutButton, ButtonIcon } from '../components/AutButton';
 import { useAppDispatch } from '../store/store.model';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
-import { autState, setSelectedAddress } from '../store/aut.reducer';
+import { autState, setJustJoining, setSelectedAddress } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { metaMaskConnector, walletConnectConnector } from '../services/ProviderFactory/web3.connectors';
 import { useWeb3React } from '@web3-react/core';
 import { SelectedNetworkConfig, setWallet } from '../store/wallet-provider';
 
+const [metamaskConnector] = metaMaskConnector;
+const [wcConnector] = walletConnectConnector;
+
 const NewUser: React.FunctionComponent = (props) => {
-  const [metamaskConnector] = metaMaskConnector;
-  const [wcConnector] = walletConnectConnector;
   const dispatch = useAppDispatch();
   const networkConfig = useSelector(SelectedNetworkConfig);
   const autData = useSelector(autState);
@@ -30,6 +31,7 @@ const NewUser: React.FunctionComponent = (props) => {
       if (!hasAutId.payload) {
         history.push('userdetails');
       } else {
+        await dispatch(setJustJoining(true));
         history.push('role');
       }
     }

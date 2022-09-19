@@ -18,9 +18,9 @@ const supportedRpcs = () => {
   return result;
 };
 
-export const metaMaskConnector = initializeConnector<MetaMask>((actions) => new MetaMask(actions), supportedChainIds);
+export const metaMaskConnector: [MetaMask, any, any] = initializeConnector<MetaMask>((actions) => new MetaMask(actions), supportedChainIds);
 
-export const walletConnectConnector = initializeConnector<WalletConnect>(
+export const walletConnectConnector: [WalletConnect, any, any] = initializeConnector<WalletConnect>(
   (actions) =>
     new WalletConnect(actions, {
       qrcode: true,

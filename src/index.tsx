@@ -37,7 +37,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
         if (callBack) this.childAttrCalback = callBack;
       };
 
-      async connectedCallback() {
+      connectedCallback() {
         const jss = create(jssPreset());
         const attributes = extractAttributes(this);
 
@@ -57,8 +57,8 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             overflow: 'hidden',
             ...(authConfig.containerStyles || {}),
           });
-          const mConfig = await createShadowElement({ container: authConfig.container, className: 'sw-auth-modal' });
-          const bConfig = await createShadowElement({ container: this, className: 'sw-auth-button' });
+          const mConfig = createShadowElement({ container: authConfig.container, className: 'sw-auth-modal' });
+          const bConfig = createShadowElement({ container: this, className: 'sw-auth-button' });
           mountPoint = mConfig.mountPoint;
           content = (
             <>
@@ -77,7 +77,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             </>
           );
         } else {
-          const config = await createShadowElement({ container: this, className: 'sw-auth' });
+          const config = createShadowElement({ container: this, className: 'sw-auth' });
           mountPoint = config.mountPoint;
           content = (
             <>

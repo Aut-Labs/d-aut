@@ -67,7 +67,7 @@ const Congratulations: React.FunctionComponent = () => {
         {/* <SmallerAutButton onClick={handleShareClicked}>SHARE</SmallerAutButton> */}
         <SmallerAutButton
           onClick={() => {
-            window.open('https://www.google.com', '_blank');
+            window.open(`https://my.aut.id/${selectedNetwork}/${userInput.username}`, '_blank');
           }}
         >
           SEE PROFILE
