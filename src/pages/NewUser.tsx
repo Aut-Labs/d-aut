@@ -29,6 +29,7 @@ const NewUser: React.FunctionComponent = (props) => {
     if (hasAutId.meta.requestStatus !== 'rejected') {
       await dispatch(fetchCommunity(null));
       if (!hasAutId.payload) {
+        await dispatch(setJustJoining(false));
         history.push('userdetails');
       } else {
         await dispatch(setJustJoining(true));
