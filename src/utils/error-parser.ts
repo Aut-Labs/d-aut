@@ -94,36 +94,55 @@ export const METAMASK_POSSIBLE_ERRORS = {
 };
 
 export enum InternalErrorTypes {
-  AutIDAlreadyExistsForAddress = 'Aut Id already exists for this address.',
-  AutIDAlreadyInThisCommunity = 'Your Aut Id is already a membter of this community.',
+  AutIDAlreadyExistsForAddress = 'AutID already exists for this address.',
+  AutIDAlreadyInThisCommunity = 'Your AutID is already a member of this DAO.',
   UsernameAlreadyTaken = 'This username is already taken.',
-  UserHasUnjoinedCommunities = 'User has unjoined communities.',
+  UserHasUnjoinedCommunities = 'User has unjoined DAOs.',
+  GatewayTimedOut = 'IPFS: Gateway timed out.',
+  UserNotAMemberOfThisDaoMint = 'Failed to mint AutID. Your address is not a member of this DAO.',
+  UserNotAMemberOfThisDaoJoin = 'Failed to join. Your AutID is not a member of this DAO.',
 }
 
 export const ParseErrorMessage = (error: any) => {
   if (!error) {
     return error;
   }
-
-  if (error.message === InternalErrorTypes.UserHasUnjoinedCommunities) {
-    return InternalErrorTypes.UserHasUnjoinedCommunities;
+  if (Object.values(InternalErrorTypes).includes(error.message)) {
+    return error.message;
   }
 
-  if (error.message === InternalErrorTypes.UsernameAlreadyTaken) {
-    return InternalErrorTypes.UsernameAlreadyTaken;
+  if (error.message?.includes('call revert exception')) {
+    console.log(error.message);
+    return 'Something went wrong. Call reverted.';
+  }
+
+  if (error.code === 'UNPREDICTABLE_GAS_LIMIT') {
+    const [_, message] = error.error.message.split('execution reverted:');
+    return message;
+  }
+
+  if (error?.code === 'NETWORK_ERROR') {
+    return 'A network error occurred. Please try again.';
+  }
+
+  if (error.message === 'Internal JSON-RPC error.') {
+    if (error?.data?.message) {
+      const [_, message] = error.data.message.split('execution reverted:');
+      if (message) {
+        return message;
+      }
+      return 'Something went wrong';
+    }
+    return error.message;
   }
 
   const metamaskError = METAMASK_POSSIBLE_ERRORS[error?.code];
-  // console.log(error.code);
-  // console.log(error.reason);
-  // console.log(error);
-  // console.log(metamaskError);
   if (metamaskError) {
     return metamaskError.message;
   }
+
   if (isJson(error)) {
     error = JSON.parse(JSON.stringify(error));
-    // console.log(error);
   }
 
   if (error?.code === 'CALL_EXCEPTION') {
@@ -131,10 +150,6 @@ export const ParseErrorMessage = (error: any) => {
       return error?.reason?.toString();
     }
     return 'Something went wrong.';
-  }
-
-  if (error?.code === 'NETWORK_ERROR') {
-    return 'A network error occured. Please try again.';
   }
 
   if (error?.reason === 'transaction failed') {
@@ -152,6 +167,10 @@ export const ParseErrorMessage = (error: any) => {
 
   if (error?.data?.message) {
     error = error?.data?.message?.toString();
+  }
+
+  if (error.message) {
+    return error.message;
   }
 
   if (error?.error?.message) {

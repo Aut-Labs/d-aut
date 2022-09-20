@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { autState, setSelectedAddress } from '../store/aut.reducer';
 import { Box } from '@mui/material';
-import WalletConnectProvider from '@walletconnect/web3-provider';
-import { providers } from 'ethers';
 import { ReactComponent as Metamask } from '../assets/metamask.svg';
 import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
 import { useAppDispatch } from '../store/store.model';
@@ -16,7 +14,6 @@ import { useSelector } from 'react-redux';
 import { metaMaskConnector, walletConnectConnector } from '../services/ProviderFactory/web3.connectors';
 import { SelectedNetworkConfig, setWallet } from '../store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
-import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 
 // const provider = new WalletConnectProvider({
 //   rpc: {

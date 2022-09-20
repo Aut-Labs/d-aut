@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Box, Button, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
-import WalletConnectProvider from '@walletconnect/web3-provider';
 import { ReactComponent as Metamask } from '../assets/metamask.svg';
 import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
-import AutLogo from '../components/AutLogo';
 import { AutButton, ButtonIcon } from '../components/AutButton';
 import { useAppDispatch } from '../store/store.model';
-import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
-import { autState, setSelectedAddress } from '../store/aut.reducer';
+import { autState, setJustJoining, setSelectedAddress } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { ErrorTypes } from '../types/error-types';
-import { InternalErrorTypes } from '../utils/error-parser';
 import { metaMaskConnector, walletConnectConnector } from '../services/ProviderFactory/web3.connectors';
 import { useWeb3React } from '@web3-react/core';
 import { SelectedNetworkConfig, setWallet } from '../store/wallet-provider';
@@ -34,8 +29,10 @@ const NewUser: React.FunctionComponent = (props) => {
     if (hasAutId.meta.requestStatus !== 'rejected') {
       await dispatch(fetchCommunity(null));
       if (!hasAutId.payload) {
+        await dispatch(setJustJoining(false));
         history.push('userdetails');
       } else {
+        await dispatch(setJustJoining(true));
         history.push('role');
       }
     }

@@ -13,6 +13,7 @@ export interface Community {
   // image: string;
   description: string;
   roles: Role[];
+  minCommitment: number;
 }
 
 export interface Role {

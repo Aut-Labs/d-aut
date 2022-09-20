@@ -15,7 +15,12 @@ export const FindTextCenter = (
   };
 };
 
+const isBrowser = typeof document !== 'undefined';
+
 export const FindTextWidth = (font = 'JosefinSans-Regular, Josefin Sans') => {
+  if (!isBrowser) {
+    return;
+  }
   const canvas = document.createElement('canvas');
   return (text: string, fontSize: string) => {
     const context = canvas.getContext('2d');

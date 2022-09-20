@@ -41,6 +41,9 @@ export const fetchCommunity = communityProvider(
     // console.log(resp);
     // const communityMetadata = await fetch(cidToHttpUrl(`${resp[2]}/metadata.json`));
     const communityMetadata = await fetch(ipfsCIDToHttpUrl(resp[2]));
+    if (communityMetadata.status === 504) {
+      throw new Error(InternalErrorTypes.GatewayTimedOut);
+    }
     const communityJson = await communityMetadata.json();
     // console.log(communityJson);
     // console.log(communityJson.properties.rolesSets[0].roles);
@@ -50,6 +53,7 @@ export const fetchCommunity = communityProvider(
       name: communityJson.name,
       description: communityJson.description,
       roles: communityJson.properties.rolesSets[0].roles,
+      minCommitment: communityJson.properties.commitment,
       // commitment: details[2].toString(),
     };
   }
@@ -99,6 +103,9 @@ export const mintMembership = autIdProvider(
     };
     const cid = await storeMetadata(metadataJson);
     const metadata = await fetch(ipfsCIDToHttpUrl(cid));
+    if (metadata.status === 504) {
+      throw new Error(InternalErrorTypes.GatewayTimedOut);
+    }
     const metadataJsons = await metadata.json();
     // console.log(metadataJsons);
     // console.log(metadata);
@@ -108,10 +115,11 @@ export const mintMembership = autIdProvider(
     // console.log('Commitment -> ', commitment);
 
     const { aut } = thunkAPI.getState();
-
-    await contract.mint(username, cid, role, commitment, aut.communityExtensionAddress, {
-      gasLimit: 2000000,
-    });
+    try {
+      await contract.mint(username, cid, role, commitment, aut.communityExtensionAddress);
+    } catch (e) {
+      throw new Error(InternalErrorTypes.UserNotAMemberOfThisDaoMint);
+    }
     await thunkAPI.dispatch(setUserData({ badge: ipfsCIDToHttpUrl(metadataJsons.image) }));
     // return true;
     return true;
@@ -127,10 +135,15 @@ export const joinCommunity = autIdProvider(
     return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args, thunkAPI) => {
-    const { aut } = thunkAPI.getState();
-    await contract.joinDAO(args.userData.role, args.commitment, aut.communityExtensionAddress, {
-      gasLimit: 2000000,
-    });
+    const { aut, userData } = thunkAPI.getState();
+
+    try {
+      await contract.joinDAO(userData.role, userData.commitment, aut.communityExtensionAddress, {
+        gasLimit: 2000000,
+      });
+    } catch (e) {
+      throw new Error(InternalErrorTypes.UserNotAMemberOfThisDaoJoin);
+    }
     return true;
   }
 );
@@ -149,6 +162,9 @@ export const getAutId = autIdProvider(
     const tokenId = await contract.getAutIDByOwner(selectedAddress);
     const tokenURI = await contract.tokenURI(tokenId);
     const response = await fetch(ipfsCIDToHttpUrl(tokenURI));
+    if (response.status === 504) {
+      throw new Error(InternalErrorTypes.GatewayTimedOut);
+    }
     const autId = await response.json();
     const holderCommunities = await contract.getHolderDAOs(selectedAddress);
     const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
