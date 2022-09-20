@@ -97,7 +97,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
         ReactDOM.render(
           <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={AutTheme()}>
+            <ThemeProvider theme={AutTheme}>
               <Provider store={store}>
                 <Router initialEntries={['/']}>
                   <Web3AutProvider>
