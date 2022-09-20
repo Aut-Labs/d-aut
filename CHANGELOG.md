@@ -1,3 +1,18 @@
+# [1.4.0](https://github.com/Aut-Protocol/d-aut/compare/v1.3.0...v1.4.0) (2022-09-20)
+
+
+### Bug Fixes
+
+* bumped -v ([19a6988](https://github.com/Aut-Protocol/d-aut/commit/19a6988805d828313a73031bd31ff7f24b639697))
+* error messages, commitment lower limit ([b70d8c9](https://github.com/Aut-Protocol/d-aut/commit/b70d8c93fb004319cae83a8e67a6a3376ad37dab))
+* motion cache ssh fix ([bca8f07](https://github.com/Aut-Protocol/d-aut/commit/bca8f075f3378afa1626f8c21a76a6e602a365ba))
+* small fix ([5dde262](https://github.com/Aut-Protocol/d-aut/commit/5dde262f2a419aad5e6d4e0c78e03bdabd2230a4))
+
+
+### Features
+
+* just join ([1833ad0](https://github.com/Aut-Protocol/d-aut/commit/1833ad0101a15e57d2dacd49489803d94410dd4d))
+
 # [1.3.0](https://github.com/Aut-Protocol/d-aut/compare/v1.2.0...v1.3.0) (2022-08-30)
 
 
