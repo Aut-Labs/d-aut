@@ -97,10 +97,17 @@ interface AutSliderProps {
   value: any;
   name: string;
   errors: FieldErrors<any>;
+  minCommitment: number;
 }
 
-const errorTypes = {
-  min: 'Min 1 commitment level!',
+// const errorTypes = {
+//   min: 'Min 1 commitment level!',
+// };
+
+const errorTypes = (minCommitment) => {
+  return {
+    min: `Min ${minCommitment} commitment level!`,
+  };
 };
 
 export const AutSlider = (props: AutSliderProps) => {
@@ -116,7 +123,7 @@ export const AutSlider = (props: AutSliderProps) => {
         <StyledSlider {...props.sliderProps} />
       </div>
       <div style={{ marginTop: '-3px', display: 'flex', justifyContent: 'flex-end' }}>
-        <FormHelperText errorTypes={errorTypes} value={props.value} name={props.name} errors={props.errors}>
+        <FormHelperText errorTypes={errorTypes(props.minCommitment)} value={props.value} name={props.name} errors={props.errors}>
           <Typography color="white" variant="h5">
             You can change your commitment at any time
           </Typography>

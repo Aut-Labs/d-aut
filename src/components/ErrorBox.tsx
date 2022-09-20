@@ -12,7 +12,7 @@ export const ErrorBox = () => {
   const history = useHistory();
 
   const handleError = () => {
-    if (errorMessage === InternalErrorTypes.AutIDAlreadyExistsForAddress) {
+    if (errorMessage === InternalErrorTypes.AutIDAlreadyExistsForAddress || errorMessage === InternalErrorTypes.UsernameAlreadyTaken) {
       dispatch(errorAction(null));
     } else {
       dispatch(errorAction(null));

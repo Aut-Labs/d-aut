@@ -17,8 +17,8 @@ export const supportedNetworks = [
         symbol: 'GOR',
         decimals: 18,
       },
-      rpcUrls: ['https://goerli.infura.io/v3/', 'https://rpc.goerli.mudit.blog'],
-      blockExplorerUrls: ['https://goerli.etherscan.io/'],
+      rpcUrls: ['https://goerli.infura.io/v3', 'https://rpc.goerli.mudit.blog'],
+      blockExplorerUrls: ['https://goerli.etherscan.io'],
     },
   },
   {
@@ -33,7 +33,7 @@ export const supportedNetworks = [
         decimals: 18,
       },
       rpcUrls: ['https://matic-mumbai.chainstacklabs.com', 'https://rpc-mumbai.matic.today'],
-      blockExplorerUrls: ['https://explorer-mumbai.maticvigil.com/'],
+      blockExplorerUrls: ['https://explorer-mumbai.maticvigil.com'],
     },
   },
 ];

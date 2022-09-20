@@ -62,9 +62,10 @@ const Commitment: React.FunctionComponent = (props) => {
           <Controller
             name="commitment"
             control={control}
-            rules={{ required: true, min: 1, max: 10 }}
+            rules={{ required: true, min: coreState.community.minCommitment, max: 10 }}
             render={({ field: { name, value, onChange } }) => (
               <AutSlider
+                minCommitment={coreState.community.minCommitment}
                 value={value}
                 name={name}
                 errors={errors as any}
