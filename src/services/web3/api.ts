@@ -167,18 +167,19 @@ export const getAutId = autIdProvider(
     }
     const autId = await response.json();
     const holderCommunities = await contract.getHolderDAOs(selectedAddress);
-    const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
-    const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
-    // console.log('holderCommunities', holderCommunities);
-    // console.log(communitiesByDeployer);
-    for (const address of communitiesByDeployer) {
-      if (!(holderCommunities as unknown as string[]).includes(address)) {
-        // console.log(address);
-        await thunkAPI.dispatch(setJustJoining(true));
-        await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
-        throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
-      }
-    }
+    // CHECK FOR UNJOINED COMMUNITIES
+    // const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
+    // const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
+    // // console.log('holderCommunities', holderCommunities);
+    // // console.log(communitiesByDeployer);
+    // for (const address of communitiesByDeployer) {
+    //   if (!(holderCommunities as unknown as string[]).includes(address)) {
+    //     // console.log(address);
+    //     await thunkAPI.dispatch(setJustJoining(true));
+    //     await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
+    //     throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
+    //   }
+    // }
 
     const communities = await Promise.all(
       (holderCommunities as any).map(async (communityAddress) => {
