@@ -1,3 +1,11 @@
+## [1.4.1](https://github.com/Aut-Protocol/d-aut/compare/v1.4.0...v1.4.1) (2022-09-22)
+
+
+### Bug Fixes
+
+* adjusted font-sizes and reduced size of dialog on smaller breakpoints ([0d48082](https://github.com/Aut-Protocol/d-aut/commit/0d48082faf057a0ecf89f2d16d6e8d6f1b6c2831))
+* merged dev ([93baa31](https://github.com/Aut-Protocol/d-aut/commit/93baa31e84fcc7cdf32c914a82b97633f4c5bc04))
+
 # [1.4.0](https://github.com/Aut-Protocol/d-aut/compare/v1.3.0...v1.4.0) (2022-09-20)
 
 
