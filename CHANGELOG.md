@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/Aut-Protocol/d-aut/compare/v1.4.1...v1.5.0) (2022-09-22)
+
+
+### Features
+
+* removed check for unjoined communities ([8c48d49](https://github.com/Aut-Protocol/d-aut/commit/8c48d49f86682c1b6134de9d28adf0807451d199))
+
 ## [1.4.1](https://github.com/Aut-Protocol/d-aut/compare/v1.4.0...v1.4.1) (2022-09-22)
 
 
