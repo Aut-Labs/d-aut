@@ -112,11 +112,13 @@ export const ParseSWErrorMessage = (error: any) => {
   return (parsedMsg || swMainMsg || fullSwMsg || mainMsg || 'Internal JSON-RPC error.').toString();
 };
 
-export const pxToRem = (px: number | string) => {
-  px = `${px}`.replace('px', '');
+export const pxToRem = (size: number | string) => {
+  size = `${size}`.replace('px', '');
+
+  return `${size}px`;
 
   // return `${px}px`;
   const x = 16;
-  const rem = `${(1 / x) * Number(px)}rem`;
+  const rem = `${(1 / x) * Number(size)}rem`;
   return rem;
 };

@@ -1,5 +1,4 @@
-import { createTheme } from '@mui/material/styles';
-import { Fade } from '@mui/material';
+import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 import React from 'react';
 
 const palette = {
@@ -26,7 +25,7 @@ const palette = {
   },
 };
 
-export const AutTheme = () =>
+export const AutTheme = responsiveFontSizes(
   createTheme({
     components: {
       MuiBackdrop: {
@@ -97,7 +96,8 @@ export const AutTheme = () =>
       },
       fontFamily: ['Manrope', ' sans-serif'].join(','),
     },
-  });
+  })
+);
 
 declare module '@mui/material/styles/createTypography' {
   interface Typography {
