@@ -47,7 +47,7 @@ export function CommitmentMessage({ value, children = null }) {
   );
 }
 
-const StyledSlider = styled(Slider)(({ theme }) => ({
+const StyledSlider = styled(Slider)<CustomSliderProps>(({ minCommitment, theme }) => ({
   width: pxToRem(400),
   height: pxToRem(40),
   color: '#439EDD',
@@ -55,6 +55,9 @@ const StyledSlider = styled(Slider)(({ theme }) => ({
   borderWidth: '2px',
   borderStyle: 'solid',
   padding: '0',
+  backgroundImage: `-webkit-linear-gradient(left, #6A6A6A, #6A6A6A ${minCommitment * 10}%, transparent ${
+    minCommitment * 10
+  }%, transparent 100%)`,
 
   'span[data-index="10"].MuiSlider-mark': {
     display: 'none',
@@ -100,6 +103,10 @@ interface AutSliderProps {
   minCommitment: number;
 }
 
+interface CustomSliderProps {
+  minCommitment: number;
+}
+
 // const errorTypes = {
 //   min: 'Min 1 commitment level!',
 // };
@@ -120,7 +127,7 @@ export const AutSlider = (props: AutSliderProps) => {
     >
       <CommitmentMessage value={props.value} />
       <div style={{ position: 'relative' }}>
-        <StyledSlider {...props.sliderProps} />
+        <StyledSlider {...props.sliderProps} minCommitment={props.minCommitment} />
       </div>
       <div style={{ marginTop: '-3px', display: 'flex', justifyContent: 'flex-end' }}>
         <FormHelperText errorTypes={errorTypes(props.minCommitment)} value={props.value} name={props.name} errors={props.errors}>
