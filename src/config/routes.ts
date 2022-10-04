@@ -8,12 +8,19 @@ import UserRole from '../pages/UserRole';
 import Commitment from '../pages/Commitment';
 import Congratulations from '../pages/Congratulations';
 import MintSuccess from '../pages/MintSuccess';
+import PickUnjoinedDAO from '../pages/PickUnjoinedDAO';
 
 const routes: IRoute[] = [
   {
     path: '/',
     name: 'Login With',
-    component: LoginWith,
+    component: PickUnjoinedDAO,
+    exact: true,
+  },
+  {
+    path: '/unjoined',
+    name: 'Login With',
+    component: PickUnjoinedDAO,
     exact: true,
   },
   {

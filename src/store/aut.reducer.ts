@@ -11,6 +11,7 @@ import { ActionPayload } from './action-payload';
 export interface Community {
   name: string;
   // image: string;
+  address?: string;
   description: string;
   roles: Role[];
   minCommitment: number;
@@ -31,7 +32,9 @@ export enum ResultState {
 
 export interface AutState {
   community?: Community;
-  communityExtensionAddress: string;
+  unjoinedCommunities?: Community[];
+  selectedUnjoinedCommunityAddress?: string;
+  communityExtensionAddress?: string;
   showDialog: boolean;
   status: ResultState;
   errorStateAction: string;
@@ -46,6 +49,42 @@ export interface AutState {
 
 export const initialState: AutState = {
   community: null,
+  unjoinedCommunities: [
+    {
+      name: 's2strings',
+      address: '66232666666',
+      description: 'string',
+      roles: [
+        { id: '1', roleName: 'test1' },
+        { id: '2', roleName: 'test1' },
+        { id: '3', roleName: 'test1' },
+      ],
+      minCommitment: 4,
+    },
+    {
+      name: 'fgastring',
+      address: '66642566666',
+      description: 'string',
+      roles: [
+        { id: '1', roleName: 'test1' },
+        { id: '2', roleName: 'test1' },
+        { id: '3', roleName: 'test1' },
+      ],
+      minCommitment: 5,
+    },
+    {
+      name: 'strssaing',
+      address: '666161666666',
+      description: 'string',
+      roles: [
+        { id: '1', roleName: 'test1' },
+        { id: '2', roleName: 'test1' },
+        { id: '3', roleName: 'test1' },
+      ],
+      minCommitment: 3,
+    },
+  ],
+  selectedUnjoinedCommunityAddress: null,
   communityExtensionAddress: null,
   showDialog: false,
   status: ResultState.Idle,
@@ -80,6 +119,12 @@ export const autSlice = createSlice({
     },
     setJustJoining(state, action) {
       state.justJoin = action.payload;
+    },
+    setUnjoinedCommunities(state, action) {
+      state.unjoinedCommunities = action.payload;
+    },
+    setSelectedUnjoinedCommunityAddress(state, action) {
+      state.selectedUnjoinedCommunityAddress = action.payload;
     },
     errorAction(state, action) {
       state.status = ResultState.Idle;
@@ -160,11 +205,13 @@ export const {
   setUser,
   setSelectedAddress,
   setJustJoining,
+  setUnjoinedCommunities,
   setCommunityExtesnionAddress,
   showDialog,
   updateTransactionState,
   updateErrorState,
   errorAction,
+  setSelectedUnjoinedCommunity,
 } = autSlice.actions;
 
 export const community = createSelector(
