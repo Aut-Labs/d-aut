@@ -41,6 +41,7 @@ export interface AutState {
   transactionState: string;
   user: BaseNFTModel<any>;
   userBadge: string;
+  tempUserData: any;
   justJoin: boolean;
   provider: any;
   selectedAddress: any;
@@ -49,41 +50,7 @@ export interface AutState {
 
 export const initialState: AutState = {
   community: null,
-  unjoinedCommunities: [
-    {
-      name: 's2strings',
-      address: '66232666666',
-      description: 'string',
-      roles: [
-        { id: '1', roleName: 'test1' },
-        { id: '2', roleName: 'test1' },
-        { id: '3', roleName: 'test1' },
-      ],
-      minCommitment: 4,
-    },
-    {
-      name: 'fgastring',
-      address: '66642566666',
-      description: 'string',
-      roles: [
-        { id: '1', roleName: 'test1' },
-        { id: '2', roleName: 'test1' },
-        { id: '3', roleName: 'test1' },
-      ],
-      minCommitment: 5,
-    },
-    {
-      name: 'strssaing',
-      address: '666161666666',
-      description: 'string',
-      roles: [
-        { id: '1', roleName: 'test1' },
-        { id: '2', roleName: 'test1' },
-        { id: '3', roleName: 'test1' },
-      ],
-      minCommitment: 3,
-    },
-  ],
+  unjoinedCommunities: [],
   selectedUnjoinedCommunityAddress: null,
   communityExtensionAddress: null,
   showDialog: false,
@@ -92,6 +59,7 @@ export const initialState: AutState = {
   transactionState: null,
   user: null,
   userBadge: null,
+  tempUserData: null,
   justJoin: false,
   provider: null,
   selectedAddress: null,
@@ -128,6 +96,9 @@ export const autSlice = createSlice({
     },
     errorAction(state, action) {
       state.status = ResultState.Idle;
+    },
+    setTempUserData(state, action: ActionPayload<any>) {
+      state.tempUserData = action.payload;
     },
     setUser(state, action: ActionPayload<any>) {
       state.user = action.payload;
@@ -211,7 +182,8 @@ export const {
   updateTransactionState,
   updateErrorState,
   errorAction,
-  setSelectedUnjoinedCommunity,
+  setTempUserData,
+  setSelectedUnjoinedCommunityAddress,
 } = autSlice.actions;
 
 export const community = createSelector(

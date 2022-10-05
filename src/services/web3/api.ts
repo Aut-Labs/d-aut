@@ -8,7 +8,13 @@ import { EnableAndChangeNetwork } from '../ProviderFactory/web3.network';
 import { BaseNFTModel } from './models';
 import { env } from './env';
 import { InternalErrorTypes, ParseErrorMessage } from '../../utils/error-parser';
-import { setCommunityExtesnionAddress, setJustJoining, setUnjoinedCommunities, updateErrorState } from '../../store/aut.reducer';
+import {
+  setCommunityExtesnionAddress,
+  setJustJoining,
+  setTempUserData,
+  setUnjoinedCommunities,
+  updateErrorState,
+} from '../../store/aut.reducer';
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
 import { base64toFile } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
@@ -138,12 +144,22 @@ export const joinCommunity = autIdProvider(
   },
   async (contract, args, thunkAPI) => {
     const { aut, userData } = thunkAPI.getState();
+    const { selectedAddress } = aut;
 
     try {
       const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.communityExtensionAddress;
       await contract.joinDAO(userData.role, userData.commitment, requiredAddress, {
         gasLimit: 2000000,
       });
+      const tokenId = await contract.getAutIDByOwner(selectedAddress);
+      const tokenURI = await contract.tokenURI(tokenId);
+      const response = await fetch(ipfsCIDToHttpUrl(tokenURI));
+      if (response.status === 504) {
+        throw new Error(InternalErrorTypes.GatewayTimedOut);
+      }
+      const autId = await response.json();
+
+      await thunkAPI.dispatch(setTempUserData({ username: autId.name }));
     } catch (e) {
       throw new Error(InternalErrorTypes.UserNotAMemberOfThisDaoJoin);
     }
@@ -171,17 +187,17 @@ export const getAutId = autIdProvider(
     const autId = await response.json();
     const holderCommunities = await contract.getHolderDAOs(selectedAddress);
     // CHECK FOR UNJOINED COMMUNITIES IF WE'RE NOT IN AUT ID
+    const unjoinedCommunities = [];
     if (aut.communityExtensionAddress) {
       const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
       const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
       // console.log('holderCommunities', holderCommunities);
       // console.log(communitiesByDeployer);
-      const unjoinedCommunities = [];
       for (const address of communitiesByDeployer) {
         if (!(holderCommunities as unknown as string[]).includes(address)) {
-          const communityExtensioncontract = await Web3DAOExpanderProvider(address);
+          const communityExtensionContract = await Web3DAOExpanderProvider(address);
 
-          const resp = await communityExtensioncontract.getDAOData();
+          const resp = await communityExtensionContract.getDAOData();
           const communityMetadata = await fetch(ipfsCIDToHttpUrl(resp[2]));
           if (communityMetadata.status === 504) {
             throw new Error(InternalErrorTypes.GatewayTimedOut);
@@ -199,10 +215,8 @@ export const getAutId = autIdProvider(
       }
     }
 
-    debugger;
-
-    if (setUnjoinedCommunities.length > 0) {
-      await thunkAPI.dispatch(setUnjoinedCommunities(setUnjoinedCommunities));
+    if (unjoinedCommunities.length > 0) {
+      await thunkAPI.dispatch(setUnjoinedCommunities(unjoinedCommunities));
       await thunkAPI.dispatch(setJustJoining(true));
       // await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
       throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);

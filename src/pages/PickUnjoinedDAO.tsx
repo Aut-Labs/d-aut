@@ -5,18 +5,14 @@ import { useHistory } from 'react-router-dom';
 import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
-import { autState, setSelectedUnjoinedCommunity } from '../store/aut.reducer';
+import { autState, setSelectedUnjoinedCommunityAddress } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { useWeb3React } from '@web3-react/core';
 import { Controller, useForm } from 'react-hook-form';
 import { FormAction, FormWrapper, FormContent } from '../components/FormHelpers';
 import { AutSelectField, FormHelperText } from '../components/Fields';
 import { useAppDispatch } from '../store/store.model';
-
-const errorTypes = {
-  validAddress: `Not a valid address`,
-  selected: 'Field is required!',
-};
+import { fetchCommunity } from '../services/web3/api';
 
 const PickUnjoinedDAO: React.FunctionComponent = () => {
   const history = useHistory();
@@ -26,18 +22,22 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
-      dao: null,
+      dao: autData.selectedUnjoinedCommunityAddress,
     },
   });
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    await dispatch(setSelectedUnjoinedCommunity(data.dao));
+    await dispatch(setSelectedUnjoinedCommunityAddress(data.dao));
+    await dispatch(fetchCommunity(null));
     history.push('/role');
   };
 
   const onBackClicked = async () => {
-    await dispatch(setSelectedUnjoinedCommunity(null));
+    if (connector) {
+      await connector.deactivate();
+    }
+    await dispatch(setSelectedUnjoinedCommunityAddress(null));
   };
 
   return (
@@ -52,7 +52,18 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
           alignItems: 'center',
         }}
       >
-        <AutHeader backAction={onBackClicked} logoId="unjoined-logo" title="Pick DAO to join." />
+        <AutHeader
+          backAction={onBackClicked}
+          logoId="unjoined-logo"
+          title="Pick DAO to join."
+          subtitle={
+            <>
+              You have integrated these DAOs
+              <br />
+              but haven't joined them.
+            </>
+          }
+        />
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
           <FormContent>
             <Controller
@@ -75,7 +86,6 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
                       const dao = autData.unjoinedCommunities.find((t) => t.address === selected);
                       return dao?.name || selected;
                     }}
-                    width="450"
                     name={name}
                     color="primary"
                     value={value || ''}
@@ -84,11 +94,12 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
                     onChange={onChange}
                     helperText={<FormHelperText value={value} name={name} errors={formState.errors} />}
                   >
-                    {autData.unjoinedCommunities.map((dao) => (
-                      <MenuItem key={`dao-${dao.address}`} color="primary" value={dao.address}>
-                        {dao.name}
-                      </MenuItem>
-                    ))}
+                    {autData.unjoinedCommunities &&
+                      autData.unjoinedCommunities.map((dao) => (
+                        <MenuItem key={`dao-${dao.address}`} color="primary" value={dao.address}>
+                          {dao.name}
+                        </MenuItem>
+                      ))}
                   </AutSelectField>
                 );
               }}

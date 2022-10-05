@@ -14,12 +14,12 @@ const routes: IRoute[] = [
   {
     path: '/',
     name: 'Login With',
-    component: PickUnjoinedDAO,
+    component: LoginWith,
     exact: true,
   },
   {
     path: '/unjoined',
-    name: 'Login With',
+    name: 'Pick Unjoined',
     component: PickUnjoinedDAO,
     exact: true,
   },

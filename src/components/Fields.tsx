@@ -128,7 +128,7 @@ export const AutTextField = styled((props: TextFieldProps & { width: string }) =
   })
 );
 
-const StyledSelectField = styled((props: SelectProps & { width: string }) => {
+const StyledSelectField = styled((props: SelectProps) => {
   return (
     <Select
       MenuProps={{
@@ -163,7 +163,7 @@ const StyledSelectField = styled((props: SelectProps & { width: string }) => {
       {...props}
     />
   );
-})(({ width }) => ({
+})(() => ({
   '.MuiFormHelperText-root': {
     marginRight: 0,
     marginLeft: 0,
@@ -177,7 +177,7 @@ const StyledSelectField = styled((props: SelectProps & { width: string }) => {
     },
   },
   '&.MuiOutlinedInput-root, &.MuiInput-underline': {
-    width: pxToRem(width),
+    width: pxToRem(320),
     '.MuiSelect-select, .MuiSelect-nativeInput': {
       height: '100%',
       display: 'flex',
@@ -233,7 +233,6 @@ const SelectWrapper = styled('div')({
 });
 
 interface AutSelectProps extends Partial<SelectProps> {
-  width: string;
   helperText: JSX.Element;
 }
 export const AutSelectField = ({ helperText, ...props }: AutSelectProps) => {
