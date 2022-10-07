@@ -65,6 +65,7 @@ const Commitment: React.FunctionComponent = (props) => {
             rules={{ required: true, min: coreState.community.minCommitment, max: 10 }}
             render={({ field: { name, value, onChange } }) => (
               <AutSlider
+                communityName={coreState.community.name}
                 minCommitment={coreState.community.minCommitment}
                 value={value}
                 name={name}
