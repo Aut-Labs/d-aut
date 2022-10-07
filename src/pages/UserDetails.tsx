@@ -88,7 +88,7 @@ const UserDetails: React.FunctionComponent = (props) => {
           <Controller
             name="username"
             control={control}
-            rules={{ required: true }}
+            rules={{ required: true, pattern: /^\S+$/ }}
             render={({ field: { name, value, onChange }, formState }) => (
               // <TextField onChange={onChange} value={value} label="username" />
               <AutTextField

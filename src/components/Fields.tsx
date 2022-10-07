@@ -13,6 +13,7 @@ interface FormHelperTextProps {
 
 const defaultErrorTypes = {
   required: 'Field is required!',
+  pattern: 'Username cannot contain spaces!',
 };
 
 export function FormHelperText({ errors, name, errorTypes, children = null, value }: FormHelperTextProps) {
