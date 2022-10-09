@@ -79,9 +79,11 @@ export const mintMembership = autIdProvider(
     const { username, picture, role, commitment } = userData;
     const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
 
+    const nftIdResp = await contract.getNextTokenID();
+
     const config = {
       title: `${username}`,
-      hash: '#1',
+      hash: `#${nftIdResp.toString()}`,
       network: walletProvider.networkConfig.network.chainName.toLowerCase(),
       timestamp: `${timeStamp}`,
     } as SWIDParams;
@@ -165,6 +167,7 @@ export const getAutId = autIdProvider(
     if (response.status === 504) {
       throw new Error(InternalErrorTypes.GatewayTimedOut);
     }
+
     const autId = await response.json();
     const holderCommunities = await contract.getHolderDAOs(selectedAddress);
     // CHECK FOR UNJOINED COMMUNITIES
@@ -294,7 +297,7 @@ export const checkIfNameTaken = autIdProvider(
     return Promise.resolve(walletProvider.networkConfig.autIdAddress);
   },
   async (contract, args) => {
-    const tokenId = await contract.autIDUsername(args.username);
+    const tokenId = await contract.getAutIDHolderByUsername(args.username);
     if (tokenId !== ethers.constants.AddressZero) {
       throw new Error(InternalErrorTypes.UsernameAlreadyTaken);
     }
