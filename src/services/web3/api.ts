@@ -8,7 +8,13 @@ import { EnableAndChangeNetwork } from '../ProviderFactory/web3.network';
 import { BaseNFTModel } from './models';
 import { env } from './env';
 import { InternalErrorTypes, ParseErrorMessage } from '../../utils/error-parser';
-import { setCommunityExtesnionAddress, setJustJoining, updateErrorState } from '../../store/aut.reducer';
+import {
+  setCommunityExtesnionAddress,
+  setJustJoining,
+  setTempUserData,
+  setUnjoinedCommunities,
+  updateErrorState,
+} from '../../store/aut.reducer';
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
 import { base64toFile } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
@@ -34,7 +40,8 @@ export const fetchCommunity = communityProvider(
   },
   (thunkAPI) => {
     const { aut } = thunkAPI.getState();
-    return Promise.resolve(aut.communityExtensionAddress);
+    const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.communityExtensionAddress;
+    return Promise.resolve(requiredAddress);
   },
   async (contract) => {
     const resp = await contract.getDAOData();
@@ -118,7 +125,8 @@ export const mintMembership = autIdProvider(
 
     const { aut } = thunkAPI.getState();
     try {
-      await contract.mint(username, cid, role, commitment, aut.communityExtensionAddress);
+      const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.communityExtensionAddress;
+      await contract.mint(username, cid, role, commitment, requiredAddress);
     } catch (e) {
       throw new Error(InternalErrorTypes.UserNotAMemberOfThisDaoMint);
     }
@@ -138,11 +146,22 @@ export const joinCommunity = autIdProvider(
   },
   async (contract, args, thunkAPI) => {
     const { aut, userData } = thunkAPI.getState();
+    const { selectedAddress } = aut;
 
     try {
-      await contract.joinDAO(userData.role, userData.commitment, aut.communityExtensionAddress, {
+      const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.communityExtensionAddress;
+      await contract.joinDAO(userData.role, userData.commitment, requiredAddress, {
         gasLimit: 2000000,
       });
+      const tokenId = await contract.getAutIDByOwner(selectedAddress);
+      const tokenURI = await contract.tokenURI(tokenId);
+      const response = await fetch(ipfsCIDToHttpUrl(tokenURI));
+      if (response.status === 504) {
+        throw new Error(InternalErrorTypes.GatewayTimedOut);
+      }
+      const autId = await response.json();
+
+      await thunkAPI.dispatch(setTempUserData({ username: autId.name }));
     } catch (e) {
       throw new Error(InternalErrorTypes.UserNotAMemberOfThisDaoJoin);
     }
@@ -170,19 +189,41 @@ export const getAutId = autIdProvider(
 
     const autId = await response.json();
     const holderCommunities = await contract.getHolderDAOs(selectedAddress);
-    // CHECK FOR UNJOINED COMMUNITIES
-    // const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
-    // const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
-    // // console.log('holderCommunities', holderCommunities);
-    // // console.log(communitiesByDeployer);
-    // for (const address of communitiesByDeployer) {
-    //   if (!(holderCommunities as unknown as string[]).includes(address)) {
-    //     // console.log(address);
-    //     await thunkAPI.dispatch(setJustJoining(true));
-    //     await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
-    //     throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
-    //   }
-    // }
+    // CHECK FOR UNJOINED COMMUNITIES IF WE'RE NOT IN AUT ID
+    const unjoinedCommunities = [];
+    if (aut.communityExtensionAddress) {
+      const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
+      const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
+      // console.log('holderCommunities', holderCommunities);
+      // console.log(communitiesByDeployer);
+      for (const address of communitiesByDeployer) {
+        if (!(holderCommunities as unknown as string[]).includes(address)) {
+          const communityExtensionContract = await Web3DAOExpanderProvider(address);
+
+          const resp = await communityExtensionContract.getDAOData();
+          const communityMetadata = await fetch(ipfsCIDToHttpUrl(resp[2]));
+          if (communityMetadata.status === 504) {
+            throw new Error(InternalErrorTypes.GatewayTimedOut);
+          }
+          const communityJson = await communityMetadata.json();
+          unjoinedCommunities.push({
+            address,
+            name: communityJson.name,
+            description: communityJson.description,
+            roles: communityJson.properties.rolesSets[0].roles,
+            minCommitment: communityJson.properties.commitment,
+          });
+          // console.log(address);
+        }
+      }
+    }
+
+    if (unjoinedCommunities.length > 0) {
+      await thunkAPI.dispatch(setUnjoinedCommunities(unjoinedCommunities));
+      await thunkAPI.dispatch(setJustJoining(true));
+      // await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
+      throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
+    }
 
     const communities = await Promise.all(
       (holderCommunities as any).map(async (communityAddress) => {

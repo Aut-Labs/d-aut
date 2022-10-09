@@ -11,6 +11,7 @@ import { ActionPayload } from './action-payload';
 export interface Community {
   name: string;
   // image: string;
+  address?: string;
   description: string;
   roles: Role[];
   minCommitment: number;
@@ -31,13 +32,16 @@ export enum ResultState {
 
 export interface AutState {
   community?: Community;
-  communityExtensionAddress: string;
+  unjoinedCommunities?: Community[];
+  selectedUnjoinedCommunityAddress?: string;
+  communityExtensionAddress?: string;
   showDialog: boolean;
   status: ResultState;
   errorStateAction: string;
   transactionState: string;
   user: BaseNFTModel<any>;
   userBadge: string;
+  tempUserData: any;
   justJoin: boolean;
   provider: any;
   selectedAddress: any;
@@ -46,6 +50,8 @@ export interface AutState {
 
 export const initialState: AutState = {
   community: null,
+  unjoinedCommunities: [],
+  selectedUnjoinedCommunityAddress: null,
   communityExtensionAddress: null,
   showDialog: false,
   status: ResultState.Idle,
@@ -53,6 +59,7 @@ export const initialState: AutState = {
   transactionState: null,
   user: null,
   userBadge: null,
+  tempUserData: null,
   justJoin: false,
   provider: null,
   selectedAddress: null,
@@ -81,8 +88,17 @@ export const autSlice = createSlice({
     setJustJoining(state, action) {
       state.justJoin = action.payload;
     },
+    setUnjoinedCommunities(state, action) {
+      state.unjoinedCommunities = action.payload;
+    },
+    setSelectedUnjoinedCommunityAddress(state, action) {
+      state.selectedUnjoinedCommunityAddress = action.payload;
+    },
     errorAction(state, action) {
       state.status = ResultState.Idle;
+    },
+    setTempUserData(state, action: ActionPayload<any>) {
+      state.tempUserData = action.payload;
     },
     setUser(state, action: ActionPayload<any>) {
       state.user = action.payload;
@@ -160,11 +176,14 @@ export const {
   setUser,
   setSelectedAddress,
   setJustJoining,
+  setUnjoinedCommunities,
   setCommunityExtesnionAddress,
   showDialog,
   updateTransactionState,
   updateErrorState,
   errorAction,
+  setTempUserData,
+  setSelectedUnjoinedCommunityAddress,
 } = autSlice.actions;
 
 export const community = createSelector(

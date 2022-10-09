@@ -57,7 +57,7 @@ const Congratulations: React.FunctionComponent = () => {
         }}
       >
         <TwitterShareButton
-          url={`https://my.aut.id/${selectedNetwork}/${userInput.username}`}
+          url={`https://my.aut.id/${selectedNetwork}/${autData.tempUserData.username}`}
           title={`I just joined ${autData.community.name}. Check out my AutId!`}
           hashtags={['Aut', 'DAO', 'Blockchain']}
           className="social-button"
@@ -67,7 +67,7 @@ const Congratulations: React.FunctionComponent = () => {
         {/* <SmallerAutButton onClick={handleShareClicked}>SHARE</SmallerAutButton> */}
         <SmallerAutButton
           onClick={() => {
-            window.open(`https://my.aut.id/${selectedNetwork}/${userInput.username}`, '_blank');
+            window.open(`https://my.aut.id/${selectedNetwork}/${autData.tempUserData.username}`, '_blank');
           }}
         >
           SEE PROFILE

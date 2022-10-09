@@ -50,7 +50,7 @@ const LoginWithSkillWallet: React.FunctionComponent = (props) => {
         const res = await dispatch(setSelectedAddress(account));
         const result = await dispatch(getAutId(null));
         if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
-          history.push('/role');
+          history.push('/unjoined');
         }
       }
     };
