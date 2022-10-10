@@ -12,5 +12,9 @@ const connectors: [MetaMask | WalletConnect, Web3ReactHooks][] = [
 ];
 
 export default function Web3AutProvider({ children }) {
-  return <Web3ReactProvider connectors={connectors}>{children}</Web3ReactProvider>;
+  return (
+    <Web3ReactProvider network="any" connectors={connectors}>
+      {children}
+    </Web3ReactProvider>
+  );
 }

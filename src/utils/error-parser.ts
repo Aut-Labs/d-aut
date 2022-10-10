@@ -111,9 +111,10 @@ export const ParseErrorMessage = (error: any) => {
     return error.message;
   }
 
-  if (error.message?.includes('call revert exception')) {
-    console.log(error.message);
-    return 'Something went wrong. Call reverted.';
+  if (error.code === 'CALL_EXCEPTION') {
+    if (error.reason) {
+      return error.reason;
+    }
   }
 
   if (error.code === 'UNPREDICTABLE_GAS_LIMIT') {
@@ -121,8 +122,13 @@ export const ParseErrorMessage = (error: any) => {
     return message;
   }
 
-  if (error?.code === 'NETWORK_ERROR') {
+  if (error.code === 'NETWORK_ERROR') {
     return 'A network error occurred. Please try again.';
+  }
+
+  if (error.message?.includes('call revert exception')) {
+    console.log(error.message);
+    return 'Something went wrong. Call reverted.';
   }
 
   if (error.message === 'Internal JSON-RPC error.') {
