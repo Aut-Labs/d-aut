@@ -190,40 +190,40 @@ export const getAutId = autIdProvider(
     const autId = await response.json();
     const holderCommunities = await contract.getHolderDAOs(selectedAddress);
     // CHECK FOR UNJOINED COMMUNITIES IF WE'RE NOT IN AUT ID
-    const unjoinedCommunities = [];
-    if (aut.communityExtensionAddress) {
-      const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
-      const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
-      // console.log('holderCommunities', holderCommunities);
-      // console.log(communitiesByDeployer);
-      for (const address of communitiesByDeployer) {
-        if (!(holderCommunities as unknown as string[]).includes(address)) {
-          const communityExtensionContract = await Web3DAOExpanderProvider(address);
+    // const unjoinedCommunities = [];
+    // if (aut.communityExtensionAddress) {
+    //   const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
+    //   const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
+    //   // console.log('holderCommunities', holderCommunities);
+    //   // console.log(communitiesByDeployer);
+    //   for (const address of communitiesByDeployer) {
+    //     if (!(holderCommunities as unknown as string[]).includes(address)) {
+    //       const communityExtensionContract = await Web3DAOExpanderProvider(address);
 
-          const resp = await communityExtensionContract.getDAOData();
-          const communityMetadata = await fetch(ipfsCIDToHttpUrl(resp[2]));
-          if (communityMetadata.status === 504) {
-            throw new Error(InternalErrorTypes.GatewayTimedOut);
-          }
-          const communityJson = await communityMetadata.json();
-          unjoinedCommunities.push({
-            address,
-            name: communityJson.name,
-            description: communityJson.description,
-            roles: communityJson.properties.rolesSets[0].roles,
-            minCommitment: communityJson.properties.commitment,
-          });
-          // console.log(address);
-        }
-      }
-    }
+    //       const resp = await communityExtensionContract.getDAOData();
+    //       const communityMetadata = await fetch(ipfsCIDToHttpUrl(resp[2]));
+    //       if (communityMetadata.status === 504) {
+    //         throw new Error(InternalErrorTypes.GatewayTimedOut);
+    //       }
+    //       const communityJson = await communityMetadata.json();
+    //       unjoinedCommunities.push({
+    //         address,
+    //         name: communityJson.name,
+    //         description: communityJson.description,
+    //         roles: communityJson.properties.rolesSets[0].roles,
+    //         minCommitment: communityJson.properties.commitment,
+    //       });
+    //       // console.log(address);
+    //     }
+    //   }
+    // }
 
-    if (unjoinedCommunities.length > 0) {
-      await thunkAPI.dispatch(setUnjoinedCommunities(unjoinedCommunities));
-      await thunkAPI.dispatch(setJustJoining(true));
-      // await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
-      throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
-    }
+    // if (unjoinedCommunities.length > 0) {
+    //   await thunkAPI.dispatch(setUnjoinedCommunities(unjoinedCommunities));
+    //   await thunkAPI.dispatch(setJustJoining(true));
+    //   // await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
+    //   throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
+    // }
 
     const communities = await Promise.all(
       (holderCommunities as any).map(async (communityAddress) => {
