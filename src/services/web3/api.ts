@@ -227,6 +227,7 @@ export const getAutId = autIdProvider(
 
     const communities = await Promise.all(
       (holderCommunities as any).map(async (communityAddress) => {
+        debugger;
         // * communityExtension: string
         // * role: number
         // * commitment: number
@@ -253,7 +254,7 @@ export const getAutId = autIdProvider(
 
         const resp = await communityExtensioncontract.getDAOData();
 
-        const isCoreTeam = await communityExtensioncontract.isCoreTeam(selectedAddress);
+        // const isCoreTeam = await communityExtensioncontract.isCoreTeam(selectedAddress);
 
         /**
          * [
@@ -307,7 +308,7 @@ export const getAutId = autIdProvider(
         const a = new BaseNFTModel({
           ...communityJson,
           properties: {
-            isCoreTeam,
+            // isCoreTeam,
             address: communityAddress,
             ...communityJson.properties,
             userData: {
