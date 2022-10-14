@@ -1,12 +1,18 @@
-import { Box, Button, ButtonProps, Typography } from '@mui/material';
+import { Box, Button, ButtonProps, Menu, MenuItem, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { ReactComponent as Oval } from '../assets/oval.svg';
 import { ReactComponent as DarkOval } from '../assets/darker-oval.svg';
 import { ReactComponent as BlackOval } from '../assets/oval-black.svg';
+import { ReactComponent as WhiteOval } from '../assets/oval-white.svg';
+import { ReactComponent as DisconnectIconGradient } from '../assets/disconnect/disconnect-vaporwave.svg';
+import { ReactComponent as DisconnectIconBlack } from '../assets/disconnect/disconnect-black.svg';
+import { ReactComponent as DisconnectIconWhite } from '../assets/disconnect/disconnect-white.svg';
 import { pxToRem } from '../services/web3/utils';
 import { ipfsCIDToHttpUrl } from '../services/storage/storage.hub';
 import { useSelector } from 'react-redux';
 import { user } from '../store/aut.reducer';
+import { useState } from 'react';
+import { borderColor } from '@mui/system';
 
 export const RoundedButton = styled(Button)(({ theme }) => ({
   '&.MuiButton-root': {
@@ -176,19 +182,93 @@ export const SquareButton = styled(Button)(({ theme }) => ({
   },
 }));
 
+const menuButtonColors = {
+  'round-bright': {
+    backgroundColor: 'transparent',
+    borderColor: '#009FE3',
+    textColor: '#000',
+    backgroundHover: '#009FE309',
+    disconnectIcon: <DisconnectIconGradient />,
+  },
+  'square-bright': {
+    backgroundColor: 'transparent',
+    borderColor: '#009FE3',
+    backgroundHover: '#009FE309',
+    textColor: '#000',
+    disconnectIcon: <DisconnectIconGradient />,
+  },
+  'square-dark': {
+    backgroundColor: 'transparent',
+    borderColor: '#000',
+    backgroundHover: '#6A6A6A09',
+    textColor: '#000',
+    disconnectIcon: <DisconnectIconBlack />,
+  },
+  'round-dark': {
+    backgroundColor: 'transparent',
+    borderColor: '#000',
+    backgroundHover: '#6A6A6A09',
+    textColor: '#000',
+    disconnectIcon: <DisconnectIconBlack />,
+  },
+  'round-light': {
+    backgroundColor: 'transparent',
+    borderColor: '#FFF',
+    backgroundHover: '#6A6A6A',
+    textColor: '#FFF',
+    disconnectIcon: <DisconnectIconWhite />,
+  },
+  'square-light': {
+    backgroundColor: 'transparent',
+    borderColor: '#FFF',
+    backgroundHover: '#6A6A6A',
+    textColor: '#FFF',
+    disconnectIcon: <DisconnectIconWhite />,
+  },
+  simple: {
+    borderImage:
+      'linear-gradient(45.57deg, #009fe3 0%, #0399de 8%, #0e8bd3 19%, #2072bf 30%, #3a50a4 41%, #5a2583 53%, #453f94 71%, #38519f 88%, #3458a4 100%) 1',
+    backgroundColor: '#000',
+    borderColor: 'none',
+    backgroundHover: '#6FA1C3',
+    textColor: '#FFF',
+    disconnectIcon: <DisconnectIconWhite />,
+  },
+};
+
 interface WebCompButtonProps extends ButtonProps {
   buttontype?: string;
+  menuClick?: any;
+  container?: any;
 }
 
 const buttonTypes = ['round-bright', 'square-bright', 'square-dark', 'round-dark', 'round-light', 'square-light', 'simple'];
 
 export const RoundedWebButton = (props: WebCompButtonProps) => {
   const userData = useSelector(user);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMouseEnter = (event) => {
+    if (anchorEl !== event.currentTarget && userData) {
+      setAnchorEl(props.container);
+    }
+  };
+
+  const handleHideMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDisconnectClick = () => {
+    props.menuClick();
+    handleHideMenu();
+  };
+
   return (
     <>
       {props.buttontype === 'round-bright' && (
         <RoundedButton
-          {...props}
+          onMouseEnter={handleMouseEnter}
+          onClick={props.onClick}
           sx={{
             ':hover': {
               background: '#009ADE',
@@ -253,7 +333,8 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
       )}
       {props.buttontype === 'square-bright' && (
         <SquareButton
-          {...props}
+          onMouseEnter={handleMouseEnter}
+          onClick={props.onClick}
           sx={{
             background:
               '#009ADE linear-gradient(270deg, #009fe3 0%, #0399de 8%, #0e8bd3 19%, #2072bf 30%, #3a50a4 41%, #5a2583 53%, #453f94 71%, #38519f 88%, #3458a4 100%) 0% 0%',
@@ -320,11 +401,12 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
       )}
       {props.buttontype === 'square-dark' && (
         <SquareButtonBlackBorder
-          {...props}
+          onClick={props.onClick}
+          onMouseEnter={handleMouseEnter}
           sx={{
             background: '#000',
             ':hover': {
-              background: '#6A6A6A',
+              background: `${userData ? '#000' : '#6A6A6A'}`,
             },
             '&&.MuiTouchRipple-child': {
               backgroundColor: '#333333',
@@ -373,24 +455,27 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                 </Typography>
               )}
             </Box>
-            <Box sx={{ zIndex: '100', position: 'absolute' }}>
-              <Box sx={{ transform: 'translate(100px, -109px)' }}>
-                <Oval />
+            {!userData && (
+              <Box sx={{ zIndex: '100', position: 'absolute' }}>
+                <Box sx={{ transform: 'translate(100px, -109px)' }}>
+                  <Oval />
+                </Box>
+                <Box sx={{ transform: 'translate(147px, -230px)' }}>
+                  <DarkOval />
+                </Box>
               </Box>
-              <Box sx={{ transform: 'translate(147px, -230px)' }}>
-                <DarkOval />
-              </Box>
-            </Box>
+            )}
           </Box>
         </SquareButtonBlackBorder>
       )}
       {props.buttontype === 'round-dark' && (
         <RoundedButtonBlackBorder
-          {...props}
+          onClick={props.onClick}
+          onMouseEnter={handleMouseEnter}
           sx={{
             background: '#000',
             ':hover': {
-              background: '#6A6A6A',
+              background: `${userData ? '#000' : '#6A6A6A'}`,
             },
             '&&.MuiTouchRipple-child': {
               backgroundColor: '#333333',
@@ -452,7 +537,8 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
       )}
       {props.buttontype === 'round-light' && (
         <RoundedButtonWhiteBorder
-          {...props}
+          onClick={props.onClick}
+          onMouseEnter={handleMouseEnter}
           sx={{
             background: '#FFF',
             ':hover': {
@@ -518,7 +604,8 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
       )}
       {props.buttontype === 'square-light' && (
         <SquareButtonWhiteBorder
-          {...props}
+          onClick={props.onClick}
+          onMouseEnter={handleMouseEnter}
           sx={{
             background: '#FFF',
             ':hover': {
@@ -584,7 +671,8 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
       )}
       {(props.buttontype === 'simple' || !buttonTypes.includes(props.buttontype)) && (
         <SquareButtonGradienBorder
-          {...props}
+          onClick={props.onClick}
+          onMouseEnter={handleMouseEnter}
           sx={{
             background: '#000',
             ':hover': {
@@ -640,6 +728,73 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
           </Box>
         </SquareButtonGradienBorder>
       )}
+      <Menu
+        sx={{
+          '& .MuiPaper-root': {
+            backgroundColor: 'transparent',
+            ml: pxToRem(32),
+            boxShadow: 'none',
+            // borderBottom: `${pxToRem(3)} solid ${menuButtonColors[props.buttontype].borderColor}`,
+            // borderRight: `${pxToRem(3)} solid ${menuButtonColors[props.buttontype].borderColor}`,
+          },
+          '& .MuiMenu-list': {
+            '&.MuiTouchRipple-child': {
+              backgroundColor: 'red',
+            },
+            padding: '0px',
+          },
+          '.MuiBackdrop-root': {
+            backdropFilter: 'none',
+          },
+          '& .buttonOption': {
+            border: `${pxToRem(3)} solid`,
+            borderTop: '0px',
+            borderLeft: '0px',
+            // borderWidth: `0px ${pxToRem(3)} ${pxToRem(3)} 0px`,
+            borderColor: menuButtonColors[props.buttontype].borderColor,
+            borderImage: menuButtonColors[props.buttontype].borderImage,
+            backgroundColor: menuButtonColors[props.buttontype].backgroundColor,
+            '& .MuiButton-startIcon': {
+              ml: pxToRem(7),
+            },
+            cursor: 'pointer',
+            '& .buttonOptionText': {
+              color: menuButtonColors[props.buttontype].textColor,
+              mt: pxToRem(1),
+              textTransform: 'none',
+              fontSize: pxToRem(12),
+            },
+            // '&:hover': {
+            //   opacity: '0.09',
+            //   backgroundColor: menuButtonColors[props.buttontype].backgroundHover,
+            //   '& .buttonOptionText': {},
+            // },
+
+            height: pxToRem(35),
+            width: pxToRem(140),
+            '&:hover': {
+              backgroundColor: menuButtonColors[props.buttontype].backgroundHover,
+            },
+          },
+          // boxShadow: 'rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px',
+          // ...dropdownStyles,
+        }}
+        container={props.container}
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleHideMenu}
+        MenuListProps={{ onMouseLeave: handleHideMenu }}
+      >
+        <MenuItem sx={{ p: '0px' }}>
+          <Button startIcon={menuButtonColors[props.buttontype].disconnectIcon} className="buttonOption" onClick={handleDisconnectClick}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+              <Typography className="buttonOptionText" variant="h4" color="#FFFFFF">
+                Disconnect
+              </Typography>
+            </Box>
+          </Button>
+        </MenuItem>
+      </Menu>
     </>
   );
 };
