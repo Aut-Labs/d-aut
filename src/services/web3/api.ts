@@ -227,7 +227,6 @@ export const getAutId = autIdProvider(
 
     const communities = await Promise.all(
       (holderCommunities as any).map(async (communityAddress) => {
-        debugger;
         // * communityExtension: string
         // * role: number
         // * commitment: number
