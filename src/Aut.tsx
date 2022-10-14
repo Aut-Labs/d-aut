@@ -12,8 +12,6 @@ import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './s
 import { useAppDispatch } from './store/store.model';
 import { RoundedWebButton } from './components/WebButton';
 import { SelectedNetworkConfig, setNetwork, setSigner } from './store/wallet-provider';
-import { getNetwork } from './services/web3/env';
-import { EnableAndChangeNetwork } from './services/ProviderFactory/web3.network';
 import { useWeb3React } from '@web3-react/core';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
@@ -43,9 +41,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   const history = useHistory();
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
-  // const currentUser = useSelector(currentUserState);
 
-  const [anchorEl, setAnchorEl] = useState(null);
   const [buttonType, setButtonType] = useState('simple');
   const [buttonHidden, setButtonHidden] = useState(false);
   const { connector, isActive, chainId, provider } = useWeb3React();
@@ -102,12 +98,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
 
   const handleButtonClick = async () => {
     // if (currentUser.isLoggedIn) {
-    if (uiState.user) {
-      // if (!attributes.useButtonOptions) {
-      window.sessionStorage.removeItem('aut-data');
-      dispatch(resetUIState);
-      dispatchEvent(OutputEventTypes.Disconnected, false);
-    } else {
+    if (!uiState.user) {
       history.push('/');
 
       if (isActive) {
@@ -122,21 +113,11 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     }
   };
 
-  const handleMouseEnter = (event) => {
-    if (anchorEl !== event.currentTarget && attributes.useButtonOptions) {
-      // setAnchorEl(container);
-    }
-  };
-
   const handleMenuButtonClicked = () => {
     window.sessionStorage.removeItem('aut-data');
     dispatch(resetUIState);
     // dispatchEvent(OutputEventTypes.Connected, false);
-    setAnchorEl(null);
-  };
-
-  const handleHideMenu = () => {
-    setAnchorEl(null);
+    // setAnchorEl(null);
   };
 
   useEffect(() => {
@@ -167,9 +148,12 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     <>
       <Portal container={container}>
         {!buttonHidden && (
-          <>
-            <RoundedWebButton buttontype={buttonType?.toLowerCase()} onClick={handleButtonClick} onMouseEnter={handleMouseEnter} />
-          </>
+          <RoundedWebButton
+            buttontype={buttonType?.toLowerCase()}
+            onClick={handleButtonClick}
+            menuClick={handleMenuButtonClicked}
+            container={container}
+          />
         )}
       </Portal>
     </>
