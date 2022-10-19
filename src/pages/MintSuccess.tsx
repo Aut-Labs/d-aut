@@ -32,7 +32,7 @@ const MintSuccess: React.FunctionComponent = () => {
       >
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', mt: '45px' }}>
           <Box sx={{ me: '8px', flex: '2', display: 'flex', justifyContent: 'end', height: '100%' }}>
-            <Typography sx={{ maxWidth: '260px' }} variant="h4">
+            <Typography sx={{ maxWidth: '260px', wordBreak: 'break-all' }} variant="h4">
               I'm now a {userInput.roleName} @ {autData.community.name} 🎉
               <br />
               <br /> Look at my self-sovereign AutID,

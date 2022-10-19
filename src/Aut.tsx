@@ -116,7 +116,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   const handleMenuButtonClicked = () => {
     window.sessionStorage.removeItem('aut-data');
     dispatch(resetUIState);
-    // dispatchEvent(OutputEventTypes.Connected, false);
+    dispatchEvent(OutputEventTypes.Disconnected);
     // setAnchorEl(null);
   };
 
