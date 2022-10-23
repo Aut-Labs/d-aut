@@ -89,9 +89,11 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
       const sessionLength = new Date(8 * 60 * 60 * 1000 + autId.loginTimestamp).getTime();
       if (currentTime < sessionLength) {
         dispatch(setUser(autId));
+        dispatchEvent(OutputEventTypes.Connected, autId);
       } else {
         window.sessionStorage.removeItem('aut-data');
         dispatch(resetUIState);
+        dispatchEvent(OutputEventTypes.Disconnected);
       }
     }
   };
