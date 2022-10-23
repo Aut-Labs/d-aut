@@ -1,28 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { ReactComponent as Metamask } from '../assets/metamask.svg';
-import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
-import { AutButton, ButtonIcon } from '../components/AutButton';
 import { useAppDispatch } from '../store/store.model';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
 import { autState, setJustJoining, setSelectedAddress } from '../store/aut.reducer';
+import type { Connector } from '@web3-react/types';
 import { AutHeader } from '../components/AutHeader';
-import { metaMaskConnector, walletConnectConnector } from '../services/ProviderFactory/web3.connectors';
 import { useWeb3React } from '@web3-react/core';
-import { SelectedNetworkConfig, setWallet } from '../store/wallet-provider';
-
-const [metamaskConnector] = metaMaskConnector;
-const [wcConnector] = walletConnectConnector;
+import { ConnectorTypes, IsConnected, NetworksConfig, SelectedNetworkConfig, setNetwork } from '../store/wallet-provider';
+import ConnectorBtn from '../components/ConnectorButton';
+import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 
 const NewUser: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const networkConfig = useSelector(SelectedNetworkConfig);
+  const networks = useSelector(NetworksConfig);
   const autData = useSelector(autState);
   const history = useHistory();
-  const { isActive, account, connector } = useWeb3React();
+  const [connector, setConnector] = useState<Connector>(null);
+  const [connectedEagerly, setConnectEagerly] = useState(false);
+  const { isActive, account } = useWeb3React();
+  const isConnected = useSelector(IsConnected);
 
   const checkForExistingAutId = async () => {
     const hasAutId = await dispatch(checkIfAutIdExists(null));
@@ -48,22 +48,50 @@ const NewUser: React.FunctionComponent = (props) => {
   useEffect(() => {
     // console.log(isActive);
     const activate = async () => {
-      if (isActive) {
+      if (isActive && isConnected) {
+        debugger;
         const res = await dispatch(setSelectedAddress(account));
-        checkForExistingAutId();
+        await checkForExistingAutId();
       }
     };
     activate();
-  }, [isActive]);
+  }, [isActive, isConnected]);
 
-  const handleWalletConnectClick = async () => {
-    await wcConnector.activate();
-    await dispatch(setWallet('walletConnect'));
+  // const handleWalletConnectClick = async () => {
+  //   await wcConnector.activate();
+  //   await dispatch(setWallet('walletConnect'));
+  // };
+
+  // const handleInjectFromMetamaskClick = async () => {
+  //   await metamaskConnector.activate();
+  //   await dispatch(setWallet('metamask'));
+  // };
+
+  const switchNetwork = async (c: Connector, chainId: number, index: number, name: string = null) => {
+    if (!c) {
+      return;
+    }
+    await c.deactivate();
+    await c.activate(chainId);
+    const config = networks.find((n) => n.chainId?.toString() === chainId?.toString());
+    try {
+      await EnableAndChangeNetwork(c.provider, config);
+      await dispatch(setNetwork(config.network));
+    } catch (error) {
+      // console.log(error);
+    }
   };
 
-  const handleInjectFromMetamaskClick = async () => {
-    await metamaskConnector.activate();
-    await dispatch(setWallet('metamask'));
+  const changeConnector = async (c: Connector) => {
+    // @ts-ignore
+    const foundChainId = Number(c?.provider?.chainId);
+    const index = networks.map((n) => n.chainId?.toString()).indexOf(foundChainId?.toString());
+    const chainAllowed = index !== -1;
+    if (chainAllowed) {
+      const config = networks.find((n) => n.chainId?.toString() === foundChainId?.toString());
+      switchNetwork(c, foundChainId, index);
+    }
+    setConnector(c);
   };
 
   return (
@@ -87,28 +115,8 @@ const NewUser: React.FunctionComponent = (props) => {
           alignItems: 'center',
         }}
       >
-        <AutButton
-          startIcon={
-            <ButtonIcon>
-              <Metamask />
-            </ButtonIcon>
-          }
-          sx={{ mt: '29px' }}
-          onClick={handleInjectFromMetamaskClick}
-        >
-          Metamask
-        </AutButton>
-        <AutButton
-          onClick={handleWalletConnectClick}
-          startIcon={
-            <ButtonIcon>
-              <WalletConnect />
-            </ButtonIcon>
-          }
-          sx={{ mt: '30px' }}
-        >
-          WalletConnect
-        </AutButton>
+        <ConnectorBtn setConnector={changeConnector} connectorType={ConnectorTypes.Metamask} />
+        <ConnectorBtn setConnector={changeConnector} connectorType={ConnectorTypes.WalletConnect} />
       </Box>
     </AutPageBox>
   );

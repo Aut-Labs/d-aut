@@ -11,7 +11,6 @@ import { AutPageBox } from '../components/AutPageBox';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { AutHeader } from '../components/AutHeader';
 import { useSelector } from 'react-redux';
-import { metaMaskConnector, walletConnectConnector } from '../services/ProviderFactory/web3.connectors';
 import { SelectedNetworkConfig, setWallet } from '../store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
 
@@ -20,8 +19,8 @@ import { useWeb3React } from '@web3-react/core';
 //     80001: 'https://matic-mumbai.chainstacklabs.com',
 //   },
 // });
-const [metamaskConnector] = metaMaskConnector;
-const [wcConnector] = walletConnectConnector;
+// const [metamaskConnector] = metaMaskConnector;
+// const [wcConnector] = walletConnectConnector;
 
 const LoginWithSkillWallet: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
@@ -58,17 +57,15 @@ const LoginWithSkillWallet: React.FunctionComponent = (props) => {
   }, [isActive]);
 
   const handleWalletConnectClick = async () => {
-    await wcConnector.activate();
-    await dispatch(setWallet('walletConnect'));
+    // await wcConnector.activate();
+    // await dispatch(setWallet('walletConnect'));
   };
 
   const handleMetamaskClick = async () => {
-    await metamaskConnector.activate();
-    await dispatch(setWallet('metamask'));
-
+    // await metamaskConnector.activate();
+    // await dispatch(setWallet('metamask'));
     // await dispatch(switchToMetaMask());
     // const result = await dispatch(getAutId(null));
-
     // if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
     //   history.push('/role');
     // }

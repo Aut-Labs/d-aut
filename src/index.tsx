@@ -15,6 +15,7 @@ import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
 
 export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
   const TAG_NAME = 'd-aut';
+
   // we don't to initialized again when saving changes on hot-reloading
   if (customElements.get(TAG_NAME)) {
     return;

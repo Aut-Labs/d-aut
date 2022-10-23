@@ -11,8 +11,9 @@ import { OutputEventTypes } from './types/event-types';
 import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { RoundedWebButton } from './components/WebButton';
-import { SelectedNetworkConfig, setNetwork, setSigner } from './store/wallet-provider';
+import { SelectedNetworkConfig, setNetwork, setNetworks, setSigner } from './store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
+import { getAppConfig } from './services/web3/api';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
@@ -54,14 +55,15 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
 
   useEffect(() => {
     setAttrCallback(async (name: string, value: string, newVal: string) => {
-      if (name === 'network') {
-        await dispatch(setNetwork(newVal as string));
-      }
+      // if (name === 'network') {
+      //   await dispatch(setNetwork(newVal as string));
+      // }
     });
   });
 
   const selectEnvironment = async () => {
-    await dispatch(setNetwork(attributes.network as string));
+    // getAppConfig().then(async (res) => dispatch(setNetworks(res)));
+    // await dispatch(setNetwork(attributes.network as string));
   };
 
   const setAttributes = () => {

@@ -9,14 +9,13 @@ const DefaultProviders: Partial<BaseThunkArgs<any, any>> = {
     dispatch(updateTransactionState(state));
   },
 };
-
 export const Web3ThunkProviderFactory = <SWContractFunctions = any, SWContractEventTypes = any>(
   type: string,
   stateActions: BaseThunkArgs<SWContractFunctions, SWContractEventTypes>
 ) => {
   return <Returned, ThunkArg = any>(
     args: ThunkArgs<SWContractEventTypes>,
-    contractAddress: (thunkAPI: GetThunkAPI<AsyncThunkConfig>) => Promise<string>,
+    contractAddress: (thunkAPI: GetThunkAPI<AsyncThunkConfig>, args?: any) => Promise<string>,
     thunk: AsyncThunkPayloadCreator<SWContractFunctions, Returned, ThunkArg, AsyncThunkConfig>
   ): AsyncThunk<Returned, ThunkArg, AsyncThunkConfig> => {
     stateActions = {
@@ -27,15 +26,16 @@ export const Web3ThunkProviderFactory = <SWContractFunctions = any, SWContractEv
     // @ts-ignore
     return createAsyncThunk<Returned, ThunkArg, AsyncThunkConfig>(typeName, async (arg, thunkAPI) => {
       try {
-        const addressOrName = (await contractAddress(thunkAPI)) || (args as any)?.addressOrName;
+        const addressOrName = (await contractAddress(thunkAPI, arg)) || (args as any)?.addressOrName;
         if (!addressOrName) {
           throw new Error(`Could not find addressOrName for ${type}`);
         }
         let state = thunkAPI.getState() as any;
-        const { networkConfig } = state.walletProvider;
+        const { networksConfig, selectedNetwork } = state.walletProvider;
         let { signer } = state.walletProvider;
+        const network = networksConfig.find((n) => n.network === selectedNetwork);
 
-        await EnableAndChangeNetwork(signer.provider.provider, networkConfig);
+        await EnableAndChangeNetwork(signer.provider.provider, network);
         // get state again in case network was changed silently
         state = thunkAPI.getState() as any;
         signer = state.walletProvider.signer;

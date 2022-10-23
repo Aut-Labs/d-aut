@@ -1,24 +1,17 @@
-import { Web3AutIDProvider, Web3DAOExpanderProvider, Web3DAOExpanderRegistryProvider } from '@aut-protocol/abi-types';
+import { Web3AutIDProvider, Web3DAOExpanderProvider } from '@aut-protocol/abi-types';
+import axios from 'axios';
 import dateFormat from 'dateformat';
-import { createAsyncThunk } from '@reduxjs/toolkit';
 import * as ethers from 'ethers';
 import { Web3ThunkProviderFactory } from '../ProviderFactory/web3-thunk.provider';
 import { ipfsCIDToHttpUrl, storeImageAsBlob, storeMetadata } from '../storage/storage.hub';
-import { EnableAndChangeNetwork } from '../ProviderFactory/web3.network';
 import { BaseNFTModel } from './models';
-import { env } from './env';
-import { InternalErrorTypes, ParseErrorMessage } from '../../utils/error-parser';
-import {
-  setCommunityExtesnionAddress,
-  setJustJoining,
-  setTempUserData,
-  setUnjoinedCommunities,
-  updateErrorState,
-} from '../../store/aut.reducer';
+import { InternalErrorTypes } from '../../utils/error-parser';
+import { setTempUserData, updateErrorState } from '../../store/aut.reducer';
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
 import { base64toFile } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
 import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
+import { NetworkConfig } from '../ProviderFactory/web3.connectors';
 
 const communityProvider = Web3ThunkProviderFactory('Community', {
   provider: Web3DAOExpanderProvider,
@@ -77,8 +70,10 @@ export const mintMembership = autIdProvider(
     type: 'membership/mint',
   },
   (thunkAPI) => {
-    const { walletProvider } = thunkAPI.getState();
-    return Promise.resolve(walletProvider.networkConfig.autIdAddress);
+    const state = thunkAPI.getState() as any;
+    const { selectedNetwork, networksConfig } = state.walletProvider;
+    const config: NetworkConfig = networksConfig.find((n) => n.network === selectedNetwork);
+    return Promise.resolve(config.contracts.autIDAddress);
   },
   async (contract, args, thunkAPI) => {
     const { userData, walletProvider } = thunkAPI.getState();
@@ -141,8 +136,10 @@ export const joinCommunity = autIdProvider(
     type: 'membership/join',
   },
   (thunkAPI) => {
-    const { walletProvider } = thunkAPI.getState();
-    return Promise.resolve(walletProvider.networkConfig.autIdAddress);
+    const state = thunkAPI.getState() as any;
+    const { selectedNetwork, networksConfig } = state.walletProvider;
+    const config: NetworkConfig = networksConfig.find((n) => n.network === selectedNetwork);
+    return Promise.resolve(config.contracts.autIDAddress);
   },
   async (contract, args, thunkAPI) => {
     const { aut, userData } = thunkAPI.getState();
@@ -174,8 +171,10 @@ export const getAutId = autIdProvider(
     type: 'membership/get',
   },
   (thunkAPI) => {
-    const { walletProvider } = thunkAPI.getState();
-    return Promise.resolve(walletProvider.networkConfig.autIdAddress);
+    const state = thunkAPI.getState() as any;
+    const { selectedNetwork, networksConfig } = state.walletProvider;
+    const config: NetworkConfig = networksConfig.find((n) => n.network === selectedNetwork);
+    return Promise.resolve(config.contracts.autIDAddress);
   },
   async (contract, args, thunkAPI) => {
     const { aut, walletProvider } = thunkAPI.getState();
@@ -334,8 +333,10 @@ export const checkIfNameTaken = autIdProvider(
     type: 'membership/nametaken',
   },
   (thunkAPI) => {
-    const { walletProvider } = thunkAPI.getState();
-    return Promise.resolve(walletProvider.networkConfig.autIdAddress);
+    const state = thunkAPI.getState() as any;
+    const { selectedNetwork, networksConfig } = state.walletProvider;
+    const config: NetworkConfig = networksConfig.find((n) => n.network === selectedNetwork);
+    return Promise.resolve(config.contracts.autIDAddress);
   },
   async (contract, args) => {
     const tokenId = await contract.getAutIDHolderByUsername(args.username);
@@ -351,10 +352,14 @@ export const checkIfAutIdExists = autIdProvider(
     type: 'membership/exists',
   },
   (thunkAPI) => {
-    const { walletProvider } = thunkAPI.getState();
-    return Promise.resolve(walletProvider.networkConfig.autIdAddress);
+    const state = thunkAPI.getState() as any;
+    const { selectedNetwork, networksConfig } = state.walletProvider;
+    const config: NetworkConfig = networksConfig.find((n) => n.network === selectedNetwork);
+    debugger;
+    return Promise.resolve(config.contracts.autIDAddress);
   },
   async (contract, args, thunkAPI) => {
+    debugger;
     const { aut } = thunkAPI.getState();
     const { selectedAddress } = aut;
     const balanceOf = await contract.balanceOf(selectedAddress);
@@ -403,3 +408,7 @@ export const checkIfAutIdExists = autIdProvider(
     // }
   }
 );
+
+export const getAppConfig = (): Promise<NetworkConfig[]> => {
+  return axios.get(`https://api.skillwallet.id/api/autid/config/network/testing`).then((r) => r.data);
+};
