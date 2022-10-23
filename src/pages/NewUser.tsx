@@ -73,7 +73,7 @@ const NewUser: React.FunctionComponent = (props) => {
         title="WELCOME"
         subtitle={
           <>
-            First, import your wallet <br /> & claim your Role in your DAO
+            First, connect your wallet <br /> & claim your Role in your DAO
             {/* <span style={{ textDecoration: 'underline' }}>{autData.community?.name}!</span> */}
           </>
         }

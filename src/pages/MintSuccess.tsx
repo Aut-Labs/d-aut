@@ -32,7 +32,7 @@ const MintSuccess: React.FunctionComponent = () => {
       >
         <Box sx={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', mt: '45px' }}>
           <Box sx={{ me: '8px', flex: '2', display: 'flex', justifyContent: 'end', height: '100%' }}>
-            <Typography sx={{ maxWidth: '260px' }} variant="h4">
+            <Typography sx={{ maxWidth: '260px', wordBreak: 'break-all' }} variant="h4">
               I'm now a {userInput.roleName} @ {autData.community.name} 🎉
               <br />
               <br /> Look at my self-sovereign AutID,
@@ -62,9 +62,9 @@ const MintSuccess: React.FunctionComponent = () => {
           </Box>
         </Box>
         <TwitterShareButton
-          url={`https://my.aut.id/${userInput.username}`}
-          title={`I'm now a ${userInput.roleName} @${autData.community.name} 🎉
-Look at my self-sovereign AutID,
+          url={`https://my.aut.id/${selectedNetwork}/${userInput.username}`}
+          title={`I'm now a ${userInput.roleName} in ${autData.community.name} 🎉
+Look at my self-sovereign ĀutID,
 and follow my journey 🖖`}
           hashtags={['Aut', 'DAO', 'Blockchain']}
           className="social-button"

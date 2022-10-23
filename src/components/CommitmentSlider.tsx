@@ -6,27 +6,22 @@ import { FormHelperText } from './Fields';
 const CommitmentMessages = (value: number) => {
   switch (+value) {
     case 1:
-      return `Just lurking 👀`;
     case 2:
-      return 'gm gm 😪';
+      return 'Just lurking 👀';
     case 3:
-      return `gm gm 😪`;
     case 4:
       return 'gm gm 😪';
     case 5:
-      return `Trusted seed 🌱`;
     case 6:
-      return 'Trusted seed 🌱';
+      return 'builder ⚙️';
     case 7:
-      return `Trusted seed 🌱`;
     case 8:
-      return `It's a Soulbound ⛓️`;
+      return 'Trusted seed 🌱';
     case 9:
-      return `It's a Soulbound ⛓️`;
     case 10:
-      return `It's a Soulbound ⛓️`;
+      return 'Soulbound ⛓️';
     default:
-      return ``;
+      return 'Minimum Commitment Level for new Members.';
   }
 };
 

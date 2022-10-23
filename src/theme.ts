@@ -56,8 +56,8 @@ export const AutTheme = responsiveFontSizes(
         fontSize: '14px', // 1.25rem
       },
       body1: {
-        fontSize: '14px', // 0.875rem
-        letterSpacing: '2.5px',
+        fontSize: '12px', // 0.875rem
+        letterSpacing: '2px',
       },
       body2: {
         fontSize: '12px', // 0.75rem
