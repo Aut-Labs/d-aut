@@ -9,6 +9,7 @@ import Commitment from '../pages/Commitment';
 import Congratulations from '../pages/Congratulations';
 import MintSuccess from '../pages/MintSuccess';
 import PickUnjoinedDAO from '../pages/PickUnjoinedDAO';
+import NetworkSelect from '../pages/NetworkSelect';
 
 const routes: IRoute[] = [
   {
@@ -21,6 +22,12 @@ const routes: IRoute[] = [
     path: '/unjoined',
     name: 'Pick Unjoined',
     component: PickUnjoinedDAO,
+    exact: true,
+  },
+  {
+    path: '/networks',
+    name: 'Pick Network',
+    component: NetworkSelect,
     exact: true,
   },
   {

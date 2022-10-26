@@ -16,7 +16,6 @@ export interface WalletProviderState {
   signer: ethers.providers.JsonRpcSigner;
   selectedWalletType: 'metamask' | 'walletConnect';
   selectedNetwork: string;
-  networkConfig: any;
   isOpen: boolean;
   networksConfig: NetworkConfig[];
   connectors: [MetaMask | WalletConnect, Web3ReactHooks][];
@@ -29,7 +28,6 @@ const initialState: WalletProviderState = {
   selectedNetwork: null,
   networksConfig: [],
   isOpen: false,
-  networkConfig: [],
   connectors: [],
   wallets: {},
 };
@@ -66,27 +64,9 @@ export const walletProviderSlice = createSlice({
     setNetwork(state, action) {
       state.selectedNetwork = action.payload as string;
     },
-    setNetworkConfig(state, action) {
-      state.selectedNetwork = action.payload.network.chainName.toLowerCase();
-      state.networkConfig = action.payload;
-    },
     resetWalletProviderState: () => initialState,
   },
 });
-
-// export const setNetwork = createAsyncThunk('config/fetch', async (network: string, thunkAPI) => {
-//   const ntwrk = network === 'goerli' ? network : 'mumbai';
-//   const state = thunkAPI.getState() as any;
-//   const selectedNetwork = getNetwork(ntwrk);
-//   const response = await fetch(`https://api.skillwallet.id/api/autid/config/${ntwrk}`);
-//   const data = await response.json();
-//   // selectedNetwork.autIdAddress = '0x4957f46a74A1c6C9e761c46298A9975A3CD6b1B8';
-//   // selectedNetwork.communityRegistryAddress = '0xa9d390c4E576A1a73F5171E80aE58651cFF8eab2';
-//   selectedNetwork.autIdAddress = data.autIDAddress;
-//   selectedNetwork.communityRegistryAddress = data.daoExpanderRegistryAddress;
-//   await thunkAPI.dispatch(walletProviderSlice.actions.setNetworkConfig(selectedNetwork));
-//   return response;
-// });
 
 export const { setSigner, setWallet, setProviderIsOpen, setNetworks, setNetwork } = walletProviderSlice.actions;
 

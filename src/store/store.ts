@@ -25,7 +25,10 @@ const rootReducer = (state, action) => {
       userData: {
         ...initUserDataState,
       },
-      walletProvider: state.walletProvider,
+      walletProvider: {
+        ...state.walletProvider,
+        selectedNetwork: null,
+      },
     };
   }
   return appReducer(state, action);

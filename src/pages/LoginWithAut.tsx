@@ -1,112 +1,119 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { autState, setSelectedAddress } from '../store/aut.reducer';
 import { Box } from '@mui/material';
-import { ReactComponent as Metamask } from '../assets/metamask.svg';
-import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
 import { useAppDispatch } from '../store/store.model';
-import { AutButton, ButtonIcon } from '../components/AutButton';
-import { getAutId } from '../services/web3/api';
+import { checkAvailableNetworksAndGetAutId } from '../services/web3/api';
 import { AutPageBox } from '../components/AutPageBox';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { AutHeader } from '../components/AutHeader';
 import { useSelector } from 'react-redux';
-import { SelectedNetworkConfig, setWallet } from '../store/wallet-provider';
+import { ConnectorTypes, IsConnected, NetworksConfig, NetworkWalletConnectors, setNetwork } from '../store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
-
-// const provider = new WalletConnectProvider({
-//   rpc: {
-//     80001: 'https://matic-mumbai.chainstacklabs.com',
-//   },
-// });
-// const [metamaskConnector] = metaMaskConnector;
-// const [wcConnector] = walletConnectConnector;
+import ConnectorBtn from '../components/ConnectorButton';
+import type { Connector } from '@web3-react/types';
+import NetworkSelector from '../components/NetworkSelector';
 
 const LoginWithSkillWallet: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const autData = useSelector(autState);
-  const networkConfig = useSelector(SelectedNetworkConfig);
+  const [selectingNetwork, setSelectingNetwork] = useState(false);
+  const networks = useSelector(NetworksConfig);
+  const [connector, setConnector] = useState<Connector>(null);
+  const connectors = useSelector(NetworkWalletConnectors);
   const history = useHistory();
   const { isActive, provider, account } = useWeb3React();
-
-  // useEffect(() => {
-  //   if (autData.provider && autData.isWalletConnect) {
-  //     autData.provider.once('accountsChanged', async (accounts: string[]) => {
-  //       await dispatch(setSelectedAddress(accounts[0]));
-
-  //       const result = await dispatch(getAutId(null));
-  //       if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
-  //         history.push('/role');
-  //       }
-  //     });
-  //   }
-  // }, [autData.provider]);
+  const isConnected = useSelector(IsConnected);
 
   useEffect(() => {
-    // console.log(isActive);
     const activate = async () => {
-      if (isActive) {
-        const res = await dispatch(setSelectedAddress(account));
-        const result = await dispatch(getAutId(null));
+      if (isActive && isConnected) {
+        console.log('SHHIIIIIIIIIIT');
+        console.log('SHHIIIIIIIIIIT');
+        console.log('SHHIIIIIIIIIIT');
+        console.log('SHHIIIIIIIIIIT');
+        console.log('POOO OO');
+        console.log('POOO OO');
+        console.log('POOO OO');
+        console.log('POOO OO');
+        console.log('POOO OO');
+        console.log('POOO OO');
+        console.log('POOO OO');
+        await dispatch(setSelectedAddress(account));
+        const result = await dispatch(checkAvailableNetworksAndGetAutId(null));
+        if (result.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
+          // await connector.deactivate();
+          history.push('/networks');
+        }
         if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
           history.push('/unjoined');
         }
       }
     };
     activate();
-  }, [isActive]);
+  }, [isActive, isConnected]);
 
-  const handleWalletConnectClick = async () => {
-    // await wcConnector.activate();
-    // await dispatch(setWallet('walletConnect'));
+  const switchNetwork = async (c: Connector, chainId: number) => {
+    if (!c) {
+      return;
+    }
+    await c.deactivate();
+    await c.activate(chainId);
+    const config = networks.find((n) => n.chainId?.toString() === chainId?.toString());
+    try {
+      await dispatch(setNetwork(config.network));
+    } catch (error) {
+      // console.log(error);
+    }
   };
 
-  const handleMetamaskClick = async () => {
-    // await metamaskConnector.activate();
-    // await dispatch(setWallet('metamask'));
-    // await dispatch(switchToMetaMask());
-    // const result = await dispatch(getAutId(null));
-    // if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
-    //   history.push('/role');
-    // }
+  const changeConnector = async (c: Connector) => {
+    // @ts-ignore
+    const foundChainId = Number(c?.provider?.chainId);
+    const index = networks.map((n) => n.chainId?.toString()).indexOf(foundChainId?.toString());
+    const chainAllowed = index !== -1;
+    if (chainAllowed) {
+      await switchNetwork(c, foundChainId);
+    } else {
+      setConnector(c);
+      setSelectingNetwork(true);
+    }
+  };
+
+  const changeNetwork = async (chainId) => {
+    await switchNetwork(connector, chainId);
   };
 
   return (
-    <AutPageBox>
-      <AutHeader logoId="new-user-logo" title=" WELCOME BACK" />
-      <Box
-        sx={{
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <AutButton
-          startIcon={
-            <ButtonIcon>
-              <Metamask />
-            </ButtonIcon>
-          }
-          sx={{ mt: '29px' }}
-          onClick={handleMetamaskClick}
-        >
-          Metamask
-        </AutButton>
-        <AutButton
-          onClick={handleWalletConnectClick}
-          startIcon={
-            <ButtonIcon>
-              <WalletConnect />
-            </ButtonIcon>
-          }
-          sx={{ mt: '30px' }}
-        >
-          WalletConnect
-        </AutButton>
-      </Box>
-    </AutPageBox>
+    <>
+      {selectingNetwork ? (
+        <NetworkSelector
+          onSelect={async (chainId) => {
+            await changeNetwork(chainId);
+            setSelectingNetwork(false);
+          }}
+          onBack={() => {
+            setSelectingNetwork(false);
+          }}
+        />
+      ) : (
+        <AutPageBox>
+          <AutHeader logoId="new-user-logo" title=" WELCOME BACK" />
+          <Box
+            sx={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <ConnectorBtn setConnector={changeConnector} connectorType={ConnectorTypes.Metamask} />
+            <ConnectorBtn setConnector={changeConnector} connectorType={ConnectorTypes.WalletConnect} />
+          </Box>
+        </AutPageBox>
+      )}
+    </>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box, Button, styled, Typography } from '@mui/material';
-import { community } from '../store/aut.reducer';
+import { autState, community } from '../store/aut.reducer';
 import BackButton from '../components/BackButton';
 import { useAppDispatch } from '../store/store.model';
 import { fetchCommunity } from '../services/web3/api';
@@ -12,10 +12,13 @@ import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { FormWrapper } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
+import { useWeb3React } from '@web3-react/core';
 
 const UserRole: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const { connector } = useWeb3React();
+  const autData = useSelector(autState);
   const communityData = useSelector(community);
 
   const handleRoleSelect = (role) => {
@@ -32,8 +35,12 @@ const UserRole: React.FunctionComponent = (props) => {
     }
   }, []);
 
-  const handleBackClick = async () => {
-    history.goBack();
+  const deactivateConnector = async () => {
+    if (autData.justJoin) {
+      if (connector) {
+        await connector.deactivate();
+      }
+    }
   };
 
   return (
@@ -41,6 +48,7 @@ const UserRole: React.FunctionComponent = (props) => {
       <AutHeader
         logoId="role-logo"
         title="WELCOME"
+        backAction={deactivateConnector}
         subtitle={
           <>
             Pick what you’re the best at, <br /> & be rewarded for it!

@@ -19,6 +19,12 @@ export interface NetworkConfig {
   contracts: NetworkContracts;
 }
 
+export interface AutId {
+  tokenId: string;
+  metadataUri: string;
+  network: string;
+}
+
 export const initializeConnectors = (networks: NetworkConfig[]) => {
   const { supportedChainIds, rpcUrls } = networks.reduce(
     (prev, curr) => {
