@@ -1,14 +1,12 @@
 import React from 'react';
-import { Box, Button, Link, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { TwitterShareButton } from 'react-share';
-import AutLogo from '../components/AutLogo';
-import { AutButton, SmallerAutButton } from '../components/AutButton';
+import { SmallerAutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { pxToRem } from '../services/web3/utils';
 import { userData } from '../store/user-data.reducer';
 import { SelectedNetwork } from '../store/wallet-provider';
 
@@ -17,14 +15,6 @@ const Congratulations: React.FunctionComponent = () => {
   const autData = useSelector(autState);
   const selectedNetwork = useSelector(SelectedNetwork);
   const userInput = useSelector(userData);
-
-  const handleShareClicked = () => {
-    // console.log('SHARE');
-  };
-
-  const handleSeeProfile = () => {
-    // console.log('Seeprofile');
-  };
 
   return (
     <AutPageBox>
@@ -36,7 +26,7 @@ const Congratulations: React.FunctionComponent = () => {
           <>
             <br />
             <br />
-            You are now a {userInput.roleName} in {autData.community.name}.
+            You are now {userInput.roleName} in {autData.community.name}.
             <br /> Let it be known to the people of the Internet
             <br /> or check out your beautiful NFT ID in your public profile.
             <br />
@@ -58,13 +48,12 @@ const Congratulations: React.FunctionComponent = () => {
       >
         <TwitterShareButton
           url={`https://my.aut.id/${selectedNetwork}/${autData.tempUserData.username}`}
-          title={`I just joined ${autData.community.name}. Check out my AutId!`}
+          title={`I just joined ${autData.community.name}. Check out my ĀutId!`}
           hashtags={['Aut', 'DAO', 'Blockchain']}
           className="social-button"
         >
           <SmallerAutButton component="div">SHARE NOW</SmallerAutButton>
         </TwitterShareButton>
-        {/* <SmallerAutButton onClick={handleShareClicked}>SHARE</SmallerAutButton> */}
         <SmallerAutButton
           onClick={() => {
             window.open(`https://my.aut.id/${selectedNetwork}/${autData.tempUserData.username}`, '_blank');

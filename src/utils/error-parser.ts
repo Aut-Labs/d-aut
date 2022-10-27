@@ -75,6 +75,9 @@ export const METAMASK_POSSIBLE_ERRORS = {
     standard: 'EIP-1193',
     message: 'User rejected the request.',
   },
+  ACTION_REJECTED: {
+    message: 'User rejected the request.',
+  },
   '4100': {
     standard: 'EIP-1193',
     message: 'The requested account and/or method has not been authorized by the user.',
@@ -94,23 +97,25 @@ export const METAMASK_POSSIBLE_ERRORS = {
 };
 
 export enum InternalErrorTypes {
-  AutIDAlreadyExistsForAddress = 'AutID already exists for this address.',
   FoundAutIDOnMultipleNetworks = 'Found AutID on multiple networks.',
   FoundAnAutIDOnADifferentNetwork = 'Found an AutID on a different network.',
   FailedToSwitchNetwork = 'Failed to switch network.',
   AutIDNotFound = 'AutID was not found.',
-  AutIDAlreadyInThisCommunity = 'Your AutID is already a member of this DAO.',
+  AutIDAlreadyExistsForAddress = 'ĀutID already exists for this address.',
+  AutIDAlreadyInThisCommunity = 'Your ĀutID is already a member of this DAO.',
   UsernameAlreadyTaken = 'This username is already taken.',
   UserHasUnjoinedCommunities = 'User has unjoined DAOs.',
   GatewayTimedOut = 'IPFS: Gateway timed out.',
-  UserNotAMemberOfThisDaoMint = 'Failed to mint AutID. Your address is not a member of this DAO.',
-  UserNotAMemberOfThisDaoJoin = 'Failed to join. Your AutID is not a member of this DAO.',
+  UserNotAMemberOfThisDaoMint = 'Failed to mint āutID. Your address is not a member of this DAO.',
+  UserNotAMemberOfThisDaoJoin = 'Failed to join. Your āutID is not a member of this DAO.',
 }
 
 export const ParseErrorMessage = (error: any) => {
-  if (!error) {
-    return error;
+  const metamaskError = METAMASK_POSSIBLE_ERRORS[error?.code];
+  if (metamaskError) {
+    return metamaskError.message;
   }
+
   if (Object.values(InternalErrorTypes).includes(error.message)) {
     return error.message;
   }
@@ -144,11 +149,6 @@ export const ParseErrorMessage = (error: any) => {
       return 'Something went wrong';
     }
     return error.message;
-  }
-
-  const metamaskError = METAMASK_POSSIBLE_ERRORS[error?.code];
-  if (metamaskError) {
-    return metamaskError.message;
   }
 
   if (isJson(error)) {

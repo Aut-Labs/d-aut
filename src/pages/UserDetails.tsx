@@ -92,6 +92,7 @@ const UserDetails: React.FunctionComponent = (props) => {
             render={({ field: { name, value, onChange }, formState }) => (
               // <TextField onChange={onChange} value={value} label="username" />
               <AutTextField
+                inputProps={{ maxLength: 16 }}
                 width="360"
                 variant="standard"
                 required

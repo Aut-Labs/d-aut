@@ -120,12 +120,9 @@ export const mintMembership = autIdProvider(
     // console.log('Commitment -> ', commitment);
 
     const { aut } = thunkAPI.getState();
-    try {
-      const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.communityExtensionAddress;
-      await contract.mint(username, cid, role, commitment, requiredAddress);
-    } catch (e) {
-      throw new Error(InternalErrorTypes.UserNotAMemberOfThisDaoMint);
-    }
+    const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.communityExtensionAddress;
+    await contract.mint(username, cid, role, commitment, requiredAddress);
+
     await thunkAPI.dispatch(setUserData({ badge: ipfsCIDToHttpUrl(metadataJsons.image) }));
     // return true;
     return true;
@@ -146,23 +143,20 @@ export const joinCommunity = autIdProvider(
     const { aut, userData } = thunkAPI.getState();
     const { selectedAddress } = aut;
 
-    try {
-      const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.communityExtensionAddress;
-      await contract.joinDAO(userData.role, userData.commitment, requiredAddress, {
-        gasLimit: 2000000,
-      });
-      const tokenId = await contract.getAutIDByOwner(selectedAddress);
-      const tokenURI = await contract.tokenURI(tokenId);
-      const response = await fetch(ipfsCIDToHttpUrl(tokenURI));
-      if (response.status === 504) {
-        throw new Error(InternalErrorTypes.GatewayTimedOut);
-      }
-      const autId = await response.json();
-
-      await thunkAPI.dispatch(setTempUserData({ username: autId.name }));
-    } catch (e) {
-      throw new Error(InternalErrorTypes.UserNotAMemberOfThisDaoJoin);
+    const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.communityExtensionAddress;
+    await contract.joinDAO(userData.role, userData.commitment, requiredAddress, {
+      gasLimit: 2000000,
+    });
+    const tokenId = await contract.getAutIDByOwner(selectedAddress);
+    const tokenURI = await contract.tokenURI(tokenId);
+    const response = await fetch(ipfsCIDToHttpUrl(tokenURI));
+    if (response.status === 504) {
+      throw new Error(InternalErrorTypes.GatewayTimedOut);
     }
+    const autId = await response.json();
+
+    await thunkAPI.dispatch(setTempUserData({ username: autId.name }));
+
     return true;
   }
 );
@@ -570,24 +564,6 @@ export const checkIfAutIdExists = autIdProvider(
       }
     }
     return hasAutId;
-    // const tokenId = await contract.getAutIDByOwner(selectedAddress);
-    // if (tokenId) {
-    //   await thunkAPI.dispatch(setJustJoining(true));
-    //   // return true;
-    //   throw new Error(InternalErrorTypes.AutIDAlreadyExistsForAddress);
-    // }
-    // const tokenURI = await contract.tokenURI(tokenId);
-    // const response = await fetch(ipfsCIDToHttpUrl(tokenURI));
-    // const autId = await response.json();
-
-    //   return false;
-    // } catch (error) {
-    //   if (error?.code === 'CALL_EXCEPTION') {
-    //     if (error?.reason?.toString().includes('The AutID owner is invalid')) return false;
-    //   }
-    //   // console.log(error);
-    //   throw error;
-    // }
   }
 );
 

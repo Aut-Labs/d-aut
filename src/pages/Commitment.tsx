@@ -35,10 +35,14 @@ const Commitment: React.FunctionComponent = (props) => {
     // console.log(data);
     if (coreState.justJoin) {
       const result = await dispatch(joinCommunity(null));
-      history.push('congrats');
+      if (!(result as any).error) {
+        history.push('congrats');
+      }
     } else {
       const result = await dispatch(mintMembership(null));
-      history.push('mintsuccess');
+      if (!(result as any).error) {
+        history.push('mintsuccess');
+      }
     }
   };
 

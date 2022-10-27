@@ -300,13 +300,13 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="h4">
+                  <Typography sx={{ color: '#FFF', width: '100%' }} variant="body1">
                     {userData.name}
                   </Typography>
                   <Box
                     component="img"
                     sx={{
-                      width: '77px',
+                      width: pxToRem(50),
                       maxWidth: '100%',
                     }}
                     alt="User image."
@@ -368,13 +368,13 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="body1">
+                  <Typography sx={{ color: '#FFF', width: '100%' }} variant="body1">
                     {userData.name}
                   </Typography>
                   <Box
                     component="img"
                     sx={{
-                      width: '77px',
+                      width: pxToRem(50),
                       maxWidth: '100%',
                     }}
                     alt="User image."
@@ -435,13 +435,13 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="body1">
+                  <Typography sx={{ color: '#FFF', width: '100%' }} variant="body1">
                     {userData.name}
                   </Typography>
                   <Box
                     component="img"
                     sx={{
-                      width: '77px',
+                      width: pxToRem(50),
                       maxWidth: '100%',
                     }}
                     alt="User image."
@@ -504,13 +504,13 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="body1">
+                  <Typography sx={{ color: '#FFF', width: '100%' }} variant="body1">
                     {userData.name}
                   </Typography>
                   <Box
                     component="img"
                     sx={{
-                      width: '77px',
+                      width: pxToRem(50),
                       maxWidth: '100%',
                     }}
                     alt="User image."
@@ -571,13 +571,13 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#000' }} variant="body1">
+                  <Typography sx={{ color: '#000', width: '100%' }} variant="body1">
                     {userData.name}
                   </Typography>
                   <Box
                     component="img"
                     sx={{
-                      width: '77px',
+                      width: pxToRem(50),
                       maxWidth: '100%',
                     }}
                     alt="User image."
@@ -638,13 +638,13 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#000' }} variant="body1">
+                  <Typography sx={{ color: '#000', width: '100%' }} variant="body1">
                     {userData.name}
                   </Typography>
                   <Box
                     component="img"
                     sx={{
-                      width: '77px',
+                      width: pxToRem(50),
                       maxWidth: '100%',
                     }}
                     alt="User image."
@@ -705,13 +705,13 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                     justifyContent: 'space-between',
                   }}
                 >
-                  <Typography sx={{ ml: '18px', color: '#FFF' }} variant="body1">
+                  <Typography sx={{ color: '#FFF', width: '100%' }} variant="body1">
                     {userData.name}
                   </Typography>
                   <Box
                     component="img"
                     sx={{
-                      width: '77px',
+                      width: pxToRem(50),
                       maxWidth: '100%',
                     }}
                     alt="User image."
