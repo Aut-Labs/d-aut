@@ -178,7 +178,6 @@ export const getAutId = autIdProvider(
     return Promise.resolve(config.contracts.autIDAddress);
   },
   async (contract, args, thunkAPI) => {
-    debugger;
     const { aut, walletProvider } = thunkAPI.getState();
     const { selectedAddress } = aut;
     const tokenId = await contract.getAutIDByOwner(selectedAddress);
@@ -540,11 +539,9 @@ export const checkIfAutIdExists = autIdProvider(
     const state = thunkAPI.getState() as any;
     const { selectedNetwork, networksConfig } = state.walletProvider;
     const config: NetworkConfig = networksConfig.find((n) => n.network === selectedNetwork);
-    debugger;
     return Promise.resolve(config.contracts.autIDAddress);
   },
   async (contract, args, thunkAPI) => {
-    debugger;
     const { aut } = thunkAPI.getState();
     const { selectedAddress } = aut;
     const balanceOf = await contract.balanceOf(selectedAddress);
@@ -600,10 +597,9 @@ export const getAppConfig = (): Promise<NetworkConfig[]> => {
 
 export const scanNetworks = createAsyncThunk('membership/scan', async (address: string, thunkAPI) => {
   try {
-    const result = await axios.get(`http://localhost:4005/api/autid/scanNetworks/${address}`);
+    const result = await axios.get(`https://api.skillwallet.id/api/autid/scanNetworks/${address}`);
     return result.data;
   } catch (e) {
-    debugger;
     if (e.response.status === 404) {
       throw new Error(InternalErrorTypes.AutIDNotFound);
     } else {

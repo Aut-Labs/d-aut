@@ -22,7 +22,7 @@ export interface WalletProviderState {
   wallets: any;
 }
 
-const initialState: WalletProviderState = {
+export const initialState: WalletProviderState = {
   signer: null,
   selectedWalletType: null,
   selectedNetwork: null,
@@ -61,14 +61,14 @@ export const walletProviderSlice = createSlice({
       };
       state.connectors = connectors;
     },
-    setNetwork(state, action) {
+    setSelectedNetwork(state, action) {
       state.selectedNetwork = action.payload as string;
     },
     resetWalletProviderState: () => initialState,
   },
 });
 
-export const { setSigner, setWallet, setProviderIsOpen, setNetworks, setNetwork } = walletProviderSlice.actions;
+export const { setSigner, setWallet, setProviderIsOpen, setNetworks, setSelectedNetwork } = walletProviderSlice.actions;
 
 export const NetworkSelectorIsOpen = (state: any) => state.walletProvider.isOpen as boolean;
 export const NetworksConfig = (state: any) => state.walletProvider.networksConfig as NetworkConfig[];
@@ -77,10 +77,9 @@ export const SelectedWalletType = (state: any) => state.walletProvider.selectedW
 export const SelectedNetwork = (state: any) => state.walletProvider.selectedNetwork as string;
 export const NetworkSigner = (state: any) => state.walletProvider.signer as ethers.providers.JsonRpcSigner;
 export const NetworkWalletConnectors = (state: any) => state.walletProvider.wallets as any;
-export const SelectedNetworkConfig = (state: any) => state.walletProvider.networkConfig as any;
 
-export const IsConnected = createSelector(SelectedNetworkConfig, NetworkSigner, SelectedNetwork, (network, signer, selectedNetwork) => {
-  return !!network && !!signer && !!selectedNetwork;
+export const IsConnected = createSelector(NetworkSigner, SelectedNetwork, (signer, selectedNetwork) => {
+  return !!signer && !!selectedNetwork;
 });
 
 export const NetworkConnector = (connectorName: string) => createSelector(NetworkWalletConnectors, (c) => c[connectorName]);

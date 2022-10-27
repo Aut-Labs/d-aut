@@ -118,6 +118,9 @@ export const autSlice = createSlice({
     setAutIdsOnDifferentNetworks(state, action: ActionPayload<AutId[]>) {
       state.autIdsOnDifferentNetworks = action.payload;
     },
+    setStatus(state, action) {
+      state.status = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -215,6 +218,7 @@ export const {
   setTempUserData,
   setSelectedUnjoinedCommunityAddress,
   setAutIdsOnDifferentNetworks,
+  setStatus,
 } = autSlice.actions;
 
 export const community = createSelector(

@@ -8,81 +8,56 @@ import { AutPageBox } from '../components/AutPageBox';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { AutHeader } from '../components/AutHeader';
 import { useSelector } from 'react-redux';
-import { ConnectorTypes, IsConnected, NetworksConfig, NetworkWalletConnectors, setNetwork } from '../store/wallet-provider';
+import { ConnectorTypes, IsConnected, NetworksConfig, NetworkWalletConnectors, SelectedNetwork } from '../store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
 import ConnectorBtn from '../components/ConnectorButton';
 import type { Connector } from '@web3-react/types';
 import NetworkSelector from '../components/NetworkSelector';
+import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
+import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
 
 const LoginWithSkillWallet: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const autData = useSelector(autState);
-  const [selectingNetwork, setSelectingNetwork] = useState(false);
+  // const [selectingNetwork, setSelectingNetwork] = useState(false);
   const networks = useSelector(NetworksConfig);
+  const selectedNetwork = useSelector(SelectedNetwork);
   const [connector, setConnector] = useState<Connector>(null);
   const connectors = useSelector(NetworkWalletConnectors);
   const history = useHistory();
-  const { isActive, provider, account } = useWeb3React();
+  const { isActive, provider, account, chainId } = useWeb3React();
   const isConnected = useSelector(IsConnected);
 
-  useEffect(() => {
-    const activate = async () => {
-      if (isActive && isConnected) {
-        console.log('SHHIIIIIIIIIIT');
-        console.log('SHHIIIIIIIIIIT');
-        console.log('SHHIIIIIIIIIIT');
-        console.log('SHHIIIIIIIIIIT');
-        console.log('POOO OO');
-        console.log('POOO OO');
-        console.log('POOO OO');
-        console.log('POOO OO');
-        console.log('POOO OO');
-        console.log('POOO OO');
-        console.log('POOO OO');
-        await dispatch(setSelectedAddress(account));
-        const result = await dispatch(checkAvailableNetworksAndGetAutId(null));
-        if (result.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
-          // await connector.deactivate();
-          history.push('/networks');
-        }
-        if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
-          history.push('/unjoined');
-        }
-      }
-    };
-    activate();
-  }, [isActive, isConnected]);
+  // useEffect(() => {
+  //   const activate = async () => {
+  //     if (isActive && isConnected) {
+  //       await dispatch(setSelectedAddress(account));
+  //       const result = await dispatch(checkAvailableNetworksAndGetAutId(null));
+  //       if (result.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
+  //         // await connector.deactivate();
+  //         history.push('/networks');
+  //       }
+  //       if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
+  //         history.push('/unjoined');
+  //       }
+  //     }
+  //   };
+  //   activate();
+  // }, [isActive, isConnected]);
 
-  const switchNetwork = async (c: Connector, chainId: number) => {
-    if (!c) {
-      return;
+  const onConnected = async () => {
+    // await dispatch(setSelectedAddress(account));
+    const result = await dispatch(checkAvailableNetworksAndGetAutId(null));
+    if (result.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
+      // await connector.deactivate();
+      history.push('/networks');
     }
-    await c.deactivate();
-    await c.activate(chainId);
-    const config = networks.find((n) => n.chainId?.toString() === chainId?.toString());
-    try {
-      await dispatch(setNetwork(config.network));
-    } catch (error) {
-      // console.log(error);
+    if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
+      history.push('/unjoined');
     }
   };
 
-  const changeConnector = async (c: Connector) => {
-    // @ts-ignore
-    const foundChainId = Number(c?.provider?.chainId);
-    const index = networks.map((n) => n.chainId?.toString()).indexOf(foundChainId?.toString());
-    const chainAllowed = index !== -1;
-    if (chainAllowed) {
-      await switchNetwork(c, foundChainId);
-    } else {
-      setConnector(c);
-      setSelectingNetwork(true);
-    }
-  };
-
-  const changeNetwork = async (chainId) => {
-    await switchNetwork(connector, chainId);
-  };
+  const { selectingNetwork, changeConnector, setSelectingNetwork, changeNetwork } = useWeb3ReactConnectorHook({ onConnected });
 
   return (
     <>

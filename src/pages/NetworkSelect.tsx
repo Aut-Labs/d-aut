@@ -5,7 +5,14 @@ import { useHistory } from 'react-router-dom';
 import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
-import { autState, setSelectedAddress, setSelectedUnjoinedCommunityAddress } from '../store/aut.reducer';
+import {
+  autState,
+  ResultState,
+  setSelectedAddress,
+  setSelectedUnjoinedCommunityAddress,
+  setStatus,
+  updateErrorState,
+} from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { useWeb3React } from '@web3-react/core';
 import { Controller, useForm } from 'react-hook-form';
@@ -14,9 +21,10 @@ import { AutSelectField, FormHelperText } from '../components/Fields';
 import { useAppDispatch } from '../store/store.model';
 import { fetchCommunity, getAutId } from '../services/web3/api';
 import { AutId } from '../services/ProviderFactory/web3.connectors';
-import { IsConnected, NetworksConfig, SelectedNetwork, setNetwork } from '../store/wallet-provider';
+import { IsConnected, NetworksConfig, SelectedNetwork, setSelectedNetwork } from '../store/wallet-provider';
 import { Connector } from '@web3-react/types';
 import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
+import { InternalErrorTypes } from '../utils/error-parser';
 
 const NetworkSelect: React.FunctionComponent = () => {
   const history = useHistory();
@@ -33,35 +41,6 @@ const NetworkSelect: React.FunctionComponent = () => {
     },
   });
 
-  // useEffect(() => {
-  //   const activate = async () => {
-  //     if (isActive && isConnected) {
-  //       debugger;
-  //       await dispatch(setSelectedAddress(account));
-  //       await dispatch(getAutId(null));
-  //       // if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
-  //       //   history.push('/unjoined');
-  //       // }
-  //     }
-  //   };
-  //   activate();
-  // }, [isActive, isConnected]);
-
-  // const switchNetwork = async (c: Connector, chainId: number) => {
-  //   if (!c) {
-  //     return;
-  //   }
-  //   await c.deactivate();
-  //   await c.activate(chainId);
-  //   const config = networkConfigs.find((n) => n.chainId?.toString() === chainId?.toString());
-  //   try {
-  //     await EnableAndChangeNetwork(c.provider, config);
-  //     await dispatch(setNetwork(config.network));
-  //   } catch (error) {
-  //     // console.log(error);
-  //   }
-  // };
-
   const checkNetwork = async (selectedNetwork) => {
     const network = networkConfigs.find((n) => n.network === selectedNetwork);
     // @ts-ignore
@@ -69,24 +48,24 @@ const NetworkSelect: React.FunctionComponent = () => {
     if (foundChainId === network.chainId) {
       await dispatch(getAutId(null));
     } else {
-      await dispatch(setNetwork(network.network));
-      // await EnableAndChangeNetwork(connector.provider, network);
+      await dispatch(setSelectedNetwork(network.network));
+      try {
+        await EnableAndChangeNetwork(connector.provider, network);
+      } catch (e) {
+        await dispatch(setStatus(ResultState.Failed));
+        dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
+      }
       await dispatch(getAutId(null));
     }
   };
 
-  // const changeNetwork = async (chainId) => {
-  //   debugger;
-  //   const index = networkConfigs.map((n) => n.chainId?.toString()).indexOf(chainId?.toString());
-  //   await switchNetwork(connector, chainId);
-  // };
-
   const onSubmit = async (data: any) => {
+    await dispatch(setStatus(ResultState.Loading));
     await checkNetwork(data.network);
   };
 
   const onBackClicked = async () => {
-    await dispatch(setNetwork(null));
+    await dispatch(setSelectedNetwork(null));
     if (connector) {
       await connector.deactivate();
     }
