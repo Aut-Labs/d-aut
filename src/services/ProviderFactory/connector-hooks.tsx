@@ -18,7 +18,6 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
 
   useEffect(() => {
     if (provider && isActive && selectedNetwork) {
-      debugger;
       dispatch(setSigner(provider.getSigner()));
       dispatch(setSelectedAddress(account));
       if (onConnected) {
@@ -49,7 +48,6 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
     const foundChainId = Number(c?.provider?.chainId);
     const index = networks.map((n) => n.chainId?.toString()).indexOf(foundChainId?.toString());
     const chainAllowed = index !== -1;
-    debugger;
     if (chainAllowed) {
       await switchNetwork(c, foundChainId);
     } else {
