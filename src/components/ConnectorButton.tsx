@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { ReactComponent as Metamask } from '../assets/metamask.svg';
 import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
-import { Typography } from '@mui/material';
+import { SxProps, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../store/store.model';
 import { pxToRem } from '../services/web3/utils';
 import { ConnectorTypes, NetworkConnector, setWallet } from '../store/wallet-provider';
 import { AutButton } from './AutButton';
+import { margin } from '@mui/system';
 
 const btnConfig = {
   [ConnectorTypes.Metamask]: {
@@ -19,7 +20,15 @@ const btnConfig = {
   },
 };
 
-export default function ConnectorBtn({ connectorType, setConnector }: { connectorType: ConnectorTypes; setConnector: any }) {
+export default function ConnectorBtn({
+  connectorType,
+  setConnector,
+  marginTop,
+}: {
+  connectorType: ConnectorTypes;
+  setConnector: any;
+  marginTop?: number;
+}) {
   const dispatch = useAppDispatch();
   const [connector] = useSelector(NetworkConnector(connectorType));
 
@@ -40,7 +49,7 @@ export default function ConnectorBtn({ connectorType, setConnector }: { connecto
         width: pxToRem(260),
         height: pxToRem(55),
         fontSize: pxToRem(16),
-        mb: pxToRem(25),
+        marginTop: pxToRem(marginTop || 0),
         textTransform: 'inherit',
         '&.MuiButton-root': {
           letterSpacing: '0px',

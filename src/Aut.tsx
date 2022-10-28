@@ -11,9 +11,8 @@ import { OutputEventTypes } from './types/event-types';
 import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { RoundedWebButton } from './components/WebButton';
-import { setSelectedNetwork, setSigner } from './store/wallet-provider';
+import { setSelectedNetwork } from './store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
-import { useWeb3ReactConnectorHook } from './services/ProviderFactory/connector-hooks';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();

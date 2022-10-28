@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { TwitterShareButton } from 'react-share';
@@ -8,7 +8,6 @@ import { AutPageBox } from '../components/AutPageBox';
 import { userData } from '../store/user-data.reducer';
 import { autState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { FormAction } from '../components/FormHelpers';
 import { SelectedNetwork } from '../store/wallet-provider';
 
 const MintSuccess: React.FunctionComponent = () => {

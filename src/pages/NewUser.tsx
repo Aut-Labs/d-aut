@@ -1,27 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box } from '@mui/material';
-import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../store/store.model';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
-import { setJustJoining, setSelectedAddress } from '../store/aut.reducer';
-import type { Connector } from '@web3-react/types';
+import { setJustJoining } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { useWeb3React } from '@web3-react/core';
-import { ConnectorTypes, IsConnected, NetworksConfig } from '../store/wallet-provider';
+import { ConnectorTypes } from '../store/wallet-provider';
 import ConnectorBtn from '../components/ConnectorButton';
-import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import NetworkSelector from '../components/NetworkSelector';
 import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
 
 const NewUser: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
-  const networks = useSelector(NetworksConfig);
   const history = useHistory();
-  const [connector, setConnector] = useState<Connector>(null);
-  const { isActive, account } = useWeb3React();
-  const isConnected = useSelector(IsConnected);
 
   const checkForExistingAutId = async () => {
     const hasAutId = await dispatch(checkIfAutIdExists(null));
@@ -36,16 +28,6 @@ const NewUser: React.FunctionComponent = (props) => {
       }
     }
   };
-
-  // useEffect(() => {
-  //   const activate = async () => {
-  //     if (isActive && isConnected) {
-  //       const res = await dispatch(setSelectedAddress(account));
-  //       await checkForExistingAutId();
-  //     }
-  //   };
-  //   activate();
-  // }, [isActive, isConnected]);
 
   const onConnected = async () => {
     await checkForExistingAutId();
@@ -86,8 +68,8 @@ const NewUser: React.FunctionComponent = (props) => {
               alignItems: 'center',
             }}
           >
-            <ConnectorBtn setConnector={changeConnector} connectorType={ConnectorTypes.Metamask} />
-            <ConnectorBtn setConnector={changeConnector} connectorType={ConnectorTypes.WalletConnect} />
+            <ConnectorBtn marginTop={29} setConnector={changeConnector} connectorType={ConnectorTypes.Metamask} />
+            <ConnectorBtn marginTop={30} setConnector={changeConnector} connectorType={ConnectorTypes.WalletConnect} />
           </Box>
         </AutPageBox>
       )}

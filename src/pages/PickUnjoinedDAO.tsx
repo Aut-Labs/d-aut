@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
-import { Box, Button, MenuItem, Typography } from '@mui/material';
+import React from 'react';
+import { Box, MenuItem } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState, setSelectedUnjoinedCommunityAddress } from '../store/aut.reducer';

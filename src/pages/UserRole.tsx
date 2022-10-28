@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Button, styled, Typography } from '@mui/material';
 import { autState, community } from '../store/aut.reducer';
-import BackButton from '../components/BackButton';
 import { useAppDispatch } from '../store/store.model';
 import { fetchCommunity } from '../services/web3/api';
 import { setUserData } from '../store/user-data.reducer';
-import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { FormWrapper } from '../components/FormHelpers';
@@ -76,17 +73,6 @@ const UserRole: React.FunctionComponent = (props) => {
               </AutButton>
             );
           })}
-        {/* <SwButton
-          sx={{
-            borderColor: 'primary.main',
-          }}
-          btnType="large"
-          mode="dark"
-          component={Button}
-          type="submit"
-          disabled={!selectedRole}
-          label="That's it - join this community!"
-        /> */}
       </FormWrapper>
     </AutPageBox>
   );

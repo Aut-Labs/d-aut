@@ -317,6 +317,7 @@ export const getAutId = autIdProvider(
     autId.properties.communities = communities;
     autId.loginTimestamp = new Date().getTime();
     autId.provider = walletProvider.selectedWalletType;
+    autId.network = walletProvider.selectedNetwork;
     // console.log(autId);
     window.sessionStorage.setItem('aut-data', JSON.stringify(autId));
     return autId;
@@ -339,7 +340,7 @@ export const checkAvailableNetworksAndGetAutId = autIdProvider(
     const { selectedNetwork } = walletProvider;
     let autIDs: AutId[] = [];
     try {
-      const result = await axios.get(`http://localhost:4005/api/autid/scanNetworks/${selectedAddress}`);
+      const result = await axios.get(`https://api.skillwallet.id/api/autid/scanNetworks/${selectedAddress}`);
       autIDs = result.data;
     } catch (e) {
       if (e.response.status === 404) {

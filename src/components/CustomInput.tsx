@@ -1,5 +1,5 @@
-import { Box, Input, Slider, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Box, Input, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { Controller } from 'react-hook-form';
 
 export const CustomInput = ({ maxLength, name, control, setValue, rules, defaultValue }) => {

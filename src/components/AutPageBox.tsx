@@ -2,7 +2,6 @@ import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
 import { autState, ResultState } from '../store/aut.reducer';
-import AutLogo from './AutLogo';
 import { ErrorBox } from './ErrorBox';
 import { LoadingProgress } from './LoadingProgress';
 

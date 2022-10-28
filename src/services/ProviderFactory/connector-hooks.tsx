@@ -13,7 +13,7 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
   const networks = useSelector(NetworksConfig);
   const [selectingNetwork, setSelectingNetwork] = useState(false);
   const selectedNetwork = useSelector(SelectedNetwork);
-  // const [connectorLocal, setConnector] = useState<Connector>(null);
+  const [connectorLocal, setConnector] = useState<Connector>(null);
   const { isActive, provider, account, connector } = useWeb3React();
 
   useEffect(() => {
@@ -21,21 +21,37 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
       dispatch(setSigner(provider.getSigner()));
       dispatch(setSelectedAddress(account));
       if (onConnected) {
+        console.log('ONconnected');
         onConnected();
       }
     }
   }, [provider, isActive, selectedNetwork]);
 
   const switchNetwork = async (c: Connector, chainId: number) => {
-    // if (!c) {
-    //   return;
-    // }
-    await connector.deactivate();
-    await connector.activate(chainId);
+    console.log('switchNetwork');
+    if (!c) {
+      return;
+    }
+    await c.deactivate();
     const config = networks.find((n) => n.chainId?.toString() === chainId?.toString());
     await dispatch(setSelectedNetwork(config.network));
     try {
+      await c.activate();
       await EnableAndChangeNetwork(c.provider, config);
+    } catch (error) {
+      await dispatch(setStatus(ResultState.Failed));
+      dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
+      console.log(error);
+    }
+  };
+
+  const switchNetworkLocalConnector = async (chainId: number) => {
+    await connectorLocal.deactivate();
+    const config = networks.find((n) => n.chainId?.toString() === chainId?.toString());
+    await dispatch(setSelectedNetwork(config.network));
+    try {
+      await connectorLocal.activate();
+      await EnableAndChangeNetwork(connectorLocal.provider, config);
     } catch (error) {
       await dispatch(setStatus(ResultState.Failed));
       dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
@@ -48,17 +64,17 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
     const foundChainId = Number(c?.provider?.chainId);
     const index = networks.map((n) => n.chainId?.toString()).indexOf(foundChainId?.toString());
     const chainAllowed = index !== -1;
+    setConnector(c);
     if (chainAllowed) {
       await switchNetwork(c, foundChainId);
     } else {
       setSelectingNetwork(true);
     }
-    // setConnector(c);
   };
 
   const changeNetwork = async (chainId) => {
     await dispatch(setStatus(ResultState.Loading));
-    await switchNetwork(null, chainId);
+    await switchNetworkLocalConnector(chainId);
   };
 
   return { changeNetwork, selectingNetwork, setSelectingNetwork, changeConnector };

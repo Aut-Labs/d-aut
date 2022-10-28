@@ -1,12 +1,11 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import AutFileUpload from '../components/AutFileUpload';
 import { setUserData, userData } from '../store/user-data.reducer';
 import { AutTextField, FormHelperText } from '../components/Fields';
-import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { useAppDispatch } from '../store/store.model';
@@ -16,11 +15,6 @@ import { toBase64 } from '../utils/utils';
 import { FormWrapper, FormContent, FormAction } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
 import { useWeb3React } from '@web3-react/core';
-
-interface Values {
-  picture?: File;
-  text: string;
-}
 
 const UserDetails: React.FunctionComponent = (props) => {
   const history = useHistory();

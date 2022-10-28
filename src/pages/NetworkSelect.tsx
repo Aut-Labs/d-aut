@@ -1,39 +1,27 @@
-import React, { useEffect } from 'react';
-import { Box, Button, MenuItem, Typography } from '@mui/material';
+import React from 'react';
+import { Box, MenuItem } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import AutLogo from '../components/AutLogo';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
-import {
-  autState,
-  ResultState,
-  setSelectedAddress,
-  setSelectedUnjoinedCommunityAddress,
-  setStatus,
-  updateErrorState,
-} from '../store/aut.reducer';
+import { autState, ResultState, setStatus, updateErrorState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { useWeb3React } from '@web3-react/core';
 import { Controller, useForm } from 'react-hook-form';
 import { FormAction, FormWrapper, FormContent } from '../components/FormHelpers';
 import { AutSelectField, FormHelperText } from '../components/Fields';
 import { useAppDispatch } from '../store/store.model';
-import { fetchCommunity, getAutId } from '../services/web3/api';
-import { AutId } from '../services/ProviderFactory/web3.connectors';
+import { getAutId } from '../services/web3/api';
 import { IsConnected, NetworksConfig, SelectedNetwork, setSelectedNetwork } from '../store/wallet-provider';
-import { Connector } from '@web3-react/types';
 import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { InternalErrorTypes } from '../utils/error-parser';
 
 const NetworkSelect: React.FunctionComponent = () => {
-  const history = useHistory();
   const networkConfigs = useSelector(NetworksConfig);
   const autData = useSelector(autState);
   const selectedNetwork = useSelector(SelectedNetwork);
   const dispatch = useAppDispatch();
-  const { isActive, account, connector } = useWeb3React();
-  const isConnected = useSelector(IsConnected);
+  const { connector } = useWeb3React();
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -51,11 +39,11 @@ const NetworkSelect: React.FunctionComponent = () => {
       await dispatch(setSelectedNetwork(network.network));
       try {
         await EnableAndChangeNetwork(connector.provider, network);
+        await dispatch(getAutId(null));
       } catch (e) {
         await dispatch(setStatus(ResultState.Failed));
         dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
       }
-      await dispatch(getAutId(null));
     }
   };
 

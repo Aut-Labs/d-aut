@@ -11,7 +11,6 @@ import { userData } from '../store/user-data.reducer';
 import { SelectedNetwork } from '../store/wallet-provider';
 
 const Congratulations: React.FunctionComponent = () => {
-  const history = useHistory();
   const autData = useSelector(autState);
   const selectedNetwork = useSelector(SelectedNetwork);
   const userInput = useSelector(userData);

@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import { StyledEngineProvider } from '@mui/material';
 import { AutTheme } from './theme';
 import store from './store/store';
-import { EventsHandlerWrapper } from './components/EventsHandlerWrapper';
 import SwAuthModal, { AutButton } from './Aut';
 import { AttributeCallbackFn, SwAuthConfig } from './types/sw-auth-config';
 import { AttributeNames, createShadowElement, extractAttributes, isElement } from './utils/utils';

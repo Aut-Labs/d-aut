@@ -1,11 +1,9 @@
-import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit';
-import { initializeConnector, Web3ReactHooks } from '@web3-react/core';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
+import { Web3ReactHooks } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
-import { debug } from 'console';
 import { ethers } from 'ethers';
 import { initializeConnectors, NetworkConfig } from '../services/ProviderFactory/web3.connectors';
-import { env, getNetwork } from '../services/web3/env';
 
 export enum ConnectorTypes {
   WalletConnect = 'walletConnect',

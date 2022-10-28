@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from '@mui/material';
+import { Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/system';
 import { useHistory } from 'react-router-dom';

@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-import WalletConnectProvider from '@walletconnect/web3-provider';
 import { createSelector } from 'reselect';
 import { AutId } from '../services/ProviderFactory/web3.connectors';
 import {
@@ -10,7 +9,6 @@ import {
   getAutId,
   joinCommunity,
   mintMembership,
-  scanNetworks,
 } from '../services/web3/api';
 import { BaseNFTModel } from '../services/web3/models';
 import { OutputEventTypes } from '../types/event-types';
