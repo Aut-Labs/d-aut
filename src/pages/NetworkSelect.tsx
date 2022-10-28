@@ -41,6 +41,7 @@ const NetworkSelect: React.FunctionComponent = () => {
         await EnableAndChangeNetwork(connector.provider, network);
         await dispatch(getAutId(null));
       } catch (e) {
+        await dispatch(setSelectedNetwork(null));
         await dispatch(setStatus(ResultState.Failed));
         dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
       }

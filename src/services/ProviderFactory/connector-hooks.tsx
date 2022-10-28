@@ -37,6 +37,8 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
       await c.activate();
       await EnableAndChangeNetwork(c.provider, config);
     } catch (error) {
+      // await dispatch(setSelectedNetwork(null));
+      // await c.deactivate();
       await dispatch(setStatus(ResultState.Failed));
       dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
     }
@@ -50,6 +52,8 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
       await connectorLocal.activate();
       await EnableAndChangeNetwork(connectorLocal.provider, config);
     } catch (error) {
+      // await dispatch(setSelectedNetwork(null));
+      // await c.deactivate();
       await dispatch(setStatus(ResultState.Failed));
       dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
     }
