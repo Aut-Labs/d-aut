@@ -1,13 +1,10 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box, Button, Slider, styled, Typography } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
-import BackButton from '../components/BackButton';
 import { setUserData, userData } from '../store/user-data.reducer';
 import { useAppDispatch } from '../store/store.model';
 import { joinCommunity, mintMembership } from '../services/web3/api';
-import AutLogo from '../components/AutLogo';
 import { AutSlider } from '../components/CommitmentSlider';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';

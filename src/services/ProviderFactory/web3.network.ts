@@ -1,19 +1,18 @@
-// import { environment, EnvMode } from '@api/environment';
-import { env } from '../web3/env';
+import { NetworkConfig } from './web3.connectors';
 
 const toHex = (num) => {
   const val = Number(num);
   return `0x${val.toString(16)}`;
 };
 
-export const EnableAndChangeNetwork = async (provider: any, config: any) => {
+export const EnableAndChangeNetwork = async (provider: any, config: NetworkConfig) => {
   console.info('Changing Network', config);
   const params = [
     {
-      chainId: toHex(config.network.chainId),
-      chainName: config.network.name,
-      rpcUrls: config.network.rpcUrls,
-      blockExplorerUrls: config.network.blockExplorerUrls,
+      chainId: toHex(config.chainId),
+      chainName: config.network,
+      rpcUrls: config.rpcUrls,
+      blockExplorerUrls: config.explorerUrls,
     },
   ];
 

@@ -1,5 +1,4 @@
 import { Box } from '@mui/system';
-import { ReactComponent as Logo } from '../assets/d-aut-logo.svg';
 
 function Icon({ id }) {
   return (

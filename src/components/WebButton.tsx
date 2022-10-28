@@ -3,7 +3,6 @@ import { styled } from '@mui/material/styles';
 import { ReactComponent as Oval } from '../assets/oval.svg';
 import { ReactComponent as DarkOval } from '../assets/darker-oval.svg';
 import { ReactComponent as BlackOval } from '../assets/oval-black.svg';
-import { ReactComponent as WhiteOval } from '../assets/oval-white.svg';
 import { ReactComponent as DisconnectIconGradient } from '../assets/disconnect/disconnect-vaporwave.svg';
 import { ReactComponent as DisconnectIconBlack } from '../assets/disconnect/disconnect-black.svg';
 import { ReactComponent as DisconnectIconWhite } from '../assets/disconnect/disconnect-white.svg';
@@ -12,7 +11,6 @@ import { ipfsCIDToHttpUrl } from '../services/storage/storage.hub';
 import { useSelector } from 'react-redux';
 import { user } from '../store/aut.reducer';
 import { useState } from 'react';
-import { borderColor } from '@mui/system';
 
 export const RoundedButton = styled(Button)(({ theme }) => ({
   '&.MuiButton-root': {

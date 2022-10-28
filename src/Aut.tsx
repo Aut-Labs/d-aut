@@ -11,7 +11,7 @@ import { OutputEventTypes } from './types/event-types';
 import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { RoundedWebButton } from './components/WebButton';
-import { SelectedNetworkConfig, setNetwork, setSigner } from './store/wallet-provider';
+import { setSelectedNetwork } from './store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
@@ -47,21 +47,16 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   const { connector, isActive, chainId, provider } = useWeb3React();
 
   useEffect(() => {
-    if (provider) {
-      dispatch(setSigner(provider.getSigner()));
-    }
-  }, [chainId, provider]);
-
-  useEffect(() => {
     setAttrCallback(async (name: string, value: string, newVal: string) => {
-      if (name === 'network') {
-        await dispatch(setNetwork(newVal as string));
-      }
+      // if (name === 'network') {
+      //   await dispatch(setNetwork(newVal as string));
+      // }
     });
   });
 
   const selectEnvironment = async () => {
-    await dispatch(setNetwork(attributes.network as string));
+    // getAppConfig().then(async (res) => dispatch(setNetworks(res)));
+    // await dispatch(setNetwork(attributes.network as string));
   };
 
   const setAttributes = () => {
@@ -110,12 +105,13 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
       if (uiState?.provider?.disconnect) {
         await uiState?.provider?.disconnect();
       }
+      await dispatch(setSelectedNetwork(null));
       await dispatch(resetUIState);
       dispatch(showDialog(true));
     }
   };
 
-  const handleMenuButtonClicked = () => {
+  const handleMenuButtonClicked = async () => {
     window.sessionStorage.removeItem('aut-data');
     dispatch(resetUIState);
     dispatchEvent(OutputEventTypes.Disconnected);

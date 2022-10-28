@@ -1,42 +1,30 @@
-import React from 'react';
 import { Box, MenuItem } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { AutButton } from '../components/AutButton';
-import { AutPageBox } from '../components/AutPageBox';
-import { autState, setSelectedUnjoinedCommunityAddress } from '../store/aut.reducer';
-import { AutHeader } from '../components/AutHeader';
 import { useWeb3React } from '@web3-react/core';
 import { Controller, useForm } from 'react-hook-form';
-import { FormAction, FormWrapper, FormContent } from '../components/FormHelpers';
-import { AutSelectField, FormHelperText } from '../components/Fields';
-import { useAppDispatch } from '../store/store.model';
-import { fetchCommunity } from '../services/web3/api';
+import { NetworksConfig } from '../store/wallet-provider';
+import { AutPageBox } from './AutPageBox';
+import { AutHeader } from './AutHeader';
+import { FormAction, FormContent, FormWrapper } from './FormHelpers';
+import { AutSelectField, FormHelperText } from './Fields';
+import { AutButton } from './AutButton';
 
-const PickUnjoinedDAO: React.FunctionComponent = () => {
-  const history = useHistory();
-  const autData = useSelector(autState);
-  const dispatch = useAppDispatch();
+const NetworkSelector = ({ onSelect, onBack }) => {
+  const networkConfigs = useSelector(NetworksConfig);
   const { connector } = useWeb3React();
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
-    defaultValues: {
-      dao: autData.selectedUnjoinedCommunityAddress,
-    },
   });
 
   const onSubmit = async (data: any) => {
-    console.log(data);
-    await dispatch(setSelectedUnjoinedCommunityAddress(data.dao));
-    await dispatch(fetchCommunity(null));
-    history.push('/role');
+    onSelect(data.chainId);
   };
 
   const onBackClicked = async () => {
     if (connector) {
       await connector.deactivate();
     }
-    await dispatch(setSelectedUnjoinedCommunityAddress(null));
+    onBack();
   };
 
   return (
@@ -53,24 +41,18 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
       >
         <AutHeader
           backAction={onBackClicked}
-          logoId="unjoined-logo"
-          title="Pick DAO to join."
-          subtitle={
-            <>
-              You have integrated these DAOs
-              <br />
-              but haven't joined them.
-            </>
-          }
+          logoId="networks-logo"
+          title="Unsupported network detected."
+          subtitle="Pick a supported network to connect."
         />
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
           <FormContent>
             <Controller
-              name="dao"
+              name="chainId"
               control={control}
               rules={{
                 validate: {
-                  selected: (v: string) => !!v,
+                  selected: (v: any) => !!v,
                 },
               }}
               render={({ field: { name, value, onChange } }) => {
@@ -80,10 +62,10 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
                     autoFocus
                     renderValue={(selected) => {
                       if (!selected) {
-                        return 'Select DAO';
+                        return 'Select Network';
                       }
-                      const dao = autData.unjoinedCommunities.find((t) => t.address === selected);
-                      return dao?.name || selected;
+                      const networkConfig = networkConfigs.find((c) => c.chainId === selected);
+                      return networkConfig.network || selected;
                     }}
                     name={name}
                     color="primary"
@@ -93,10 +75,10 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
                     onChange={onChange}
                     helperText={<FormHelperText value={value} name={name} errors={formState.errors} />}
                   >
-                    {autData.unjoinedCommunities &&
-                      autData.unjoinedCommunities.map((dao) => (
-                        <MenuItem key={`dao-${dao.address}`} color="primary" value={dao.address}>
-                          {dao.name}
+                    {networkConfigs &&
+                      networkConfigs.map((config) => (
+                        <MenuItem key={`autId-${config.network}`} color="primary" value={config.chainId}>
+                          {config.network}
                         </MenuItem>
                       ))}
                   </AutSelectField>
@@ -106,7 +88,7 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
           </FormContent>
           <FormAction>
             <AutButton type="submit" disabled={!formState.isValid}>
-              Join DAO
+              Connect
             </AutButton>
           </FormAction>
         </FormWrapper>
@@ -115,4 +97,4 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
   );
 };
 
-export default PickUnjoinedDAO;
+export default NetworkSelector;

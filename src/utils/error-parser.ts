@@ -97,6 +97,10 @@ export const METAMASK_POSSIBLE_ERRORS = {
 };
 
 export enum InternalErrorTypes {
+  FoundAutIDOnMultipleNetworks = 'Found AutID on multiple networks.',
+  FoundAnAutIDOnADifferentNetwork = 'Found an AutID on a different network.',
+  FailedToSwitchNetwork = 'Failed to switch network.',
+  AutIDNotFound = 'AutID was not found.',
   AutIDAlreadyExistsForAddress = 'ĀutID already exists for this address.',
   AutIDAlreadyInThisCommunity = 'Your ĀutID is already a member of this DAO.',
   UsernameAlreadyTaken = 'This username is already taken.',

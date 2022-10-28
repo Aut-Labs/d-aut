@@ -1,6 +1,4 @@
 import { Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
-import { autState } from '../store/aut.reducer';
 import { AutNavigationButtons } from './AutNavigationButtons';
 import AutLogo from './AutLogo';
 

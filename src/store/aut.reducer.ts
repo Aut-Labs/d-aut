@@ -1,7 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-import WalletConnectProvider from '@walletconnect/web3-provider';
 import { createSelector } from 'reselect';
-import { checkIfAutIdExists, checkIfNameTaken, fetchCommunity, getAutId, joinCommunity, mintMembership } from '../services/web3/api';
+import { AutId } from '../services/ProviderFactory/web3.connectors';
+import {
+  checkAvailableNetworksAndGetAutId,
+  checkIfAutIdExists,
+  checkIfNameTaken,
+  fetchCommunity,
+  getAutId,
+  joinCommunity,
+  mintMembership,
+} from '../services/web3/api';
 import { BaseNFTModel } from '../services/web3/models';
 import { OutputEventTypes } from '../types/event-types';
 import { InternalErrorTypes } from '../utils/error-parser';
@@ -46,6 +54,7 @@ export interface AutState {
   provider: any;
   selectedAddress: any;
   isWalletConnect: boolean;
+  autIdsOnDifferentNetworks: AutId[];
 }
 
 export const initialState: AutState = {
@@ -64,6 +73,7 @@ export const initialState: AutState = {
   provider: null,
   selectedAddress: null,
   isWalletConnect: false,
+  autIdsOnDifferentNetworks: [],
 };
 
 export const autSlice = createSlice({
@@ -102,6 +112,12 @@ export const autSlice = createSlice({
     },
     setUser(state, action: ActionPayload<any>) {
       state.user = action.payload;
+    },
+    setAutIdsOnDifferentNetworks(state, action: ActionPayload<AutId[]>) {
+      state.autIdsOnDifferentNetworks = action.payload;
+    },
+    setStatus(state, action) {
+      state.status = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -168,6 +184,21 @@ export const autSlice = createSlice({
       })
       .addCase(joinCommunity.pending, (state) => {
         state.status = ResultState.Loading;
+      })
+      .addCase(checkAvailableNetworksAndGetAutId.fulfilled, (state, action) => {
+        state.showDialog = false;
+        state.user = action.payload;
+        dispatchEvent(OutputEventTypes.Connected, action.payload);
+      })
+      .addCase(checkAvailableNetworksAndGetAutId.rejected, (state, action) => {
+        if (action.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
+          state.status = ResultState.Idle;
+        } else {
+          state.status = ResultState.Failed;
+        }
+      })
+      .addCase(checkAvailableNetworksAndGetAutId.pending, (state) => {
+        state.status = ResultState.Loading;
       });
   },
 });
@@ -184,6 +215,8 @@ export const {
   errorAction,
   setTempUserData,
   setSelectedUnjoinedCommunityAddress,
+  setAutIdsOnDifferentNetworks,
+  setStatus,
 } = autSlice.actions;
 
 export const community = createSelector(
