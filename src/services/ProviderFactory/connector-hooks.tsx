@@ -21,14 +21,12 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
       dispatch(setSigner(provider.getSigner()));
       dispatch(setSelectedAddress(account));
       if (onConnected) {
-        console.log('ONconnected');
         onConnected();
       }
     }
   }, [provider, isActive, selectedNetwork]);
 
   const switchNetwork = async (c: Connector, chainId: number) => {
-    console.log('switchNetwork');
     if (!c) {
       return;
     }
@@ -41,7 +39,6 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
     } catch (error) {
       await dispatch(setStatus(ResultState.Failed));
       dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
-      console.log(error);
     }
   };
 
@@ -55,7 +52,6 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
     } catch (error) {
       await dispatch(setStatus(ResultState.Failed));
       dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
-      console.log(error);
     }
   };
 

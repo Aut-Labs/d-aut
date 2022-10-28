@@ -34,7 +34,6 @@ export const Web3ThunkProviderFactory = <SWContractFunctions = any, SWContractEv
         const { networksConfig, selectedNetwork } = state.walletProvider;
         let { signer } = state.walletProvider;
         const network = networksConfig.find((n) => n.network === selectedNetwork);
-        console.log('EnableAndChangeNetwork');
         await EnableAndChangeNetwork(signer.provider.provider, network);
         // get state again in case network was changed silently
         state = thunkAPI.getState() as any;
