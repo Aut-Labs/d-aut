@@ -80,14 +80,14 @@ export const mintMembership = autIdProvider(
     const { userData, walletProvider } = thunkAPI.getState();
     // console.log(userData);
     const { username, picture, role, commitment } = userData;
+    const { selectedNetwork } = walletProvider;
     const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
 
     const nftIdResp = await contract.getNextTokenID();
-
     const config = {
       title: `${username}`,
       hash: `#${nftIdResp.toString()}`,
-      network: walletProvider.networkConfig.network.chainName.toLowerCase(),
+      network: selectedNetwork.toLowerCase(),
       timestamp: `${timeStamp}`,
     } as SWIDParams;
 
