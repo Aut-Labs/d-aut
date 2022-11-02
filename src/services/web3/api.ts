@@ -318,6 +318,7 @@ export const getAutId = autIdProvider(
     autId.loginTimestamp = new Date().getTime();
     autId.provider = walletProvider.selectedWalletType;
     autId.network = walletProvider.selectedNetwork;
+    autId.address = selectedAddress;
     // console.log(autId);
     window.sessionStorage.setItem('aut-data', JSON.stringify(autId));
     return autId;
