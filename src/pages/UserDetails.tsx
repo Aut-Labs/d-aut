@@ -30,10 +30,6 @@ const UserDetails: React.FunctionComponent = (props) => {
     defaultValues: userInput,
   });
 
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
-
   const onSubmit = async (data) => {
     // console.log(data);
     const result = await dispatch(checkIfNameTaken({ username: data.username }));
