@@ -126,12 +126,7 @@ export const AutSlider = (props: AutSliderProps) => {
         <StyledSlider {...props.sliderProps} minCommitment={props.minCommitment} />
       </div>
       <div style={{ marginTop: '-3px', display: 'flex', justifyContent: 'flex-end' }}>
-        <FormHelperText
-          errorTypes={errorTypes(props.minCommitment, props.communityName)}
-          value={props.value}
-          name={props.name}
-          errors={props.errors}
-        >
+        <FormHelperText errorTypes={errorTypes(props.minCommitment, props.communityName)} name={props.name} errors={props.errors}>
           <Typography color="white" variant="h5">
             You can change your commitment at any time
           </Typography>

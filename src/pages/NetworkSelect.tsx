@@ -112,7 +112,7 @@ const NetworkSelect: React.FunctionComponent = () => {
                     displayEmpty
                     required
                     onChange={onChange}
-                    helperText={<FormHelperText value={value} name={name} errors={formState.errors} />}
+                    helperText={<FormHelperText name={name} errors={formState.errors} />}
                   >
                     {autData.autIdsOnDifferentNetworks &&
                       autData.autIdsOnDifferentNetworks.map((autId) => (

@@ -73,7 +73,7 @@ const NetworkSelector = ({ onSelect, onBack }) => {
                     displayEmpty
                     required
                     onChange={onChange}
-                    helperText={<FormHelperText value={value} name={name} errors={formState.errors} />}
+                    helperText={<FormHelperText name={name} errors={formState.errors} />}
                   >
                     {networkConfigs &&
                       networkConfigs.map((config) => (

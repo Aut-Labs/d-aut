@@ -7,7 +7,6 @@ interface FormHelperTextProps {
   name: string;
   children?: string | JSX.Element;
   errorTypes?: any;
-  value: any;
 }
 
 const defaultErrorTypes = {
@@ -15,7 +14,7 @@ const defaultErrorTypes = {
   pattern: 'Username cannot contain spaces!',
 };
 
-export function FormHelperText({ errors, name, errorTypes, children = null, value }: FormHelperTextProps) {
+export function FormHelperText({ errors, name, errorTypes, children = null }: FormHelperTextProps) {
   if (errors[name]) {
     const { type } = errors[name];
     const types = {

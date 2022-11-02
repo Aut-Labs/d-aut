@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Box } from '@mui/material';
@@ -11,7 +11,7 @@ import { AutPageBox } from '../components/AutPageBox';
 import { useAppDispatch } from '../store/store.model';
 import { checkIfNameTaken } from '../services/web3/api';
 import { InternalErrorTypes } from '../utils/error-parser';
-import { toBase64 } from '../utils/utils';
+import { base64toFile, toBase64 } from '../utils/utils';
 import { FormWrapper, FormContent, FormAction } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
 import { useWeb3React } from '@web3-react/core';
@@ -24,11 +24,15 @@ const UserDetails: React.FunctionComponent = (props) => {
   const {
     handleSubmit,
     control,
-    formState: { isValid },
+    formState: { isValid, errors },
   } = useForm({
     mode: 'onChange',
     defaultValues: userInput,
   });
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   const onSubmit = async (data) => {
     // console.log(data);
@@ -53,7 +57,16 @@ const UserDetails: React.FunctionComponent = (props) => {
           <Controller
             name="picture"
             control={control}
-            rules={{ required: true }}
+            rules={{
+              required: true,
+
+              validate: {
+                fileSize: (v) => {
+                  const file = base64toFile(v, 'pic');
+                  return file.size < 8388608;
+                },
+              },
+            }}
             render={({ field: { name, value, onChange }, fieldState, formState }) => {
               return (
                 <Box
@@ -66,6 +79,8 @@ const UserDetails: React.FunctionComponent = (props) => {
                   }}
                 >
                   <AutFileUpload
+                    errors={errors}
+                    name="picture"
                     initialPreviewUrl={value}
                     fileChange={async (file) => {
                       if (file) {
@@ -95,7 +110,7 @@ const UserDetails: React.FunctionComponent = (props) => {
                 value={value || ''}
                 onChange={onChange}
                 placeholder="Nickname"
-                helperText={<FormHelperText value={value} name={name} errors={formState.errors as any} />}
+                helperText={<FormHelperText name={name} errors={formState.errors as any} />}
               />
             )}
           />

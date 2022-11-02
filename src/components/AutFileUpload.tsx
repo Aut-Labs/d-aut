@@ -1,12 +1,13 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-unstable-nested-components */
-import { Avatar } from '@mui/material';
+import { Avatar, Box } from '@mui/material';
 import { styled } from '@mui/system';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { pxToRem } from '../services/web3/utils';
 import { ReactComponent as UploadIcon } from '../assets/upload-icon.svg';
+import { FormHelperText } from './Fields';
 
 const UploadWrapper = styled('div')({
   height: pxToRem(100),
@@ -50,7 +51,17 @@ const Action = styled('div')(({ theme }) => ({
   },
 }));
 
-const AutFileUpload = ({ fileChange = (file: File) => null, initialPreviewUrl = null }) => {
+const errorTypes = {
+  fileSize: (
+    <>
+      Image too large!
+      <br /> Max size is 8Mb.
+    </>
+  ),
+  required: 'Avatar is required!',
+};
+
+const AutFileUpload = ({ fileChange = (file: File) => null, initialPreviewUrl = null, name, errors }) => {
   const [preview, setPreview] = useState(initialPreviewUrl);
   const [showAction, setShowAction] = useState(false);
   const { getRootProps, getInputProps, open } = useDropzone({
@@ -105,6 +116,7 @@ const AutFileUpload = ({ fileChange = (file: File) => null, initialPreviewUrl = 
           variant="square"
           src={preview}
           sx={{
+            display: `${errors.length > 0 ? 'none' : ''}`,
             cursor: 'pointer',
             background: 'transparent',
             height: '100%',
@@ -124,9 +136,9 @@ const AutFileUpload = ({ fileChange = (file: File) => null, initialPreviewUrl = 
           <UploadIcon height={pxToRem(32)} />
         </Avatar>
         <Action className={`${showAction ? 'show' : ''}`}>{preview ? <HighlightOffIcon className="remove" /> : null}</Action>
+        <FormHelperText errorTypes={errorTypes} name={name} errors={errors} />
       </div>
     </UploadWrapper>
-    // TODO: ADD Avatar text
   );
 };
 

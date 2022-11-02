@@ -91,7 +91,7 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
                     displayEmpty
                     required
                     onChange={onChange}
-                    helperText={<FormHelperText value={value} name={name} errors={formState.errors} />}
+                    helperText={<FormHelperText name={name} errors={formState.errors} />}
                   >
                     {autData.unjoinedCommunities &&
                       autData.unjoinedCommunities.map((dao) => (
