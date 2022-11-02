@@ -1,5 +1,6 @@
+import { Theme } from '@emotion/react';
 import { Select, SelectProps, TextField, TextFieldProps, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { styled, SxProps } from '@mui/material/styles';
 import { pxToRem } from '../services/web3/utils';
 
 interface FormHelperTextProps {
@@ -7,7 +8,7 @@ interface FormHelperTextProps {
   name: string;
   children?: string | JSX.Element;
   errorTypes?: any;
-  value: any;
+  positionAbsolute?: boolean;
 }
 
 const defaultErrorTypes = {
@@ -15,7 +16,7 @@ const defaultErrorTypes = {
   pattern: 'Username cannot contain spaces!',
 };
 
-export function FormHelperText({ errors, name, errorTypes, children = null, value }: FormHelperTextProps) {
+export function FormHelperText({ errors, name, errorTypes, children = null, positionAbsolute = true }: FormHelperTextProps) {
   if (errors[name]) {
     const { type } = errors[name];
     const types = {
@@ -29,13 +30,13 @@ export function FormHelperText({ errors, name, errorTypes, children = null, valu
       <Typography
         whiteSpace="nowrap"
         color="red"
-        align="right"
+        align={`${positionAbsolute ? 'right' : 'center'}`}
         component="span"
         variant="body2"
         className="auto-helper-error"
         sx={{
           width: '100%',
-          position: 'absolute',
+          position: `${positionAbsolute ? 'absolute' : 'static'}`,
           left: '0',
         }}
       >
