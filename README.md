@@ -19,19 +19,19 @@ In order to use it, though, you **will need to have a DAO Expander Address** - y
 
 ### Example React
 
-1. Install the library  
+1. Install the library
 
    ```npm
    npm i @aut-protocol/d-aut --save
    ```
 
-2. Import the initialization function in the App.js/tsx (or index.js/tsx)  
+2. Import the initialization function in the App.js/tsx (or index.js/tsx)
 
    ```ts
    import { Init } from '@aut-protocol/d-aut';
    ```
 
-3. Call the Init function at the start of your project  
+3. Call the Init function at the start of your project
 
    ```ts
    Init();
@@ -51,7 +51,7 @@ function App() {
 
   return (
     <div>
-        <d-aut network="goerli" button-type="simple" dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+        <d-aut button-type="simple" dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
     </div>
   );
 }
@@ -61,13 +61,13 @@ export default App;
 
 ### Example Angular
 
-1. Install the library  
+1. Install the library
 
    ```npm
    npm i @aut-protocol/d-aut --save
    ```
 
-2. Import the initialization function in the app.component.ts  
+2. Import the initialization function in the app.component.ts
 
    ```ts
    import { Init } from '@aut-protocol/d-aut';
@@ -122,30 +122,29 @@ import { AppComponent } from './app.component';
   bootstrap: [AppComponent],
 })
 export class AppModule {}
-
 ```
 
 app.component.ts:
 
 ```html
-<d-aut network="goerli" button-type="simple" dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+<d-aut button-type="simple" dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
 ```
 
 ### Example Vue
 
-1. Install the library  
+1. Install the library
 
    ```npm
    npm i @aut-protocol/d-aut --save
    ```
 
-2. Import the initialization function in the App.vue  
+2. Import the initialization function in the App.vue
 
    ```ts
    import { Init } from '@aut-protocol/d-aut';
    ```
 
-3. Call the Init function at the start of your project  
+3. Call the Init function at the start of your project
 
    ```ts
    Init();
@@ -157,18 +156,18 @@ App.vue:
 
 ```html
 <script setup>
-   import { Init } from '@aut-protocol/d-aut;
-   Init();
+  import { Init } from '@aut-protocol/d-aut;
+  Init();
 </script>
 
 <template>
-    <div class="wrapper">
-        <d-aut network="goerli" button-type="simple" dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
-    </div>
+  <div class="wrapper">
+    <d-aut button-type="simple" dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+  </div>
 </template>
 
 <style>
-  ...
+  ...;
 </style>
 ```
 
@@ -177,9 +176,6 @@ App.vue:
 1. `dao-expander`
    The address you are given after [Integrating](https://playground.aut.id/) your DAO
 
-2. `network`
-   The network your contracts are deployed to. Currently only [Goerli](https://goerli.net/) and [Mumbai](https://mumbai.polygonscan.com/) are supported.
-
-3. `button-type`
+2. `button-type`
    Allows to pick from different button styles. Currently supported styles: simple, round-bright, square-bright,
    square-dark, round-dark, round-light, square-light - default is simple
