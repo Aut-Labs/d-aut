@@ -136,7 +136,7 @@ const AutFileUpload = ({ fileChange = (file: File) => null, initialPreviewUrl = 
           <UploadIcon height={pxToRem(32)} />
         </Avatar>
         <Action className={`${showAction ? 'show' : ''}`}>{preview ? <HighlightOffIcon className="remove" /> : null}</Action>
-        <FormHelperText errorTypes={errorTypes} name={name} errors={errors} />
+        <FormHelperText errorTypes={errorTypes} name={name} errors={errors} positionAbsolute={false} />
       </div>
     </UploadWrapper>
   );
