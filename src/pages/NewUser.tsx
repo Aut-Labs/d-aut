@@ -16,9 +16,9 @@ const NewUser: React.FunctionComponent = (props) => {
   const history = useHistory();
 
   const checkForExistingAutId = async () => {
-    const hasAutId = await dispatch(checkIfAutIdExists(null));
+    const hasAutId = await dispatch(checkIfAutIdExists());
     if (hasAutId.meta.requestStatus !== 'rejected') {
-      await dispatch(fetchCommunity(null));
+      await dispatch(fetchCommunity());
       if (!hasAutId.payload) {
         await dispatch(setJustJoining(false));
         history.push('userdetails');

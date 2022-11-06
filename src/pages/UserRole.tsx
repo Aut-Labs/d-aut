@@ -25,7 +25,7 @@ const UserRole: React.FunctionComponent = (props) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await dispatch(fetchCommunity(null));
+      await dispatch(fetchCommunity());
     };
     if (!communityData) {
       fetchData();

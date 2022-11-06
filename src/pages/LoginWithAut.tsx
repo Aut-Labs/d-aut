@@ -17,7 +17,7 @@ const LoginWithSkillWallet: React.FunctionComponent = () => {
   const history = useHistory();
 
   const onConnected = async () => {
-    const result = await dispatch(checkAvailableNetworksAndGetAutId(null));
+    const result = await dispatch(checkAvailableNetworksAndGetAutId());
     if (result.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
       history.push('/networks');
     }

@@ -17,6 +17,7 @@ export interface NetworkConfig {
   rpcUrls: string[];
   explorerUrls: string[];
   contracts: NetworkContracts;
+  biconomyApiKey?: string;
 }
 
 export interface AutId {

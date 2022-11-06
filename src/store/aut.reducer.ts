@@ -219,6 +219,8 @@ export const {
   setStatus,
 } = autSlice.actions;
 
+export const DAOExpanderAddress = (state: any) => state.aut.communityExtensionAddress as string;
+
 export const community = createSelector(
   (state) => state.aut.community,
   (community) => community
