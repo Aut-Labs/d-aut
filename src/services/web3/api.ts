@@ -47,7 +47,7 @@ export async function dataUrlToFile(dataUrl: string, fileName: string): Promise<
   return new File([blob], fileName, { type: 'image/png' });
 }
 
-export const mintMembership = createAsyncThunk('membership/mint', async (args, { getState, dispatch, rejectWithValue }) => {
+export const mintMembership = createAsyncThunk('membership/mint', async (_args, { getState, dispatch, rejectWithValue }) => {
   const { userData, walletProvider, aut } = getState() as any;
   // console.log(userData);
   const { username, picture, role, commitment } = userData;
