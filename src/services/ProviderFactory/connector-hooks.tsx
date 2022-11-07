@@ -20,7 +20,7 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
   const [connectorLocal, setConnector] = useState<Connector>(null);
   const { isActive, provider, account, connector } = useWeb3React();
 
-  const initialiseSDK = async (signer: ethers.providers.JsonRpcSigner) => {
+  const initializeSDK = async (signer: ethers.providers.JsonRpcSigner) => {
     const networkConfig = networks.find((n) => n.network === selectedNetwork);
     const sdk = AutSDK.getInstance();
     // const biconomy =
@@ -44,8 +44,7 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
   useEffect(() => {
     const updateSigner = async () => {
       await dispatch(setSigner(provider.getSigner()));
-      await initialiseSDK(provider.getSigner());
-      await dispatch(setSelectedAddress(account));
+      await initializeSDK(provider.getSigner());
       if (onConnected) {
         onConnected();
       }
@@ -53,7 +52,7 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
     if (provider && isActive && selectedNetwork) {
       updateSigner();
     }
-  }, [provider, isActive, selectedNetwork]);
+  }, [isActive]);
 
   const switchNetwork = async (c: Connector, chainId: number) => {
     if (!c) {

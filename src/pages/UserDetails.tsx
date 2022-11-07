@@ -15,6 +15,7 @@ import { base64toFile, toBase64 } from '../utils/utils';
 import { FormWrapper, FormContent, FormAction } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
 import { useWeb3React } from '@web3-react/core';
+import { setSelectedNetwork } from '../store/wallet-provider';
 
 const UserDetails: React.FunctionComponent = (props) => {
   const history = useHistory();
@@ -41,6 +42,7 @@ const UserDetails: React.FunctionComponent = (props) => {
 
   const deactivateConnector = async () => {
     if (connector) {
+      await dispatch(setSelectedNetwork(null));
       await connector.deactivate();
     }
   };

@@ -11,13 +11,15 @@ import ConnectorBtn from '../components/ConnectorButton';
 import NetworkSelector from '../components/NetworkSelector';
 import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
 import { pxToRem } from '../services/web3/utils';
+import { useWeb3React } from '@web3-react/core';
 
 const LoginWithSkillWallet: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const { account } = useWeb3React();
 
   const onConnected = async () => {
-    const result = await dispatch(checkAvailableNetworksAndGetAutId());
+    const result = await dispatch(checkAvailableNetworksAndGetAutId(account));
     if (result.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
       history.push('/networks');
     }

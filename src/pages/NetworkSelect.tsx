@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
-import { autState, ResultState, setStatus, updateErrorState } from '../store/aut.reducer';
+import { autState, DAOExpanderAddress, ResultState, setStatus, updateErrorState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { useWeb3React } from '@web3-react/core';
 import { Controller, useForm } from 'react-hook-form';
@@ -15,13 +15,15 @@ import { getAutId } from '../services/web3/api';
 import { IsConnected, NetworksConfig, SelectedNetwork, setSelectedNetwork } from '../store/wallet-provider';
 import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { InternalErrorTypes } from '../utils/error-parser';
+import AutSDK from '@aut-protocol/sdk';
 
 const NetworkSelect: React.FunctionComponent = () => {
   const networkConfigs = useSelector(NetworksConfig);
+  const daoExpanderAddress = useSelector(DAOExpanderAddress);
   const autData = useSelector(autState);
   const selectedNetwork = useSelector(SelectedNetwork);
   const dispatch = useAppDispatch();
-  const { connector } = useWeb3React();
+  const { connector, provider, account } = useWeb3React();
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -34,12 +36,29 @@ const NetworkSelect: React.FunctionComponent = () => {
     // @ts-ignore
     const foundChainId = Number(connector?.provider?.chainId);
     if (foundChainId === network.chainId) {
-      await dispatch(getAutId(null));
+      await dispatch(getAutId(account));
     } else {
       await dispatch(setSelectedNetwork(network.network));
       try {
         await EnableAndChangeNetwork(connector.provider, network);
-        await dispatch(getAutId(null));
+        const sdk = AutSDK.getInstance();
+        // const biconomy =
+        //   networkConfig.biconomyApiKey &&
+        //   new SDKBiconomyWrapper({
+        //     enableDebugMode: true,
+        //     apiKey: networkConfig.biconomyApiKey,
+        //     contractAddresses: [networkConfig.contracts.daoExpanderRegistryAddress],
+        //   });
+        await sdk.init(
+          provider.getSigner(),
+          {
+            daoExpanderAddress: daoExpanderAddress as string,
+            autIDAddress: network.contracts.autIDAddress,
+            daoExpanderRegistryAddress: network.contracts.daoExpanderRegistryAddress,
+          }
+          // biconomy
+        );
+        await dispatch(getAutId(account));
       } catch (e) {
         await dispatch(setSelectedNetwork(null));
         await dispatch(setStatus(ResultState.Failed));

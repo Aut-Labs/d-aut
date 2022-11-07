@@ -11,11 +11,13 @@ import { AutPageBox } from '../components/AutPageBox';
 import { autState } from '../store/aut.reducer';
 import { FormAction, FormContent, FormWrapper } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
+import { useWeb3React } from '@web3-react/core';
 
 const Commitment: React.FunctionComponent = (props) => {
   const history = useHistory();
   const userInput = useSelector(userData);
   const coreState = useSelector(autState);
+  const { account } = useWeb3React();
   const dispatch = useAppDispatch();
 
   const {
@@ -31,12 +33,12 @@ const Commitment: React.FunctionComponent = (props) => {
   const onSubmit = async (data: any) => {
     // console.log(data);
     if (coreState.justJoin) {
-      const result = await dispatch(joinCommunity(null));
+      const result = await dispatch(joinCommunity(account));
       if (!(result as any).error) {
         history.push('congrats');
       }
     } else {
-      const result = await dispatch(mintMembership(null));
+      const result = await dispatch(mintMembership());
       if (!(result as any).error) {
         history.push('mintsuccess');
       }
