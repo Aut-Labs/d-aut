@@ -122,7 +122,6 @@ export const autSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // get community
       .addCase(fetchCommunity.pending, (state) => {
         state.status = ResultState.Loading;
       })
@@ -131,7 +130,8 @@ export const autSlice = createSlice({
         state.community = action.payload;
         state.status = ResultState.Idle;
       })
-      .addCase(fetchCommunity.rejected, (state) => {
+      .addCase(fetchCommunity.rejected, (state, action) => {
+        state.errorStateAction = action.payload as string;
         state.status = ResultState.Failed;
       })
       .addCase(getAutId.pending, (state) => {
@@ -146,6 +146,7 @@ export const autSlice = createSlice({
         if (action.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
           state.status = ResultState.Idle;
         } else {
+          state.errorStateAction = action.payload as string;
           state.status = ResultState.Failed;
         }
       })
@@ -155,7 +156,8 @@ export const autSlice = createSlice({
       .addCase(mintMembership.fulfilled, (state, action) => {
         state.status = ResultState.Idle;
       })
-      .addCase(mintMembership.rejected, (state) => {
+      .addCase(mintMembership.rejected, (state, action) => {
+        state.errorStateAction = action.payload as string;
         state.status = ResultState.Failed;
       })
       .addCase(checkIfNameTaken.pending, (state) => {
@@ -164,7 +166,8 @@ export const autSlice = createSlice({
       .addCase(checkIfNameTaken.fulfilled, (state, action) => {
         state.status = ResultState.Idle;
       })
-      .addCase(checkIfNameTaken.rejected, (state) => {
+      .addCase(checkIfNameTaken.rejected, (state, action) => {
+        state.errorStateAction = action.payload as string;
         state.status = ResultState.Failed;
       })
       .addCase(checkIfAutIdExists.pending, (state) => {
@@ -174,12 +177,14 @@ export const autSlice = createSlice({
         state.status = ResultState.Idle;
       })
       .addCase(checkIfAutIdExists.rejected, (state, action) => {
+        state.errorStateAction = action.payload as string;
         state.status = ResultState.Failed;
       })
       .addCase(joinCommunity.fulfilled, (state, action) => {
         state.status = ResultState.Idle;
       })
-      .addCase(joinCommunity.rejected, (state) => {
+      .addCase(joinCommunity.rejected, (state, action) => {
+        state.errorStateAction = action.payload as string;
         state.status = ResultState.Failed;
       })
       .addCase(joinCommunity.pending, (state) => {
@@ -194,6 +199,7 @@ export const autSlice = createSlice({
         if (action.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
           state.status = ResultState.Idle;
         } else {
+          state.errorStateAction = action.payload as string;
           state.status = ResultState.Failed;
         }
       })
@@ -218,6 +224,8 @@ export const {
   setAutIdsOnDifferentNetworks,
   setStatus,
 } = autSlice.actions;
+
+export const DAOExpanderAddress = (state: any) => state.aut.communityExtensionAddress as string;
 
 export const community = createSelector(
   (state) => state.aut.community,

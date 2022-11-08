@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { useAppDispatch } from '../store/store.model';
@@ -6,19 +6,22 @@ import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
 import { setJustJoining } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { ConnectorTypes } from '../store/wallet-provider';
+import { ConnectorTypes, setSelectedNetwork } from '../store/wallet-provider';
 import ConnectorBtn from '../components/ConnectorButton';
 import NetworkSelector from '../components/NetworkSelector';
 import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
+import { useWeb3React } from '@web3-react/core';
+import { ConstructionOutlined } from '@mui/icons-material';
 
 const NewUser: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const history = useHistory();
+  const { account } = useWeb3React();
 
   const checkForExistingAutId = async () => {
-    const hasAutId = await dispatch(checkIfAutIdExists(null));
+    const hasAutId = await dispatch(checkIfAutIdExists(account));
     if (hasAutId.meta.requestStatus !== 'rejected') {
-      await dispatch(fetchCommunity(null));
+      await dispatch(fetchCommunity());
       if (!hasAutId.payload) {
         await dispatch(setJustJoining(false));
         history.push('userdetails');
@@ -28,6 +31,10 @@ const NewUser: React.FunctionComponent = (props) => {
       }
     }
   };
+
+  useEffect(() => {
+    dispatch(setSelectedNetwork(null));
+  }, []);
 
   const onConnected = async () => {
     await checkForExistingAutId();

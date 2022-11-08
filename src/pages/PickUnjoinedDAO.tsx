@@ -28,7 +28,7 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
   const onSubmit = async (data: any) => {
     console.log(data);
     await dispatch(setSelectedUnjoinedCommunityAddress(data.dao));
-    await dispatch(fetchCommunity(null));
+    await dispatch(fetchCommunity());
     history.push('/role');
   };
 

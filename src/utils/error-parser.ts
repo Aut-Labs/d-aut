@@ -97,6 +97,7 @@ export const METAMASK_POSSIBLE_ERRORS = {
 };
 
 export enum InternalErrorTypes {
+  CouldNotFindCommunity = 'Could not find community.',
   FoundAutIDOnMultipleNetworks = 'Found AutID on multiple networks.',
   FoundAnAutIDOnADifferentNetwork = 'Found an AutID on a different network.',
   FailedToSwitchNetwork = 'Failed to switch network.',

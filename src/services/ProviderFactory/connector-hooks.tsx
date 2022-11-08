@@ -2,29 +2,57 @@ import { useWeb3React } from '@web3-react/core';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../store/store.model';
+import AutSDK from '@aut-protocol/sdk';
 import { NetworksConfig, SelectedNetwork, setSigner, setSelectedNetwork } from '../../store/wallet-provider';
 import type { Connector } from '@web3-react/types';
 import { EnableAndChangeNetwork } from './web3.network';
-import { ResultState, setSelectedAddress, setStatus, updateErrorState } from '../../store/aut.reducer';
+import { SDKBiconomyWrapper } from '@aut-protocol/sdk-biconomy';
+import { DAOExpanderAddress, ResultState, setSelectedAddress, setStatus, updateErrorState } from '../../store/aut.reducer';
 import { InternalErrorTypes } from '../../utils/error-parser';
+import { ethers } from 'ethers';
 
 export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
   const dispatch = useAppDispatch();
   const networks = useSelector(NetworksConfig);
+  const daoExpanderAddress = useSelector(DAOExpanderAddress);
   const [selectingNetwork, setSelectingNetwork] = useState(false);
   const selectedNetwork = useSelector(SelectedNetwork);
   const [connectorLocal, setConnector] = useState<Connector>(null);
   const { isActive, provider, account, connector } = useWeb3React();
 
+  const initializeSDK = async (signer: ethers.providers.JsonRpcSigner) => {
+    const networkConfig = networks.find((n) => n.network === selectedNetwork);
+    const sdk = AutSDK.getInstance();
+    // const biconomy =
+    //   networkConfig.biconomyApiKey &&
+    //   new SDKBiconomyWrapper({
+    //     enableDebugMode: true,
+    //     apiKey: networkConfig.biconomyApiKey,
+    //     contractAddresses: [networkConfig.contracts.daoExpanderRegistryAddress],
+    //   });
+    await sdk.init(
+      signer,
+      {
+        daoExpanderAddress,
+        autIDAddress: networkConfig.contracts.autIDAddress,
+        daoExpanderRegistryAddress: networkConfig.contracts.daoExpanderRegistryAddress,
+      }
+      // biconomy
+    );
+  };
+
   useEffect(() => {
-    if (provider && isActive && selectedNetwork) {
-      dispatch(setSigner(provider.getSigner()));
-      dispatch(setSelectedAddress(account));
+    const updateSigner = async () => {
+      await dispatch(setSigner(provider.getSigner()));
+      await initializeSDK(provider.getSigner());
       if (onConnected) {
         onConnected();
       }
+    };
+    if (provider && isActive && selectedNetwork) {
+      updateSigner();
     }
-  }, [provider, isActive, selectedNetwork]);
+  }, [isActive]);
 
   const switchNetwork = async (c: Connector, chainId: number) => {
     if (!c) {
