@@ -99,6 +99,8 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
   } else {
     return rejectWithValue(response?.errorMessage);
   }
+
+  return true;
 });
 
 export const joinCommunity = createAsyncThunk(
