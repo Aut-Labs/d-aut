@@ -58,7 +58,7 @@ export interface AutState {
 }
 
 export const initialState: AutState = {
-  community: null,
+  community: { name: 'sassssers', description: 'lelll', roles: [], minCommitment: 4 },
   unjoinedCommunities: [],
   selectedUnjoinedCommunityAddress: null,
   communityExtensionAddress: null,
@@ -68,7 +68,7 @@ export const initialState: AutState = {
   transactionState: null,
   user: null,
   userBadge: null,
-  tempUserData: null,
+  tempUserData: { username: 'LAMes' },
   justJoin: false,
   provider: null,
   selectedAddress: null,

@@ -11,9 +11,14 @@ import { userData } from '../store/user-data.reducer';
 import { SelectedNetwork } from '../store/wallet-provider';
 
 const Congratulations: React.FunctionComponent = () => {
+  const history = useHistory();
   const autData = useSelector(autState);
   const selectedNetwork = useSelector(SelectedNetwork);
   const userInput = useSelector(userData);
+
+  const gotToShare = () => {
+    history.push('share');
+  };
 
   return (
     <AutPageBox>
@@ -45,14 +50,9 @@ const Congratulations: React.FunctionComponent = () => {
           mb: '30px',
         }}
       >
-        <TwitterShareButton
-          url={`https://my.aut.id/${selectedNetwork}/${autData.tempUserData.username}`}
-          title={`I just joined ${autData.community.name}. Check out my ĀutId!`}
-          hashtags={['Aut', 'DAO', 'Blockchain']}
-          className="social-button"
-        >
-          <SmallerAutButton component="div">SHARE NOW</SmallerAutButton>
-        </TwitterShareButton>
+        <SmallerAutButton onClick={gotToShare} component="div">
+          SHARE NOW
+        </SmallerAutButton>
         <SmallerAutButton
           onClick={() => {
             window.open(`https://my.aut.id/${selectedNetwork}/${autData.tempUserData.username}`, '_blank');
