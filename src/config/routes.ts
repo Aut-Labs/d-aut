@@ -15,11 +15,11 @@ const routes: IRoute[] = [
   {
     path: '/',
     name: 'Login With',
-    component: Congratulations,
+    component: LoginWith,
     exact: true,
   },
   {
-    path: '/share',
+    path: '/',
     name: 'Share',
     component: Share,
     exact: true,

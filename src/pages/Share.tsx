@@ -22,7 +22,6 @@ const Share: React.FunctionComponent = () => {
   return (
     <AutPageBox>
       <AutHeader
-        hideBackBtn
         logoId="new-user-logo"
         title="SHARE ON SOCIALS"
         subtitle={
