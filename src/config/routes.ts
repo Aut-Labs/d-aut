@@ -9,12 +9,19 @@ import Congratulations from '../pages/Congratulations';
 import MintSuccess from '../pages/MintSuccess';
 import PickUnjoinedDAO from '../pages/PickUnjoinedDAO';
 import NetworkSelect from '../pages/NetworkSelect';
+import Share from '../pages/Share';
 
 const routes: IRoute[] = [
   {
     path: '/',
     name: 'Login With',
     component: LoginWith,
+    exact: true,
+  },
+  {
+    path: '/',
+    name: 'Share',
+    component: Share,
     exact: true,
   },
   {
