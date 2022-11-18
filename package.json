@@ -1,6 +1,6 @@
 {
-  "name": "@aut-protocol/d-aut",
-  "version": "1.6.7",
+  "name": "@aut-labs/d-aut",
+  "version": "1.0.2",
   "main": "build/cjs/index.js",
   "module": "build/ems/index.js",
   "types": "build/index.d.ts",
@@ -8,12 +8,12 @@
     "build"
   ],
   "bugs": {
-    "url": "https://github.com/Aut-Protocol/d-aut/issues"
+    "url": "https://github.com/Aut-Labs/d-aut/issues"
   },
   "author": "Aut",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Aut-Protocol/d-aut.git"
+    "url": "git+https://github.com/Aut-Labs/d-aut.git"
   },
   "keywords": [
     "aut",

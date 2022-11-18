@@ -8,7 +8,7 @@ Each user will add their nickname and avatar, and pick a Role in your DAO - afte
 
 ## Web Component Developer notes
 
-When a user successfully connects with dĀut their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'. Don't forget to add the attributes: dao-expander, button-type, and network
+When a user successfully connects with dĀut their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'. Don't forget to add the attributes: dao-expander and button-type
 
 ## Pre-requisite: obtain your DAO Expander Address
 
@@ -22,13 +22,13 @@ In order to use it, though, you **will need to have a DAO Expander Address** - y
 1. Install the library
 
    ```npm
-   npm i @aut-protocol/d-aut --save
+   npm i @aut-labs/d-aut --save
    ```
 
 2. Import the initialization function in the App.js/tsx (or index.js/tsx)
 
    ```ts
-   import { Init } from '@aut-protocol/d-aut';
+   import { Init } from '@aut-labs/d-aut';
    ```
 
 3. Call the Init function at the start of your project
@@ -41,7 +41,7 @@ In order to use it, though, you **will need to have a DAO Expander Address** - y
 
 ```tsx
 import './App.css';
-import { Init } from '@aut-protocol/d-aut;
+import { Init } from '@aut-labs/d-aut;
 
 function App() {
 
@@ -64,13 +64,13 @@ export default App;
 1. Install the library
 
    ```npm
-   npm i @aut-protocol/d-aut --save
+   npm i @aut-labs/d-aut --save
    ```
 
 2. Import the initialization function in the app.component.ts
 
    ```ts
-   import { Init } from '@aut-protocol/d-aut';
+   import { Init } from '@aut-labs/d-aut';
    ```
 
 3. Call the Init function inside ngOnInit
@@ -91,7 +91,7 @@ app.component.ts:
 
 ```ts
 import { Component, OnInit } from '@angular/core';
-import { Init } from '@aut-protocol/d-aut;
+import { Init } from '@aut-labs/d-aut;
 
 @Component({
   selector: 'app-root',
@@ -135,13 +135,13 @@ app.component.ts:
 1. Install the library
 
    ```npm
-   npm i @aut-protocol/d-aut --save
+   npm i @aut-labs/d-aut --save
    ```
 
 2. Import the initialization function in the App.vue
 
    ```ts
-   import { Init } from '@aut-protocol/d-aut';
+   import { Init } from '@aut-labs/d-aut';
    ```
 
 3. Call the Init function at the start of your project
@@ -156,7 +156,7 @@ App.vue:
 
 ```html
 <script setup>
-  import { Init } from '@aut-protocol/d-aut;
+  import { Init } from '@aut-labs/d-aut;
   Init();
 </script>
 
