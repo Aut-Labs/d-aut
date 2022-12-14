@@ -2,7 +2,7 @@
 
 ## Web Component - what it does
 
-This Web Component is Āut Protocol's decentralized, **role-based** authentication system.  
+This Web Component is Āut Labs' decentralized, **role-based** authentication system.  
 It lets your users create an account, or login to your platform, in a fully decentralized way, while giving them a familiar (web2-like) experience.  
 Each user will add their nickname and avatar, and pick a Role in your DAO - after doing that, they will join your DAO, and claim their universal ID.
 

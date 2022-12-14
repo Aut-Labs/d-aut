@@ -40,7 +40,7 @@ const Commitment: React.FunctionComponent = (props) => {
     } else {
       const result = await dispatch(mintMembership());
       if (!(result as any).error) {
-        history.push('congrats');
+        history.push('mintsuccess');
       }
     }
   };
