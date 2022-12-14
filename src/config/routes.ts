@@ -19,7 +19,7 @@ const routes: IRoute[] = [
     exact: true,
   },
   {
-    path: '/',
+    path: '/share',
     name: 'Share',
     component: Share,
     exact: true,
