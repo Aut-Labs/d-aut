@@ -14,7 +14,9 @@ export const AutHeader = ({
     <>
       <AutNavigationButtons hideBack={hideBackBtn} hideClose={hideCloseBtn} backAction={backAction} />
       <AutLogo id={logoId} />
-      <Typography sx={{ mt: '25px', letterSpacing: '3px', fontSize: '18px', fontWeight: '500' }}>{title}</Typography>
+      <Typography variant="subtitle1" sx={{ mt: '25px' }}>
+        {title}
+      </Typography>
       {subtitle && <Typography sx={{ mt: '25px', letterSpacing: '1.25px', fontSize: '14px', textAlign: 'center' }}>{subtitle}</Typography>}
     </>
   );

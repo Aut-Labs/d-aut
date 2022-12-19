@@ -4,13 +4,20 @@ import { create } from 'jss';
 import { StylesProvider, jssPreset } from '@mui/styles';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { StyledEngineProvider } from '@mui/material';
-import { AutTheme } from './theme';
+import { CssBaseline, StyledEngineProvider } from '@mui/material';
+import Theme from './theme/theme';
 import store from './store/store';
 import SwAuthModal, { AutButton } from './Aut';
 import { AttributeCallbackFn, SwAuthConfig } from './types/sw-auth-config';
 import { AttributeNames, createShadowElement, extractAttributes, isElement } from './utils/utils';
 import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
+
+import FractulAltBoldWoff2 from './assets/fonts/Fractul/FractulAltBold/font.woff2';
+import FractulAltBoldWoff from './assets/fonts/Fractul/FractulAltBold/font.woff';
+import FractulAltLightWoff2 from './assets/fonts/Fractul/FractulAltLight/font.woff2';
+import FractulAltLightWoff from './assets/fonts/Fractul/FractulAltLight/font.woff';
+import FractulRegularWoff2 from './assets/fonts/Fractul/FractulRegular/font.woff2';
+import FractulRegularWoff from './assets/fonts/Fractul/FractulRegular/font.woff';
 
 export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
   const TAG_NAME = 'd-aut';
@@ -39,10 +46,15 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
       connectedCallback() {
         const jss = create(jssPreset());
+        console.log(jss);
         const attributes = extractAttributes(this);
+        const style = document.createElement('style');
+        style.textContent = ` 
+        `;
 
         let content: JSX.Element = null;
         let mountPoint: HTMLElement = null;
+        console.log(this);
 
         if (authConfig?.container) {
           if (!isElement(authConfig.container)) {
@@ -57,8 +69,12 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             overflow: 'hidden',
             ...(authConfig.containerStyles || {}),
           });
-          const mConfig = createShadowElement({ container: authConfig.container, className: 'sw-auth-modal' });
-          const bConfig = createShadowElement({ container: this, className: 'sw-auth-button' });
+          const mConfig = createShadowElement({ container: authConfig.container, className: 'sw-auth-modal', style });
+
+          // mConfig.shadowRoot.insertB(style);
+          const bConfig = createShadowElement({ container: this, className: 'sw-auth-button', style });
+
+          // bConfig.shadowRoot.appendChild(style);
           mountPoint = mConfig.mountPoint;
           content = (
             <>
@@ -77,7 +93,8 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             </>
           );
         } else {
-          const config = createShadowElement({ container: this, className: 'sw-auth' });
+          const config = createShadowElement({ container: this, className: 'sw-auth', style });
+          // config.shadowRoot.appendChild(style);
           mountPoint = config.mountPoint;
           content = (
             <>
@@ -97,11 +114,14 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
         ReactDOM.render(
           <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={AutTheme}>
+            <ThemeProvider theme={Theme}>
               <Provider store={store}>
                 <Router initialEntries={['/']}>
                   <Web3AutProvider>
-                    <StylesProvider jss={jss}>{content}</StylesProvider>
+                    <StylesProvider jss={jss}>
+                      <CssBaseline />
+                      {content}
+                    </StylesProvider>
                   </Web3AutProvider>
                 </Router>
               </Provider>
