@@ -42,12 +42,17 @@ const LoginWith: React.FunctionComponent = () => {
           alignItems: 'center',
         }}
       >
-        <AutHeader hideBackBtn hideCloseBtn logoId="login-with-logo" title="LOGIN OR SIGN-UP" />
-        <AutButton sx={{ mt: autData.communityExtensionAddress ? '48px' : '78px' }} onClick={handleAutIdClicked}>
+        <AutHeader hideBackBtn hideCloseBtn logoId="login-with-logo" title="Login of Sign-up" />
+        <AutButton
+          size="normal"
+          variant="outlined"
+          sx={{ mt: autData.communityExtensionAddress ? '48px' : '78px' }}
+          onClick={handleAutIdClicked}
+        >
           Connect with āutID
         </AutButton>
         {autData.communityExtensionAddress && (
-          <AutButton sx={{ mt: '30px' }} onClick={handleNewUserClicked}>
+          <AutButton size="normal" variant="outlined" sx={{ mt: '30px' }} onClick={handleNewUserClicked}>
             New User
           </AutButton>
         )}

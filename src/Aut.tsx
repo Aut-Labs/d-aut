@@ -154,9 +154,6 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
             container={container}
           />
         )}
-        <Typography variant="h1" fontFamily="FractulAltBold">
-          This is a PretTYER TESTtttttttttt
-        </Typography>
       </Portal>
     </>
   );

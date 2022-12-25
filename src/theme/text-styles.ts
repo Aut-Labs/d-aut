@@ -12,6 +12,7 @@ export const textStyles = {
     },
     fontWeight: 'bold',
     letterSpacing: '-0.015em',
+    fontFamily: 'FractulAltBold',
   },
   h2: {
     fontSize: {
@@ -23,6 +24,7 @@ export const textStyles = {
     },
     fontWeight: 'bold',
     letterSpacing: '-0.005em',
+    fontFamily: 'FractulAltBold',
   },
   h3: {
     fontSize: {
@@ -34,6 +36,7 @@ export const textStyles = {
     },
     fontWeight: 'bold',
     letterSpacing: '-0.015em',
+    fontFamily: 'FractulAltBold',
   },
   subtitle1: {
     fontSize: {
@@ -45,6 +48,7 @@ export const textStyles = {
     },
     fontWeight: 'normal',
     letterSpacing: '0.0025em',
+    fontFamily: 'FractulRegular',
   },
   subtitle2: {
     fontSize: {
@@ -56,6 +60,7 @@ export const textStyles = {
     },
     fontWeight: 'bold',
     letterSpacing: '0.0025em',
+    fontFamily: 'FractulRegular',
   },
   body: {
     fontSize: {
@@ -67,6 +72,7 @@ export const textStyles = {
     },
     fontWeight: 'normal',
     letterSpacing: '-0.008em',
+    fontFamily: 'FractulRegular',
   },
   caption: {
     fontSize: {
@@ -78,6 +84,7 @@ export const textStyles = {
     },
     fontWeight: 'normal',
     letterSpacing: '0.004em',
+    fontFamily: 'FractulRegular',
   },
   overline: {
     fontSize: {
@@ -89,6 +96,7 @@ export const textStyles = {
     },
     fontWeight: 'normal',
     letterSpacing: '0.015em',
+    fontFamily: 'FractulRegular',
     textTransform: 'uppercase',
   },
 };
@@ -111,6 +119,6 @@ export default (theme: Theme) =>
     },
     {
       fontSize: 16,
-      fontFamily: ['FractulRegularRegular', ' sans-serif'].join(','),
+      fontFamily: ['FractulRegular', ' sans-serif'].join(','),
     } as TypographyOptions
   ) as unknown as Typography;

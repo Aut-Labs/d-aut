@@ -2,24 +2,16 @@ import { Button, ButtonProps, styled } from '@mui/material';
 import { Box } from '@mui/system';
 import { pxToRem } from '../services/web3/utils';
 
-export const AutButton = styled<ButtonProps<'button', any>>(Button)(() => ({
+export const AutButton = styled<ButtonProps<any, any>>(Button)(() => ({
   '&.MuiButton-root': {
-    height: '60px',
-    width: '275px',
-    border: `${pxToRem(3)} solid #009FE3`,
-    borderRadius: '50px',
-    textDecoration: 'uppercase',
-    color: 'white',
-    textTransform: 'none',
-    letterSpacing: '3px',
-    fontSize: pxToRem(14),
+    borderColor: (theme) => theme.palette.offWhite.main,
     '&.Mui-disabled': {
-      color: 'white',
+      color: (theme) => theme.palette.offWhite.main,
       opacity: '.3',
     },
     '&:hover': {
-      backgroundColor: '#009ADE',
-      color: 'white',
+      backgroundColor: (theme) => theme.palette.offWhite.main,
+      color: (theme) => theme.palette.offWhite.main,
     },
   },
 }));

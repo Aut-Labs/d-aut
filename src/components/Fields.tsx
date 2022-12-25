@@ -35,6 +35,7 @@ export function FormHelperText({ errors, name, errorTypes, children = null, posi
         variant="body2"
         className="auto-helper-error"
         sx={{
+          fontFamily: 'FractulRegular',
           width: '100%',
           position: `${positionAbsolute ? 'absolute' : 'static'}`,
           left: '0',
@@ -67,9 +68,6 @@ export function FormHelperText({ errors, name, errorTypes, children = null, posi
 export const AutTextField = styled((props: TextFieldProps & { width: string }) => <TextField {...props} />)(
   ({ theme, width, multiline }) => ({
     width: pxToRem(width),
-    [theme.breakpoints.down('sm')]: {
-      width: '100%',
-    },
     '.MuiInputLabel-root': {
       top: '-2px',
     },
@@ -80,15 +78,9 @@ export const AutTextField = styled((props: TextFieldProps & { width: string }) =
       position: 'relative',
     },
     '.MuiInput-underline': {
-      '&:before': {
-        borderWidth: '2px',
-        borderColor: '#439EDD',
-      },
       '&:after': {
-        color: '#439EDD',
-        borderWidth: '2px',
-        borderColor: '#439EDD',
-        // transform: 'scaleX(1)',
+        borderWidth: '1px',
+        transform: 'scaleX(1)',
       },
     },
     '.MuiOutlinedInput-root, .MuiInput-underline': {
@@ -99,12 +91,13 @@ export const AutTextField = styled((props: TextFieldProps & { width: string }) =
         height: pxToRem(50),
       }),
       '.MuiInputBase-input': {
+        fontFamily: 'FractulRegular',
         paddingTop: 0,
         paddingBottom: 0,
       },
       '&::placeholder': {
         opacity: 1,
-        color: '#707070',
+        color: 'red',
       },
       '&::-webkit-input-placeholder': {
         color: '#707070',

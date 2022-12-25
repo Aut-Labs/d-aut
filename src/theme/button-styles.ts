@@ -111,6 +111,7 @@ export default (theme: Theme) =>
     styleOverrides: {
       outlinedOffWhite: {
         borderColor: theme.palette.offWhite.main,
+        color: theme.palette.offWhite.main,
         '&:hover': {
           backgroundColor: theme.palette.offWhite.main,
           color: theme.palette.nightBlack.main,

@@ -6,10 +6,10 @@ export default {
     paper: '#EBEBF2',
   },
   primary: {
-    main: '#14ECEC',
+    main: '#EBEBF2',
     light: '#70ffff',
     dark: '#00b9ba',
-    contrastText: '#000000',
+    contrastText: '#FFF',
   },
   secondary: {
     main: '#112BB3',
@@ -21,6 +21,12 @@ export default {
     main: '#FF0000',
     light: '#ff5a36',
     dark: '#c20000',
+    contrastText: '#000000',
+  },
+  white: {
+    main: '#ffffff',
+    light: '#ffffff',
+    dark: '#cccccc',
     contrastText: '#000000',
   },
   offWhite: {

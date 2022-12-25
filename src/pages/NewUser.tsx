@@ -58,7 +58,7 @@ const NewUser: React.FunctionComponent = (props) => {
         <AutPageBox>
           <AutHeader
             logoId="new-user-logo"
-            title="WELCOME"
+            title="Welcome"
             subtitle={
               <>
                 First, import your wallet <br /> & claim your Role in your DAO

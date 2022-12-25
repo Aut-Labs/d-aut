@@ -44,7 +44,7 @@ const LoginWithSkillWallet: React.FunctionComponent = () => {
         />
       ) : (
         <AutPageBox>
-          <AutHeader logoId="new-user-logo" title=" WELCOME BACK" />
+          <AutHeader logoId="new-user-logo" title="Welcome back" />
           <Box
             sx={{
               width: '100%',

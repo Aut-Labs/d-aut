@@ -2,9 +2,8 @@ import createCache, { EmotionCache } from '@emotion/cache';
 import { OutputEventTypes } from '../types/event-types';
 import { AttributesDefinitions, ShadowRootConfig, SwAttributes } from '../types/sw-auth-config';
 
-export const createShadowElement = ({ container, className, style }): ShadowRootConfig<EmotionCache> => {
+export const createShadowElement = ({ container, className }): ShadowRootConfig<EmotionCache> => {
   const shadowRoot = container.attachShadow({ mode: 'closed' });
-  shadowRoot.appendChild(style);
   const emotionRoot = document.createElement('style');
 
   const mountPoint = document.createElement('div');

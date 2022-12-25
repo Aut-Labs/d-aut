@@ -41,11 +41,11 @@ export const ErrorBox = () => {
           justifyContent: 'center',
         }}
       >
-        <Typography sx={{ color: '#B10000', mt: '25px', textAlign: 'center' }} variant="h1">
+        <Typography sx={{ color: '#B10000', mt: '25px', textAlign: 'center' }} variant="subtitle1">
           {errorMessage}
         </Typography>
       </Box>
-      <AutButton sx={{ my: '30px' }} onClick={handleError}>
+      <AutButton variant="outlined" size="normal" sx={{ my: '30px' }} onClick={handleError}>
         Return
       </AutButton>
     </Box>

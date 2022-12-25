@@ -14,10 +14,14 @@ export const AutHeader = ({
     <>
       <AutNavigationButtons hideBack={hideBackBtn} hideClose={hideCloseBtn} backAction={backAction} />
       <AutLogo id={logoId} />
-      <Typography variant="subtitle1" sx={{ mt: '25px' }}>
+      <Typography variant="subtitle1" sx={{ color: '#FFF', mt: '25px' }}>
         {title}
       </Typography>
-      {subtitle && <Typography sx={{ mt: '25px', letterSpacing: '1.25px', fontSize: '14px', textAlign: 'center' }}>{subtitle}</Typography>}
+      {subtitle && (
+        <Typography variant="subtitle1" sx={{ color: '#FFF', mt: '25px', textAlign: 'center' }}>
+          {subtitle}
+        </Typography>
+      )}
     </>
   );
 };

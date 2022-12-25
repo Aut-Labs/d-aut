@@ -15,7 +15,7 @@ const UploadWrapper = styled('div')({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  border: '1px solid #439EDD',
+  border: '1px solid #FFF',
   marginBottom: '3px',
   marginRight: pxToRem(20),
   cursor: 'pointer',

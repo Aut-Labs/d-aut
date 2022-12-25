@@ -22,6 +22,34 @@ import FractulRegularWoff from './assets/fonts/Fractul/FractulRegular/font.woff'
 export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
   const TAG_NAME = 'd-aut';
 
+  const style = document.createElement('style');
+  style.textContent = ` 
+  @font-face {
+    font-family: "FractulAltBold";
+    src: url(${FractulAltBoldWoff2}) format("woff2"),
+      url(${FractulAltBoldWoff}) format("woff");
+  }
+  
+  @font-face {
+    font-family: "FractulAltLight";
+    src: url(${FractulAltLightWoff2}) format("woff2"),
+      url(${FractulAltLightWoff}) format("woff");
+  }
+  
+  @font-face {
+    font-family: "FractulRegular";
+    src: url(${FractulRegularWoff2}) format("woff2"),
+      url(${FractulRegularWoff}) format("woff");
+  }
+  `;
+
+  if (!document.getElementById('dAutFonts')) {
+    const head = document.head || document.getElementsByTagName('head')[0];
+    style.id = 'dAutFonts';
+    style.type = 'text/css';
+    head.appendChild(style);
+  }
+
   // we don't to initialized again when saving changes on hot-reloading
   if (customElements.get(TAG_NAME)) {
     return;
@@ -48,9 +76,6 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
         const jss = create(jssPreset());
         console.log(jss);
         const attributes = extractAttributes(this);
-        const style = document.createElement('style');
-        style.textContent = ` 
-        `;
 
         let content: JSX.Element = null;
         let mountPoint: HTMLElement = null;
@@ -69,10 +94,10 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             overflow: 'hidden',
             ...(authConfig.containerStyles || {}),
           });
-          const mConfig = createShadowElement({ container: authConfig.container, className: 'sw-auth-modal', style });
+          const mConfig = createShadowElement({ container: authConfig.container, className: 'sw-auth-modal' });
 
           // mConfig.shadowRoot.insertB(style);
-          const bConfig = createShadowElement({ container: this, className: 'sw-auth-button', style });
+          const bConfig = createShadowElement({ container: this, className: 'sw-auth-button' });
 
           // bConfig.shadowRoot.appendChild(style);
           mountPoint = mConfig.mountPoint;
@@ -93,7 +118,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             </>
           );
         } else {
-          const config = createShadowElement({ container: this, className: 'sw-auth', style });
+          const config = createShadowElement({ container: this, className: 'sw-auth' });
           // config.shadowRoot.appendChild(style);
           mountPoint = config.mountPoint;
           content = (
@@ -118,10 +143,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
               <Provider store={store}>
                 <Router initialEntries={['/']}>
                   <Web3AutProvider>
-                    <StylesProvider jss={jss}>
-                      <CssBaseline />
-                      {content}
-                    </StylesProvider>
+                    <StylesProvider jss={jss}>{content}</StylesProvider>
                   </Web3AutProvider>
                 </Router>
               </Provider>
