@@ -74,6 +74,18 @@ export const textStyles = {
     letterSpacing: '-0.008em',
     fontFamily: 'FractulRegular',
   },
+  body1: {
+    fontSize: {
+      xs: '14px',
+      sm: '14px',
+      md: '14px',
+      lg: '14px',
+      xxl: '16px',
+    },
+    fontWeight: 'normal',
+    letterSpacing: '-0.008em',
+    fontFamily: 'FractulRegular',
+  },
   caption: {
     fontSize: {
       xs: '12px',
@@ -118,6 +130,7 @@ export default (theme: Theme) =>
       return prev;
     },
     {
+      ...theme.typography,
       fontSize: 16,
       fontFamily: ['FractulRegular', ' sans-serif'].join(','),
     } as TypographyOptions

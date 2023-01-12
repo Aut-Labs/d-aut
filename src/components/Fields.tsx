@@ -1,7 +1,7 @@
 import { Theme } from '@emotion/react';
 import { Select, SelectProps, TextField, TextFieldProps, Typography } from '@mui/material';
 import { styled, SxProps } from '@mui/material/styles';
-import { pxToRem } from '../services/web3/utils';
+import { pxToRem } from '../utils/utils';
 
 interface FormHelperTextProps {
   errors: any;

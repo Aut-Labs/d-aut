@@ -4,10 +4,10 @@ import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
 import { SxProps, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../store/store.model';
-import { pxToRem } from '../services/web3/utils';
 import { ConnectorTypes, NetworkConnector, setWallet } from '../store/wallet-provider';
 import { AutButton } from './AutButton';
 import { margin } from '@mui/system';
+import { pxToRem } from '../utils/utils';
 
 const btnConfig = {
   [ConnectorTypes.Metamask]: {

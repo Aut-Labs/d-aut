@@ -108,10 +108,10 @@ export const buttonStyles = {
 
 export default (theme: Theme) =>
   ({
+    ...theme.components.MuiButton,
     styleOverrides: {
       outlinedOffWhite: {
         borderColor: theme.palette.offWhite.main,
-        color: theme.palette.offWhite.main,
         '&:hover': {
           backgroundColor: theme.palette.offWhite.main,
           color: theme.palette.nightBlack.main,
@@ -133,6 +133,17 @@ export default (theme: Theme) =>
             borderWidth: '3px',
             borderStyle: 'solid',
             borderRadius: '50px',
+          },
+        },
+      },
+      {
+        props: {
+          variant: 'square',
+        },
+        style: {
+          '&.MuiButton-root': {
+            borderWidth: '3px',
+            borderStyle: 'solid',
           },
         },
       },
@@ -179,6 +190,8 @@ export default (theme: Theme) =>
             style: currStyle,
           },
         ];
+
+        console.log(prev, 'prev');
         return prev;
       }, [] as ComponentsVariants['MuiButton']),
     ],

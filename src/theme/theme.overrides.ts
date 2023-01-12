@@ -30,7 +30,18 @@ declare module '@mui/material/Button' {
     square: true;
   }
 
+  interface ButtonPropsVariantOverrides {
+    square: true;
+  }
+
   interface ButtonPropsColorOverrides {
+    offWhite?: true;
+    nightBlack?: true;
+  }
+}
+
+declare module '@mui/material/Slider' {
+  interface SliderPropsColorOverrides {
     offWhite?: true;
     nightBlack?: true;
   }
@@ -40,13 +51,34 @@ declare module '@mui/material/TextField' {
   interface TextFieldClasses {
     outlinedOffWhite?: true;
   }
-  interface TextFieldPropsSizeOverrides {
-    normal: true;
-    chunky: true;
-    square: true;
+  interface TextFieldPropsColorOverrides {
+    offWhite?: true;
+    nightBlack?: true;
+  }
+}
+
+declare module '@mui/material/Select' {
+  interface SelectClasses {
+    standardOffWhite?: true;
   }
 
-  interface TextFieldPropsColorOverrides {
+  interface SelectPropsColorOverrides {
+    offWhite?: true;
+    nightBlack?: true;
+  }
+
+  interface SelectPropsColorOverrides {
+    offWhite?: true;
+    nightBlack?: true;
+  }
+}
+
+declare module '@mui/material/InputBase' {
+  interface InputBaseClasses {
+    offWhite?: true;
+  }
+
+  interface InputBasePropsColorOverrides {
     offWhite?: true;
     nightBlack?: true;
   }
@@ -65,13 +97,14 @@ declare module '@mui/material/styles' {
   interface Palette {
     offWhite?: PaletteColor;
     nightBlack?: PaletteColor;
+    // white?: PaletteColor;
   }
 }
 
 declare module '@mui/material/Typography/Typography' {
   interface TypographyPropsVariantOverrides {
-    // xl?: true;
-    // xxl?: true;
+    xl?: true;
+    xxl?: true;
     body?: true;
     subtitle1?: true;
     subtitle2?: true;

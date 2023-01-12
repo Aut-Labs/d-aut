@@ -2,8 +2,12 @@ import { createTheme } from '@mui/material/styles';
 import { Fade } from '@mui/material';
 import AutButtonStyles from './button-styles';
 import AutTextFieldStyles from './field-text-styles';
+import AutSelectFieldStyles from './field-select-styles';
+import AutCommitmentSliderStyles from './commitment-slider-styles';
 import AutTextStyles from './text-styles';
+import AutMenuStyles from './menu-styles';
 import AutPalette from './palette';
+import AutDialogStyles from './dialog-styles';
 import './theme.overrides';
 
 const AutTheme = createTheme({
@@ -23,7 +27,7 @@ const AutTheme = createTheme({
         root: {
           borderStyle: 'solid',
           borderWidth: '2px',
-          borderColor: '#FFF',
+          borderColor: AutPalette.primary.main,
         },
       },
     },
@@ -44,12 +48,12 @@ const AutTheme = createTheme({
   },
 });
 
-AutTheme.typography = {
-  ...AutTheme.typography,
-  ...AutTextStyles(AutTheme),
-};
+AutTheme.typography = AutTextStyles(AutTheme);
 AutTheme.components.MuiButton = AutButtonStyles(AutTheme);
+AutTheme.components.MuiDialog = AutDialogStyles(AutTheme);
 AutTheme.components.MuiTextField = AutTextFieldStyles(AutTheme);
-// AutTheme.components.MuiSelect = AutSelectFieldStyles(AutTheme);
+AutTheme.components.MuiSelect = AutSelectFieldStyles(AutTheme);
+AutTheme.components.MuiSlider = AutCommitmentSliderStyles(AutTheme);
+AutTheme.components.MuiMenu = AutMenuStyles(AutTheme);
 
 export default AutTheme;

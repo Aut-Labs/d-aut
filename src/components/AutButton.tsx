@@ -1,17 +1,17 @@
 import { Button, ButtonProps, styled } from '@mui/material';
 import { Box } from '@mui/system';
-import { pxToRem } from '../services/web3/utils';
+import { pxToRem } from '../utils/utils';
 
 export const AutButton = styled<ButtonProps<any, any>>(Button)(() => ({
   '&.MuiButton-root': {
-    borderColor: (theme) => theme.palette.offWhite.main,
+    borderColor: '#FFF',
     '&.Mui-disabled': {
-      color: (theme) => theme.palette.offWhite.main,
+      color: '#FFF',
       opacity: '.3',
     },
     '&:hover': {
-      backgroundColor: (theme) => theme.palette.offWhite.main,
-      color: (theme) => theme.palette.offWhite.main,
+      backgroundColor: '#FFF',
+      color: '#000',
     },
   },
 }));

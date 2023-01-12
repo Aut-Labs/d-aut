@@ -5,9 +5,9 @@ import { styled } from '@mui/system';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { pxToRem } from '../services/web3/utils';
 import { ReactComponent as UploadIcon } from '../assets/upload-icon.svg';
 import { FormHelperText } from './Fields';
+import { pxToRem } from '../utils/utils';
 
 const UploadWrapper = styled('div')({
   height: pxToRem(100),

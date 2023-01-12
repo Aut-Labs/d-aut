@@ -1,6 +1,6 @@
 import { Typography, Slider, SliderProps, styled } from '@mui/material';
 import { FieldErrors } from 'react-hook-form';
-import { pxToRem } from '../services/web3/utils';
+import { pxToRem } from '../utils/utils';
 import { FormHelperText } from './Fields';
 
 const CommitmentMessages = (value: number) => {
@@ -34,7 +34,7 @@ export function CommitmentMessage({ value, children = null }) {
       whiteSpace="nowrap"
       align="left"
       component="span"
-      variant="h5"
+      variant="subtitle2"
       sx={{ display: 'flex', mb: '4px', height: '13px' }}
     >
       {message}

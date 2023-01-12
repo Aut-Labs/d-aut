@@ -6,13 +6,13 @@ import { ReactComponent as BlackOval } from '../assets/oval-black.svg';
 import { ReactComponent as DisconnectIconGradient } from '../assets/disconnect/disconnect-vaporwave.svg';
 import { ReactComponent as DisconnectIconBlack } from '../assets/disconnect/disconnect-black.svg';
 import { ReactComponent as DisconnectIconWhite } from '../assets/disconnect/disconnect-white.svg';
-import { pxToRem } from '../services/web3/utils';
 import { ipfsCIDToHttpUrl } from '../services/storage/storage.hub';
 import { useSelector } from 'react-redux';
 import { user } from '../store/aut.reducer';
 import { useState } from 'react';
 import { AutButton } from './AutButton';
 import { BorderColor } from '@mui/icons-material';
+import { pxToRem } from '../utils/utils';
 
 const menuButtonColors = {
   simple: {

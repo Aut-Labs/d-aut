@@ -13,7 +13,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
 import { LinkedinShareButton, TelegramShareButton, TwitterShareButton } from 'react-share';
 import AutClipboardCopy from '../components/ClipboardCopy';
-import { pxToRem } from '../services/web3/utils';
+import { pxToRem } from '../utils/utils';
 
 const Share: React.FunctionComponent = () => {
   const autData = useSelector(autState);
