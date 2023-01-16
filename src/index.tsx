@@ -12,43 +12,43 @@ import { AttributeCallbackFn, SwAuthConfig } from './types/sw-auth-config';
 import { AttributeNames, createShadowElement, extractAttributes, isElement } from './utils/utils';
 import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
 
-// import FractulAltBoldWoff2 from './assets/fonts/Fractul/FractulAltBold/font.woff2';
-// import FractulAltBoldWoff from './assets/fonts/Fractul/FractulAltBold/font.woff';
-// import FractulAltLightWoff2 from './assets/fonts/Fractul/FractulAltLight/font.woff2';
-// import FractulAltLightWoff from './assets/fonts/Fractul/FractulAltLight/font.woff';
-// import FractulRegularWoff2 from './assets/fonts/Fractul/FractulRegular/font.woff2';
-// import FractulRegularWoff from './assets/fonts/Fractul/FractulRegular/font.woff';
+import FractulAltBoldWoff2 from './assets/fonts/Fractul/FractulAltBold/font.woff2';
+import FractulAltBoldWoff from './assets/fonts/Fractul/FractulAltBold/font.woff';
+import FractulAltLightWoff2 from './assets/fonts/Fractul/FractulAltLight/font.woff2';
+import FractulAltLightWoff from './assets/fonts/Fractul/FractulAltLight/font.woff';
+import FractulRegularWoff2 from './assets/fonts/Fractul/FractulRegular/font.woff2';
+import FractulRegularWoff from './assets/fonts/Fractul/FractulRegular/font.woff';
 
 export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
   const TAG_NAME = 'd-aut';
 
   const style = document.createElement('style');
-  // style.textContent = `
-  // @font-face {
-  //   font-family: "FractulAltBold";
-  //   src: url(${FractulAltBoldWoff2}) format("woff2"),
-  //     url(${FractulAltBoldWoff}) format("woff");
-  // }
+  style.textContent = `
+  @font-face {
+    font-family: "FractulAltBold";
+    src: url(${FractulAltBoldWoff2}) format("woff2"),
+      url(${FractulAltBoldWoff}) format("woff");
+  }
 
-  // @font-face {
-  //   font-family: "FractulAltLight";
-  //   src: url(${FractulAltLightWoff2}) format("woff2"),
-  //     url(${FractulAltLightWoff}) format("woff");
-  // }
+  @font-face {
+    font-family: "FractulAltLight";
+    src: url(${FractulAltLightWoff2}) format("woff2"),
+      url(${FractulAltLightWoff}) format("woff");
+  }
 
-  // @font-face {
-  //   font-family: "FractulRegular";
-  //   src: url(${FractulRegularWoff2}) format("woff2"),
-  //     url(${FractulRegularWoff}) format("woff");
-  // }
-  // `;
+  @font-face {
+    font-family: "FractulRegular";
+    src: url(${FractulRegularWoff2}) format("woff2"),
+      url(${FractulRegularWoff}) format("woff");
+  }
+  `;
 
-  // if (!document.getElementById('dAutFonts')) {
-  //   const head = document.head || document.getElementsByTagName('head')[0];
-  //   style.id = 'dAutFonts';
-  //   style.type = 'text/css';
-  //   head.appendChild(style);
-  // }
+  if (!document.getElementById('dAutFonts')) {
+    const head = document.head || document.getElementsByTagName('head')[0];
+    style.id = 'dAutFonts';
+    style.type = 'text/css';
+    head.appendChild(style);
+  }
 
   // we don't to initialized again when saving changes on hot-reloading
   if (customElements.get(TAG_NAME)) {

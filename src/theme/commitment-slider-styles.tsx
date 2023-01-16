@@ -56,6 +56,8 @@ const errorTypes = {
 };
 
 interface AutSliderProps {
+  communityName: string;
+  minCommitment: number;
   value: any;
   sliderProps: SliderProps;
   name: string;
@@ -67,12 +69,19 @@ const SliderWrapper = styled('div')({
   position: 'relative',
 });
 
-export const AutCommitmentSlider = ({ value, name, errors, sx, sliderProps, ...props }: AutSliderProps) => {
+export const AutCommitmentSlider = ({ value, name, minCommitment, errors, sx, sliderProps, ...props }: AutSliderProps) => {
   return (
     <SliderWrapper sx={sx}>
       <CommitmentMessage value={value} />
       <div style={{ position: 'relative' }}>
-        <Slider {...sliderProps} />
+        <Slider
+          {...sliderProps}
+          sx={{
+            backgroundImage: `-webkit-linear-gradient(left, #6A6A6A, #6A6A6A ${minCommitment * 10}%, transparent ${
+              minCommitment * 10
+            }%, transparent 100%)`,
+          }}
+        />
       </div>
       <div
         style={{
@@ -114,8 +123,8 @@ export default (theme: Theme) =>
     styleOverrides: {
       root: {
         '&.MuiSlider-colorPrimary': generateColors(theme.palette.offWhite),
-        width: pxToRem(600),
-        height: pxToRem(65),
+        width: pxToRem(400),
+        height: pxToRem(45),
         borderRadius: '0',
         borderWidth: '2px',
         borderStyle: 'solid',
