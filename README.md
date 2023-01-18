@@ -8,7 +8,7 @@ Each user will add their nickname and avatar, and pick a Role in your DAO - afte
 
 ## Web Component Developer notes
 
-When a user successfully connects with dĀut their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'. Don't forget to add the attributes: dao-expander and button-type
+When a user successfully connects with dĀut their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'. Don't forget to add the attribute: dao-expander
 
 ## Pre-requisite: obtain your DAO Expander Address
 
@@ -51,7 +51,7 @@ function App() {
 
   return (
     <div>
-        <d-aut button-type="simple" dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+        <d-aut  dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
     </div>
   );
 }
@@ -127,7 +127,7 @@ export class AppModule {}
 app.component.ts:
 
 ```html
-<d-aut button-type="simple" dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+<d-aut dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
 ```
 
 ### Example Vue
@@ -162,7 +162,7 @@ App.vue:
 
 <template>
   <div class="wrapper">
-    <d-aut button-type="simple" dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+    <d-aut dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
   </div>
 </template>
 
@@ -175,7 +175,3 @@ App.vue:
 
 1. `dao-expander`
    The address you are given after [Integrating](https://playground.aut.id/) your DAO
-
-2. `button-type`
-   Allows to pick from different button styles. Currently supported styles: simple, round-bright, square-bright,
-   square-dark, round-dark, round-light, square-light - default is simple
