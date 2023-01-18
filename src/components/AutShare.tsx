@@ -1,8 +1,8 @@
 import { Dialog, DialogContent, styled, Typography, useMediaQuery } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { TwitterShareButton } from 'react-share';
-import { pxToRem } from '../services/web3/utils';
 import { AutButton } from './AutButton';
+import { pxToRem } from '../utils/utils';
 
 export interface SimpleDialogProps {
   title: string;

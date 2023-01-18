@@ -10,7 +10,6 @@ import { ConnectorTypes } from '../store/wallet-provider';
 import ConnectorBtn from '../components/ConnectorButton';
 import NetworkSelector from '../components/NetworkSelector';
 import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
-import { pxToRem } from '../services/web3/utils';
 import { useWeb3React } from '@web3-react/core';
 
 const LoginWithSkillWallet: React.FunctionComponent = () => {
@@ -44,7 +43,7 @@ const LoginWithSkillWallet: React.FunctionComponent = () => {
         />
       ) : (
         <AutPageBox>
-          <AutHeader logoId="new-user-logo" title=" WELCOME BACK" />
+          <AutHeader logoId="new-user-logo" title="Welcome back" />
           <Box
             sx={{
               width: '100%',

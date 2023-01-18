@@ -46,7 +46,7 @@ export const CustomSlider = ({ name, control, setValue, rules, onValueChange, de
             </Typography>
             <Typography
               align="center"
-              variant="h5"
+              variant="subtitle1"
               sx={{
                 transform: 'translate(0px, -22px);',
                 mixBlendMode: 'difference',

@@ -3,3 +3,6 @@ declare namespace JSX {
     'lottie-player': any;
   }
 }
+
+declare module '*.woff';
+declare module '*.woff2';

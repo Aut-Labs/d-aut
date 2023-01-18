@@ -58,13 +58,10 @@ const UserRole: React.FunctionComponent = (props) => {
           communityData.roles.map((role, n) => {
             return (
               <AutButton
+                size="normal"
+                variant="outlined"
                 sx={{
-                  '&.MuiButton-root': {
-                    height: '55px',
-                    '& + .MuiButton-root': {
-                      mt: '30px',
-                    },
-                  },
+                  mt: '30px',
                 }}
                 onClick={() => handleRoleSelect(role)}
                 key={n}

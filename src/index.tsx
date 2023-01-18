@@ -4,16 +4,51 @@ import { create } from 'jss';
 import { StylesProvider, jssPreset } from '@mui/styles';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { StyledEngineProvider } from '@mui/material';
-import { AutTheme } from './theme';
+import { CssBaseline, StyledEngineProvider } from '@mui/material';
+import Theme from './theme/theme';
 import store from './store/store';
 import SwAuthModal, { AutButton } from './Aut';
 import { AttributeCallbackFn, SwAuthConfig } from './types/sw-auth-config';
 import { AttributeNames, createShadowElement, extractAttributes, isElement } from './utils/utils';
 import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
 
+import FractulAltBoldWoff2 from './assets/fonts/Fractul/FractulAltBold/font.woff2';
+import FractulAltBoldWoff from './assets/fonts/Fractul/FractulAltBold/font.woff';
+import FractulAltLightWoff2 from './assets/fonts/Fractul/FractulAltLight/font.woff2';
+import FractulAltLightWoff from './assets/fonts/Fractul/FractulAltLight/font.woff';
+import FractulRegularWoff2 from './assets/fonts/Fractul/FractulRegular/font.woff2';
+import FractulRegularWoff from './assets/fonts/Fractul/FractulRegular/font.woff';
+
 export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
   const TAG_NAME = 'd-aut';
+
+  const style = document.createElement('style');
+  style.textContent = `
+  @font-face {
+    font-family: "FractulAltBold";
+    src: url(${FractulAltBoldWoff2}) format("woff2"),
+      url(${FractulAltBoldWoff}) format("woff");
+  }
+
+  @font-face {
+    font-family: "FractulAltLight";
+    src: url(${FractulAltLightWoff2}) format("woff2"),
+      url(${FractulAltLightWoff}) format("woff");
+  }
+
+  @font-face {
+    font-family: "FractulRegular";
+    src: url(${FractulRegularWoff2}) format("woff2"),
+      url(${FractulRegularWoff}) format("woff");
+  }
+  `;
+
+  if (!document.getElementById('dAutFonts')) {
+    const head = document.head || document.getElementsByTagName('head')[0];
+    style.id = 'dAutFonts';
+    style.type = 'text/css';
+    head.appendChild(style);
+  }
 
   // we don't to initialized again when saving changes on hot-reloading
   if (customElements.get(TAG_NAME)) {
@@ -39,10 +74,12 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
       connectedCallback() {
         const jss = create(jssPreset());
+        console.log(jss);
         const attributes = extractAttributes(this);
 
         let content: JSX.Element = null;
         let mountPoint: HTMLElement = null;
+        console.log(this);
 
         if (authConfig?.container) {
           if (!isElement(authConfig.container)) {
@@ -58,7 +95,11 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             ...(authConfig.containerStyles || {}),
           });
           const mConfig = createShadowElement({ container: authConfig.container, className: 'sw-auth-modal' });
+
+          // mConfig.shadowRoot.insertB(style);
           const bConfig = createShadowElement({ container: this, className: 'sw-auth-button' });
+
+          // bConfig.shadowRoot.appendChild(style);
           mountPoint = mConfig.mountPoint;
           content = (
             <>
@@ -78,6 +119,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
           );
         } else {
           const config = createShadowElement({ container: this, className: 'sw-auth' });
+          // config.shadowRoot.appendChild(style);
           mountPoint = config.mountPoint;
           content = (
             <>
@@ -97,7 +139,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
         ReactDOM.render(
           <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={AutTheme}>
+            <ThemeProvider theme={Theme}>
               <Provider store={store}>
                 <Router initialEntries={['/']}>
                   <Web3AutProvider>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { styled, Typography } from '@mui/material';
-import { pxToRem } from '../services/web3/utils';
+import { pxToRem } from '../utils/utils';
 
 const CopyWrapper = styled('div')(
   ({ theme }) => `

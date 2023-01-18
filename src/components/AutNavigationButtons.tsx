@@ -2,11 +2,11 @@ import { Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/system';
 import { useHistory } from 'react-router-dom';
-import { pxToRem } from '../services/web3/utils';
 import { ReactComponent as BackIcon } from '../assets/back-icon.svg';
 import { ReactComponent as CrossIcon } from '../assets/cross.svg';
 import { useAppDispatch } from '../store/store.model';
 import { showDialog } from '../store/aut.reducer';
+import { pxToRem } from '../utils/utils';
 
 export const StyledButton = styled(Button)(({ theme }) => ({
   '&.MuiButton-root': {

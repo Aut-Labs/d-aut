@@ -12,6 +12,7 @@ import { autState } from '../store/aut.reducer';
 import { FormAction, FormContent, FormWrapper } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
 import { useWeb3React } from '@web3-react/core';
+import { AutCommitmentSlider } from '../theme/commitment-slider-styles';
 
 const Commitment: React.FunctionComponent = (props) => {
   const history = useHistory();
@@ -67,7 +68,7 @@ const Commitment: React.FunctionComponent = (props) => {
             control={control}
             rules={{ required: true, min: coreState.community.minCommitment, max: 10 }}
             render={({ field: { name, value, onChange } }) => (
-              <AutSlider
+              <AutCommitmentSlider
                 communityName={coreState.community.name}
                 minCommitment={coreState.community.minCommitment}
                 value={value}
@@ -91,7 +92,7 @@ const Commitment: React.FunctionComponent = (props) => {
           />
         </FormContent>
         <FormAction>
-          <AutButton type="submit" disabled={!isValid}>
+          <AutButton size="normal" variant="outlined" type="submit" disabled={!isValid}>
             Join the Community
           </AutButton>
         </FormAction>

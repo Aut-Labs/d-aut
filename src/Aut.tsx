@@ -13,6 +13,7 @@ import { useAppDispatch } from './store/store.model';
 import { RoundedWebButton } from './components/WebButton';
 import { setSelectedNetwork } from './store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
+import { Typography } from '@mui/material';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();

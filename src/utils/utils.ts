@@ -2,20 +2,25 @@ import createCache, { EmotionCache } from '@emotion/cache';
 import { OutputEventTypes } from '../types/event-types';
 import { AttributesDefinitions, ShadowRootConfig, SwAttributes } from '../types/sw-auth-config';
 
+export const pxToRem = (size: number | string) => {
+  size = `${size}`.replace('px', '');
+
+  return `${size}px`;
+
+  // return `${px}px`;
+  const x = 16;
+  const rem = `${(1 / x) * Number(size)}rem`;
+  return rem;
+};
+
 export const createShadowElement = ({ container, className }): ShadowRootConfig<EmotionCache> => {
   const shadowRoot = container.attachShadow({ mode: 'closed' });
   const emotionRoot = document.createElement('style');
-
-  const fontLink = document.createElement('link');
-  fontLink.href = 'https://fonts.googleapis.com/css?family=Manrope';
-  fontLink.rel = 'stylesheet';
-  fontLink.type = 'text/css';
 
   const mountPoint = document.createElement('div');
   mountPoint.classList.add(className);
 
   const root = shadowRoot.appendChild(mountPoint);
-  shadowRoot.insertBefore(fontLink, mountPoint);
   shadowRoot.insertBefore(emotionRoot, mountPoint);
 
   const cache = createCache({

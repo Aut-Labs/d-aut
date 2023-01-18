@@ -49,7 +49,7 @@ const UserDetails: React.FunctionComponent = (props) => {
 
   return (
     <AutPageBox>
-      <AutHeader logoId="user-details-logo" title="TELL US ABOUT YOU" backAction={deactivateConnector} />
+      <AutHeader logoId="user-details-logo" title="Tell us about you" backAction={deactivateConnector} />
       <FormWrapper onSubmit={handleSubmit(onSubmit)}>
         <FormContent>
           <Controller
@@ -114,7 +114,7 @@ const UserDetails: React.FunctionComponent = (props) => {
           />
         </FormContent>
         <FormAction>
-          <AutButton type="submit" disabled={!isValid}>
+          <AutButton size="normal" variant="outlined" type="submit" disabled={!isValid}>
             Next
           </AutButton>
         </FormAction>

@@ -9,8 +9,6 @@ const DialogContent = styled(Box)(({ theme }) => ({
   backgroundColor: '#000',
   borderStyle: 'solid',
   borderWidth: '15px',
-  borderImage:
-    'linear-gradient(45.57deg, #009fe3 0%, #0399de 8%, #0e8bd3 19%, #2072bf 30%, #3a50a4 41%, #5a2583 53%, #453f94 71%, #38519f 88%, #3458a4 100%) 1',
   [theme.breakpoints.down('xl')]: {
     borderWidth: '12px',
     width: '500px',
