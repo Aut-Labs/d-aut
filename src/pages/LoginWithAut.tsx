@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { useAppDispatch } from '../store/store.model';
-import { checkAvailableNetworksAndGetAutId } from '../services/web3/api';
+import { checkAvailableNetworksAndGetAutId, getAutId } from '../services/web3/api';
 import { AutPageBox } from '../components/AutPageBox';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { AutHeader } from '../components/AutHeader';
@@ -18,13 +18,14 @@ const LoginWithSkillWallet: React.FunctionComponent = () => {
   const { account } = useWeb3React();
 
   const onConnected = async () => {
-    const result = await dispatch(checkAvailableNetworksAndGetAutId(account));
-    if (result.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
-      history.push('/networks');
-    }
-    if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
-      history.push('/unjoined');
-    }
+    await dispatch(getAutId(account));
+
+    // if (result.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
+    //   history.push('/networks');
+    // }
+    // if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
+    //   history.push('/unjoined');
+    // }
   };
 
   const { selectingNetwork, changeConnector, setSelectingNetwork, changeNetwork } = useWeb3ReactConnectorHook({ onConnected });

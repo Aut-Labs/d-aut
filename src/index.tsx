@@ -8,7 +8,7 @@ import { CssBaseline, StyledEngineProvider } from '@mui/material';
 import Theme from './theme/theme';
 import store from './store/store';
 import SwAuthModal, { AutButton } from './Aut';
-import { AttributeCallbackFn, SwAuthConfig } from './types/sw-auth-config';
+import { AttributeCallbackFn, SwAuthConfig } from './types/d-aut-config';
 import { AttributeNames, createShadowElement, extractAttributes, isElement } from './utils/utils';
 import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
 

@@ -1,4 +1,4 @@
-import { Web3AutIDProvider, Web3DAOExpanderProvider } from '@aut-protocol/abi-types';
+import { Web3AutIDProvider, Web3DAOExpanderProvider } from '@aut-labs-private/abi-types';
 import axios from 'axios';
 import dateFormat from 'dateformat';
 import * as ethers from 'ethers';
@@ -12,7 +12,7 @@ import { setUserData } from '../../store/user-data.reducer';
 import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
 import { AutId, NetworkConfig } from '../ProviderFactory/web3.connectors';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import AutSDK, { DAOExpander } from '@aut-protocol/sdk';
+import AutSDK, { DAOExpander } from '@aut-labs-private/sdk';
 
 export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue }) => {
   const sdk = AutSDK.getInstance();

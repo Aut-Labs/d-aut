@@ -2,11 +2,11 @@ import { useWeb3React } from '@web3-react/core';
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../store/store.model';
-import AutSDK from '@aut-protocol/sdk';
+import AutSDK from '@aut-labs-private/sdk';
 import { NetworksConfig, SelectedNetwork, setSigner, setSelectedNetwork } from '../../store/wallet-provider';
 import type { Connector } from '@web3-react/types';
 import { EnableAndChangeNetwork } from './web3.network';
-import { SDKBiconomyWrapper } from '@aut-protocol/sdk-biconomy';
+import { SDKBiconomyWrapper } from '@aut-labs-private/sdk-biconomy';
 import { DAOExpanderAddress, ResultState, setSelectedAddress, setStatus, updateErrorState } from '../../store/aut.reducer';
 import { InternalErrorTypes } from '../../utils/error-parser';
 import { ethers } from 'ethers';
@@ -34,8 +34,19 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
       signer,
       {
         daoExpanderAddress,
-        autIDAddress: networkConfig.contracts.autIDAddress,
-        daoExpanderRegistryAddress: networkConfig.contracts.daoExpanderRegistryAddress,
+      }
+      // biconomy
+    );
+
+    // fetch autId contract address
+    const result = await sdk.daoExpander.contract.getAutIDContractAddress();
+    console.log(result);
+
+    await sdk.init(
+      signer,
+      {
+        daoExpanderAddress,
+        autIDAddress: result.data,
       }
       // biconomy
     );

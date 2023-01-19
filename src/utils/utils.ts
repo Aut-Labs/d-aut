@@ -1,6 +1,6 @@
 import createCache, { EmotionCache } from '@emotion/cache';
 import { OutputEventTypes } from '../types/event-types';
-import { AttributesDefinitions, ShadowRootConfig, SwAttributes } from '../types/sw-auth-config';
+import { AttributesDefinitions, ShadowRootConfig, SwAttributes } from '../types/d-aut-config';
 
 export const pxToRem = (size: number | string) => {
   size = `${size}`.replace('px', '');
