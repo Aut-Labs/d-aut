@@ -6,12 +6,12 @@ import { CSSObject } from '@emotion/react';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
 import { dispatchEvent } from './utils/utils';
-import { AutButtonProps } from './types/sw-auth-config';
+import { AutButtonProps } from './types/d-aut-config';
 import { OutputEventTypes } from './types/event-types';
 import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { RoundedWebButton } from './components/WebButton';
-import { setSelectedNetwork } from './store/wallet-provider';
+import { setAlternativeRpc, setSelectedNetwork } from './store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
 import { Typography } from '@mui/material';
 
@@ -66,6 +66,9 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
       dispatch(setCommunityExtesnionAddress(attributes.daoExpander as string));
     } else {
       // console.log('nocommunity extension');
+    }
+    if (attributes.rpc) {
+      dispatch(setAlternativeRpc(attributes.rpc as string));
     }
     if (attributes.buttonType) {
       // console.log(attributes.buttonType);

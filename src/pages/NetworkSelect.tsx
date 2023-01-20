@@ -15,7 +15,7 @@ import { getAutId } from '../services/web3/api';
 import { IsConnected, NetworksConfig, SelectedNetwork, setSelectedNetwork } from '../store/wallet-provider';
 import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { InternalErrorTypes } from '../utils/error-parser';
-import AutSDK from '@aut-protocol/sdk';
+import AutSDK from '@aut-labs-private/sdk';
 
 const NetworkSelect: React.FunctionComponent = () => {
   const networkConfigs = useSelector(NetworksConfig);
@@ -53,11 +53,23 @@ const NetworkSelect: React.FunctionComponent = () => {
           provider.getSigner(),
           {
             daoExpanderAddress: daoExpanderAddress as string,
-            autIDAddress: network.contracts.autIDAddress,
-            daoExpanderRegistryAddress: network.contracts.daoExpanderRegistryAddress,
           }
           // biconomy
         );
+
+        // fetch autId contract address
+        const result = await sdk.daoExpander.contract.getAutIDContractAddress();
+        console.log(result);
+
+        await sdk.init(
+          provider.getSigner(),
+          {
+            daoExpanderAddress,
+            autIDAddress: result.data,
+          }
+          // biconomy
+        );
+
         await dispatch(getAutId(account));
       } catch (e) {
         await dispatch(setSelectedNetwork(null));
