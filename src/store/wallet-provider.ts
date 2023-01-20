@@ -18,6 +18,7 @@ export interface WalletProviderState {
   networksConfig: NetworkConfig[];
   connectors: [MetaMask | WalletConnect, Web3ReactHooks][];
   wallets: any;
+  alternativeRpc: string;
 }
 
 export const initialState: WalletProviderState = {
@@ -28,6 +29,7 @@ export const initialState: WalletProviderState = {
   isOpen: false,
   connectors: [],
   wallets: {},
+  alternativeRpc: null,
 };
 
 export const walletProviderSlice = createSlice({
@@ -36,6 +38,9 @@ export const walletProviderSlice = createSlice({
   reducers: {
     setSigner(state, action) {
       state.signer = action.payload;
+    },
+    setAlternativeRpc(state, action) {
+      state.alternativeRpc = action.payload;
     },
     setWallet(state, action) {
       state.selectedWalletType = action.payload;
@@ -66,12 +71,13 @@ export const walletProviderSlice = createSlice({
   },
 });
 
-export const { setSigner, setWallet, setProviderIsOpen, setNetworks, setSelectedNetwork } = walletProviderSlice.actions;
+export const { setSigner, setWallet, setProviderIsOpen, setNetworks, setSelectedNetwork, setAlternativeRpc } = walletProviderSlice.actions;
 
 export const NetworkSelectorIsOpen = (state: any) => state.walletProvider.isOpen as boolean;
 export const NetworksConfig = (state: any) => state.walletProvider.networksConfig as NetworkConfig[];
 export const NetworkConnectors = (state: any) => state.walletProvider.connectors as [MetaMask | WalletConnect, Web3ReactHooks][];
 export const SelectedWalletType = (state: any) => state.walletProvider.selectedWalletType as string;
+export const AlternativeRPC = (state: any) => state.walletProvider.alternativeRpc as string;
 export const SelectedNetwork = (state: any) => state.walletProvider.selectedNetwork as string;
 export const NetworkSigner = (state: any) => state.walletProvider.signer as ethers.providers.JsonRpcSigner;
 export const NetworkWalletConnectors = (state: any) => state.walletProvider.wallets as any;

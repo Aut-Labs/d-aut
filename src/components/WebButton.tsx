@@ -102,7 +102,7 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                 sx={{
                   fontFamily: 'FractulAltLight',
                 }}
-                variant="body"
+                variant="body1"
               >
                 Connect with āut
               </Typography>

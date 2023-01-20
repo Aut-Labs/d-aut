@@ -15,7 +15,7 @@ export enum AttributesDefinitions {
   'network' = 'string',
   'hide-button' = 'boolean',
   'button-type' = 'string',
-  'alternative-rpc' = 'string',
+  'rpc' = 'string',
 }
 
 type EnumKeys = keyof typeof AttributesDefinitions;

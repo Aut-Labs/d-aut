@@ -3,13 +3,14 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import AutSDK from '@aut-labs-private/sdk';
 import { useAppDispatch } from '../../store/store.model';
-import { NetworkConnectors, setNetworks } from '../../store/wallet-provider';
+import { AlternativeRPC, NetworkConnectors, setNetworks } from '../../store/wallet-provider';
 import { getAppConfig } from '../web3/api';
 import { env } from '../web3/env';
 
 export default function Web3AutProvider({ children }) {
   const dispatch = useAppDispatch();
   const connectors = useSelector(NetworkConnectors);
+  const alternativeRPC = useSelector(AlternativeRPC);
 
   useEffect(() => {
     // const fetchNetworkData = async () => {
@@ -28,7 +29,7 @@ export default function Web3AutProvider({ children }) {
           chainId: env.REACT_APP_CHAIN_ID,
           explorerUrls: env.REACT_APP_EXPLORER_URLS,
           network: env.REACT_APP_NETWORK,
-          rpcUrls: env.REACT_APP_RPC_URLS,
+          rpcUrls: alternativeRPC ? [alternativeRPC] : env.REACT_APP_RPC_URLS,
         },
       ])
     );
