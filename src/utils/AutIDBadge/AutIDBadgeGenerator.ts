@@ -1,91 +1,96 @@
 import { ContentConfig, SWIDParams, SWIDOutput } from './Badge.model';
-import { FindTextCenter } from './FindCenter';
-import { LoadImage } from './ImageLoader';
-import { AutBackgroundGoerliSvg, AutBackgroundMumbaiSvg } from './SwBackgroundSvg';
+import { LoadImage, ScaleImage } from './ImageLoader';
+import { AutMumbaiLabel, AutBackgroundSvg, AutAvatarGradient } from './SwBackgroundSvg';
+import { generateAutIdDAOSigil } from '../AutSIgilGenerator/SigilGenerator';
 
 const drawCanvasElements = (canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D, config: ContentConfig) => {
-  const { title, timestamp, canvasFont, hash, qrImage, width } = config;
+  const { name, dao, role, timestamp, hash } = config;
 
-  const drawBackground = async (network: string) => {
+  const drawBackground = async () => {
     let url = null;
-    if (network === 'mumbai') {
-      url = AutBackgroundMumbaiSvg({
-        title: title.text,
-        hash: hash.text,
-        width,
-        timestamp: timestamp.text,
-      });
-    } else if (network === 'goerli') {
-      url = AutBackgroundGoerliSvg({
-        title: title.text,
-        hash: hash.text,
-        width,
-        timestamp: timestamp.text,
-      });
-    }
+    url = AutBackgroundSvg({
+      name: name.text,
+      hash: hash.text,
+      role: role.text,
+      dao: dao.text,
+      timestamp: timestamp.text,
+    });
     const backgroundImage = await LoadImage(url);
-    ctx.drawImage(backgroundImage, 0, 0);
+    ctx.drawImage(backgroundImage, 35, 0);
   };
 
-  const drawNameAndTime = async () => {
-    const fontFace = new FontFace(canvasFont.name, `url(${canvasFont.url})`, {
-      weight: '100',
-    });
-    await fontFace.load();
+  const drawAvatar = async (avatar: string) => {
+    const avatarImage = await LoadImage(avatar);
+    const maxWidth = 362;
+    const maxHeight = 339;
+    const { iwScaled, ihScaled } = ScaleImage(maxWidth, maxHeight, avatarImage);
 
-    const center = FindTextCenter(canvas.width, 0, 'width', canvasFont.fontFamily);
+    let offsetX = 0;
+    if (iwScaled < maxWidth) {
+      offsetX = maxWidth / 2 - iwScaled / 2;
+    }
+    let offsetY = 0;
+    if (ihScaled < maxHeight) {
+      offsetY = maxHeight / 2 - ihScaled / 2;
+    }
+    ctx.drawImage(avatarImage, 107 + offsetX, 112 + offsetY, iwScaled, ihScaled);
+  };
 
-    // Title styles
-    ctx.font = `${title.fontWeight} ${title.fontSize} ${canvasFont.fontFamily}`;
-    ctx.strokeStyle = title.color;
-    const titleLeft = center(title.text, title.fontSize);
-    ctx.fillText(title.text, titleLeft, title.top);
+  const drawAvatarGradient = async () => {
+    let url = null;
+    url = AutAvatarGradient();
+    const avatarGradient = await LoadImage(url);
+    ctx.drawImage(avatarGradient, 95, 112);
+  };
 
-    // Timestamp styles
-    ctx.font = `${timestamp.fontWeight} ${timestamp.fontSize} ${canvasFont.fontFamily}`;
-    const timestampLeft = center(timestamp.text, timestamp.fontSize);
-    ctx.fillText(timestamp.text, timestampLeft, timestamp.top);
+  const drawLabel = async () => {
+    let url = null;
+    url = AutMumbaiLabel();
+    const labelImage = await LoadImage(url);
+    ctx.drawImage(labelImage, 0, 114);
+  };
+
+  const drawSigil = async (expanderAddress: string) => {
+    const { toBase64 } = await generateAutIdDAOSigil(expanderAddress);
+    const sigilImage = await LoadImage(toBase64());
+    const { iwScaled, ihScaled } = ScaleImage(245, 245, sigilImage);
+    ctx.drawImage(sigilImage, 250, 460, iwScaled, ihScaled);
   };
 
   return {
     drawBackground,
-    drawNameAndTime,
+    drawLabel,
+    drawAvatar,
+    drawAvatarGradient,
+    drawSigil,
   };
 };
 
 const defaulConfig = (
   config: ContentConfig,
   avatar: string,
-  tokenId: string,
-  title: string,
+  name: string,
+  dao: string,
+  role: string,
   timestamp: string,
-  hash: string
+  hash: string,
+  expanderAddress: string
 ): ContentConfig => {
-  const WIDTH = config?.width || 440;
-  const HEIGHT = config?.height || 694;
+  const WIDTH = config?.width || 530;
+  const HEIGHT = config?.height || 763;
   return {
     width: WIDTH,
     height: HEIGHT,
+    expanderAddress,
     canvasFont: {
       name: 'custom',
       fontFamily: 'Helvetica',
       url: 'https://fonts.gstatic.com/s/josefinsans/v20/Qw3PZQNVED7rKGKxtqIqX5E-AVSJrOCfjY46_LjQbMZhKSbpUVzEEQ.woff',
     },
-    qrImage: {
-      text: tokenId,
-      logo: avatar,
-      width: 227,
-      height: 227,
-      logoSize: 120,
-      logoWidth: 70,
-      logoHeight: 70,
-      logoBorderWidth: 8,
-      top: 85,
-    },
-    title: {
+    name: {
       fontSize: '40px',
       fontWeight: '400',
-      text: title,
+      text: name,
       top: HEIGHT - 20,
       color: '#white',
     },
@@ -99,6 +104,20 @@ const defaulConfig = (
       text: timestamp,
       top: HEIGHT - 190 + 22,
     },
+    role: {
+      color: '#white',
+      fontWeight: '100',
+      fontSize: '14px',
+      text: role,
+      top: HEIGHT - 190 + 22,
+    },
+    dao: {
+      color: '#white',
+      fontWeight: '100',
+      fontSize: '14px',
+      text: dao,
+      top: HEIGHT - 190 + 22,
+    },
     ...(config || {}),
   };
 };
@@ -107,9 +126,12 @@ export const AutIDBadgeGenerator = async ({
   canvas,
   avatar,
   tokenId,
-  title,
+  name,
+  role,
+  dao,
   timestamp,
   hash,
+  expanderAddress,
   config,
   network,
 }: SWIDParams): Promise<SWIDOutput> => {
@@ -118,13 +140,16 @@ export const AutIDBadgeGenerator = async ({
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
-  config = defaulConfig(config, avatar, tokenId, title, timestamp, hash);
+  config = defaulConfig(config, avatar, name, dao, role, timestamp, hash, expanderAddress);
 
   canvas.width = config.width;
   canvas.height = config.height;
   const ctxContents = drawCanvasElements(canvas, ctx, config);
-  await ctxContents.drawBackground(network);
-  // await ctxContents.drawNameAndTime();
+  await ctxContents.drawBackground();
+  await ctxContents.drawAvatar(avatar);
+  await ctxContents.drawAvatarGradient();
+  await ctxContents.drawSigil(expanderAddress);
+  await ctxContents.drawLabel();
 
   return {
     previewElement: canvas,

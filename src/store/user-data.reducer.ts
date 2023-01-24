@@ -58,6 +58,8 @@ export const { setUserData } = userDataSlice.actions;
 //   (userState) => userState
 // );
 
+export const UserAvatar = (state) => state.userData.picture as string;
+
 export const userData = (state) => state.userData as typeof initialState;
 
 export default userDataSlice.reducer;

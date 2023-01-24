@@ -59,13 +59,18 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
 
   const nftIdResp = await contract.getNextTokenID();
   const config = {
-    title: `${username}`,
+    name: username,
+    role,
+    dao: aut.community.name,
+    avatar: userData.picture,
     hash: `#${nftIdResp.data.toString()}`,
     network: selectedNetwork.toLowerCase(),
+    expanderAddress: aut.daoExpanderAddress,
     timestamp: `${timeStamp}`,
   } as SWIDParams;
-
-  const { toFile } = await AutIDBadgeGenerator(config);
+  debugger;
+  const { toFile, download } = await AutIDBadgeGenerator(config);
+  download();
   const badgeFile = await toFile();
   const avatarFile = base64toFile(picture, 'avatar');
   const avatarCid = await storeImageAsBlob(avatarFile as File);
@@ -111,7 +116,7 @@ export const joinCommunity = createAsyncThunk(
     const sdk = AutSDK.getInstance();
     const { contract } = sdk.autID;
 
-    const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.communityExtensionAddress;
+    const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
     const result = await contract.joinDAO(userData.role, userData.commitment, requiredAddress);
     if (result.isSuccess) {
       const tokenId = await contract.getTokenIdByOwner(selectedAddress);
@@ -149,7 +154,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   const holderCommunities = await contract.getHolderDAOs(selectedAddress);
   // CHECK FOR UNJOINED COMMUNITIES IF WE'RE NOT IN AUT ID
   // const unjoinedCommunities = [];
-  // if (aut.communityExtensionAddress) {
+  // if (aut.daoExpanderAddress) {
   //   const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
   //   const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
   //   // console.log('holderCommunities', holderCommunities);
@@ -276,7 +281,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
       // const holderCommunities = await contract.getHolderDAOs(selectedAddress);
       // CHECK FOR UNJOINED COMMUNITIES IF WE'RE NOT IN AUT ID
       // const unjoinedCommunities = [];
-      // if (aut.communityExtensionAddress) {
+      // if (aut.daoExpanderAddress) {
       //   const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
       //   const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
       //   // console.log('holderCommunities', holderCommunities);
@@ -386,7 +391,7 @@ export const checkIfAutIdExists = createAsyncThunk('membership/exists', async (s
   }
   if (holderCommunities.data) {
     for (const community of holderCommunities.data as unknown as string[]) {
-      if (community === aut.communityExtensionAddress) {
+      if (community === aut.daoExpanderAddress) {
         return rejectWithValue(InternalErrorTypes.AutIDAlreadyInThisCommunity);
       }
     }
