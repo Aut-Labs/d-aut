@@ -16,3 +16,12 @@ export const LoadImage = (url: string, width: number = null, height: number = nu
     image.src = url;
   });
 };
+
+export const ScaleImage = (maxWidth: number, maxHeight: number, image: HTMLImageElement) => {
+  const iw = image.width;
+  const ih = image.height;
+  const scale = Math.min(maxWidth / iw, maxHeight / ih);
+  const iwScaled = iw * scale;
+  const ihScaled = ih * scale;
+  return { iwScaled, ihScaled };
+};

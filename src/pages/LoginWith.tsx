@@ -43,15 +43,10 @@ const LoginWith: React.FunctionComponent = () => {
         }}
       >
         <AutHeader hideBackBtn hideCloseBtn logoId="login-with-logo" title="Login of Sign-up" />
-        <AutButton
-          size="normal"
-          variant="outlined"
-          sx={{ mt: autData.communityExtensionAddress ? '48px' : '78px' }}
-          onClick={handleAutIdClicked}
-        >
+        <AutButton size="normal" variant="outlined" sx={{ mt: autData.daoExpanderAddress ? '48px' : '78px' }} onClick={handleAutIdClicked}>
           Connect with āutID
         </AutButton>
-        {autData.communityExtensionAddress && (
+        {autData.daoExpanderAddress && (
           <AutButton size="normal" variant="outlined" sx={{ mt: '30px' }} onClick={handleNewUserClicked}>
             New User
           </AutButton>
