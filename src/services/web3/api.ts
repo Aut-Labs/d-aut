@@ -68,9 +68,7 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
     expanderAddress: aut.daoExpanderAddress,
     timestamp: `${timeStamp}`,
   } as SWIDParams;
-  debugger;
   const { toFile, download } = await AutIDBadgeGenerator(config);
-  download();
   const badgeFile = await toFile();
   const avatarFile = base64toFile(picture, 'avatar');
   const avatarCid = await storeImageAsBlob(avatarFile as File);
