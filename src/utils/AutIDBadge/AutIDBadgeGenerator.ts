@@ -47,7 +47,7 @@ const drawCanvasElements = (canvas: HTMLCanvasElement, ctx: CanvasRenderingConte
     let url = null;
     url = AutMumbaiLabel();
     const labelImage = await LoadImage(url);
-    ctx.drawImage(labelImage, 0, 114);
+    ctx.drawImage(labelImage, 8, 114);
   };
 
   const drawSigil = async (expanderAddress: string) => {
