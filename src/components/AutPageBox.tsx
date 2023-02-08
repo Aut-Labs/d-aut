@@ -13,6 +13,15 @@ export const StyledBox = styled(Box)({
   alignItems: 'center',
 });
 
+export const ContentBox = styled(Box)({
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+});
+
 export const AutPageBox = (props) => {
   const autData = useSelector(autState);
 
@@ -21,7 +30,7 @@ export const AutPageBox = (props) => {
       <StyledBox sx={{ display: autData.status === ResultState.Loading ? '' : 'none' }}>
         <LoadingProgress />
       </StyledBox>
-      <StyledBox sx={{ display: autData.status === ResultState.Idle ? '' : 'none' }}>{props.children}</StyledBox>
+      <ContentBox sx={{ display: autData.status === ResultState.Idle ? '' : 'none' }}>{props.children}</ContentBox>
       <StyledBox sx={{ display: autData.status === ResultState.Failed ? '' : 'none' }}>
         <ErrorBox />
       </StyledBox>

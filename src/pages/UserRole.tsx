@@ -44,13 +44,9 @@ const UserRole: React.FunctionComponent = (props) => {
     <AutPageBox>
       <AutHeader
         logoId="role-logo"
-        title="WELCOME"
+        title="Your Role"
         backAction={deactivateConnector}
-        subtitle={
-          <>
-            Pick what you’re the best at, <br /> & be rewarded for it!
-          </>
-        }
+        subtitle={<>Pick what you’re the best at, & be rewarded for it!</>}
       />
       <FormWrapper>
         {communityData &&

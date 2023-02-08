@@ -66,18 +66,8 @@ const NewUser: React.FunctionComponent = (props) => {
               </>
             }
           />
-          <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <ConnectorBtn marginTop={29} setConnector={changeConnector} connectorType={ConnectorTypes.Metamask} />
-            <ConnectorBtn marginTop={30} setConnector={changeConnector} connectorType={ConnectorTypes.WalletConnect} />
-          </Box>
+          <ConnectorBtn marginTop={66} setConnector={changeConnector} connectorType={ConnectorTypes.Metamask} />
+          <ConnectorBtn marginTop={53} setConnector={changeConnector} connectorType={ConnectorTypes.WalletConnect} />
         </AutPageBox>
       )}
     </>

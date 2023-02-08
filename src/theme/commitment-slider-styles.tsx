@@ -137,8 +137,12 @@ export default (theme: Theme) =>
           display: 'none',
         },
         '.MuiSlider-thumb': {
-          width: '45px',
-          height: '45px',
+          borderWidth: '2px',
+          borderColor: 'white',
+          background: '#256BB0',
+          boxShadow: 'inset 0px 0px 0px 1px #FFF',
+          width: '25px',
+          height: '25px',
         },
         '.MuiSlider-mark': {
           background: 'transparent',

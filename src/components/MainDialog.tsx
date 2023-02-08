@@ -1,26 +1,26 @@
 import { Box, Dialog, styled, useMediaQuery, useTheme } from '@mui/material';
 import { Route, Switch, RouteComponentProps } from 'react-router-dom';
+import background from '../assets/static-background.png';
 import routes from '../config/routes';
 
 const DialogContent = styled(Box)(({ theme }) => ({
-  width: '550px',
+  width: '570px',
   height: '550px',
   display: 'flex',
-  backgroundColor: '#000',
-  borderStyle: 'solid',
-  borderWidth: '15px',
+  background: `url(${background})`,
+  backgroundPosition: 'center',
+  backgroundRepeat: 'no-repeat',
+  backgroundSize: 'cover',
+  // backgroundColor: `black`,
   [theme.breakpoints.down('xl')]: {
-    borderWidth: '12px',
-    width: '500px',
+    width: '520px',
     height: '500px',
   },
   [theme.breakpoints.down('md')]: {
-    borderWidth: '10px',
-    width: '480px',
+    width: '500px',
     height: '480px',
   },
   [theme.breakpoints.down('sm')]: {
-    borderWidth: '5px',
     width: 'calc(100% - 10px)',
     height: 'calc(100% - 10px)',
   },

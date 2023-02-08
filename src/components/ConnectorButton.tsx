@@ -12,11 +12,11 @@ import { pxToRem } from '../utils/utils';
 const btnConfig = {
   [ConnectorTypes.Metamask]: {
     label: 'Metamask',
-    icon: <Metamask height="15px" />,
+    icon: <Metamask height="20px" />,
   },
   [ConnectorTypes.WalletConnect]: {
     label: 'WalletConnect',
-    icon: <WalletConnect height="15px" />,
+    icon: <WalletConnect height="20px" />,
   },
 };
 
@@ -45,38 +45,14 @@ export default function ConnectorBtn({
         dispatch(setWallet(connectorType));
         setConnector(connector);
       }}
-      sx={{
-        width: pxToRem(260),
-        height: pxToRem(55),
-        fontSize: pxToRem(16),
-        marginTop: pxToRem(marginTop || 0),
-        textTransform: 'inherit',
-        '&.MuiButton-root': {
-          letterSpacing: '0px',
-        },
-      }}
-      type="button"
-      color="primary"
+      sx={{ mt: `${marginTop}px` }}
+      color="white"
+      size="normal"
       variant="outlined"
+      type="button"
+      startIcon={btnConfig[connectorType].icon}
     >
-      <span
-        style={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        {btnConfig[connectorType].icon}
-        <Typography
-          sx={{
-            flex: 1,
-            fontSize: pxToRem(16),
-            color: 'white',
-          }}
-        >
-          {btnConfig[connectorType].label}
-        </Typography>
-      </span>
+      {btnConfig[connectorType].label}
     </AutButton>
   );
 }

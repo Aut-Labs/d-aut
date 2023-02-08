@@ -65,62 +65,62 @@ export function FormHelperText({ errors, name, errorTypes, children = null, posi
   );
 }
 
-export const AutTextField = styled((props: TextFieldProps & { width: string }) => <TextField {...props} />)(
-  ({ theme, width, multiline }) => ({
-    width: pxToRem(width),
-    '.MuiInputLabel-root': {
-      top: '-2px',
-    },
-    '.MuiFormHelperText-root': {
-      marginRight: 0,
-      marginLeft: 0,
-      textAlign: 'right',
-      position: 'relative',
-    },
-    '.MuiInput-underline': {
-      '&:after': {
-        borderWidth: '1px',
-        transform: 'scaleX(1)',
-      },
-    },
-    '.MuiOutlinedInput-root, .MuiInput-underline': {
-      color: '#fff',
-      fontSize: pxToRem(18),
-      ...(!multiline && {
-        padding: 0,
-        height: pxToRem(50),
-      }),
-      '.MuiInputBase-input': {
-        fontFamily: 'FractulRegular',
-        paddingTop: 0,
-        paddingBottom: 0,
-      },
-      '&::placeholder': {
-        opacity: 1,
-        color: 'red',
-      },
-      '&::-webkit-input-placeholder': {
-        color: '#707070',
-        opacity: 1,
-        fontSize: pxToRem(18),
-      },
-      '&::-moz-placeholder': {
-        color: '#707070',
-        opacity: 1,
-      },
-    },
-    '.MuiOutlinedInput-root': {
-      '& > fieldset': {
-        border: '1px solid #439EDD',
-        borderWidth: '1px',
-      },
-      '&.Mui-focused fieldset, &:hover fieldset': {
-        border: '1px solid #439EDD',
-        borderWidth: '1px !important',
-      },
-    },
-  })
-);
+// export const AutTextField = styled((props: TextFieldProps & { width: string }) => <TextField {...props} />)(
+//   ({ theme, width, multiline }) => ({
+//     width: pxToRem(width),
+//     '.MuiInputLabel-root': {
+//       top: '-2px',
+//     },
+//     '.MuiFormHelperText-root': {
+//       marginRight: 0,
+//       marginLeft: 0,
+//       textAlign: 'right',
+//       position: 'relative',
+//     },
+//     '.MuiInput-underline': {
+//       '&:after': {
+//         borderWidth: '1px',
+//         transform: 'scaleX(1)',
+//       },
+//     },
+//     '.MuiOutlinedInput-root, .MuiInput-underline': {
+//       color: '#fff',
+//       fontSize: pxToRem(18),
+//       ...(!multiline && {
+//         padding: 0,
+//         height: pxToRem(50),
+//       }),
+//       '.MuiInputBase-input': {
+//         fontFamily: 'FractulRegular',
+//         paddingTop: 0,
+//         paddingBottom: 0,
+//       },
+//       '&::placeholder': {
+//         opacity: 1,
+//         color: 'red',
+//       },
+//       '&::-webkit-input-placeholder': {
+//         color: '#707070',
+//         opacity: 1,
+//         fontSize: pxToRem(18),
+//       },
+//       '&::-moz-placeholder': {
+//         color: '#707070',
+//         opacity: 1,
+//       },
+//     },
+//     '.MuiOutlinedInput-root': {
+//       '& > fieldset': {
+//         border: '1px solid #439EDD',
+//         borderWidth: '1px',
+//       },
+//       '&.Mui-focused fieldset, &:hover fieldset': {
+//         border: '1px solid #439EDD',
+//         borderWidth: '1px !important',
+//       },
+//     },
+//   })
+// );
 
 const StyledSelectField = styled((props: SelectProps) => {
   return (

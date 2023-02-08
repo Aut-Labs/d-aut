@@ -61,7 +61,7 @@ export const AutNavigationButtons = ({ hideBack = false, hideClose = false, back
         display: 'flex',
         alignItems: 'center',
         justifyContent: !hideBack && !hideClose ? 'space-between' : hideBack && !hideClose ? 'flex-end' : 'flex-start',
-        padding: '10px 20px',
+        padding: '0px 20px',
         width: 'calc(100% - 40px)',
       }}
     >

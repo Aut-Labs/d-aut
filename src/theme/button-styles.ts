@@ -2,37 +2,39 @@ import { Breakpoint, ComponentsOverrides, ComponentsProps, ComponentsVariants, T
 
 export const buttonStyles = {
   normal: {
+    width: '350px',
+    height: '75px',
     fontFamily: 'FractulAltLight',
     letterSpacing: '0.01em',
     fontSize: {
-      xs: '16px',
-      sm: '16px',
-      md: '16px',
-      xxl: '20px',
+      xs: '17px',
+      sm: '17px',
+      md: '17px',
+      xxl: '17px',
     },
     paddingTop: {
       xs: '10px',
       sm: '12px',
       md: '12px',
-      xxl: '18px',
+      xxl: '15px',
     },
     paddingBottom: {
       xs: '10px',
       sm: '12px',
       md: '12px',
-      xxl: '18px',
+      xxl: '15px',
     },
     paddingLeft: {
       xs: '32px',
       sm: '40px',
       md: '48px',
-      xxl: '90px',
+      xxl: '48px',
     },
     paddingRight: {
       xs: '32px',
       sm: '40px',
       md: '48px',
-      xxl: '90px',
+      xxl: '48px',
     },
   },
   chunky: {

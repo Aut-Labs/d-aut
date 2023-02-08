@@ -97,7 +97,7 @@ declare module '@mui/material/styles' {
   interface Palette {
     offWhite?: PaletteColor;
     nightBlack?: PaletteColor;
-    // white?: PaletteColor;
+    white?: PaletteColor;
   }
 }
 

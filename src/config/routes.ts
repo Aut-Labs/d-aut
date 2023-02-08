@@ -1,6 +1,6 @@
 import IRoute from '../interfaces/route';
 import LoginWith from '../pages/LoginWith';
-import LoginWithSkillWallet from '../pages/LoginWithAut';
+import LoginWithAut from '../pages/LoginWithAut';
 import NewUser from '../pages/NewUser';
 import UserDetails from '../pages/UserDetails';
 import UserRole from '../pages/UserRole';
@@ -39,7 +39,7 @@ const routes: IRoute[] = [
   {
     path: '/autid',
     name: 'Aut Id',
-    component: LoginWithSkillWallet,
+    component: LoginWithAut,
     exact: true,
   },
   {

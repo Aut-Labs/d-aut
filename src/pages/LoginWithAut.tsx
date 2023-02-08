@@ -12,7 +12,7 @@ import NetworkSelector from '../components/NetworkSelector';
 import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
 import { useWeb3React } from '@web3-react/core';
 
-const LoginWithSkillWallet: React.FunctionComponent = () => {
+const LoginWithAut: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { account } = useWeb3React();
@@ -45,22 +45,12 @@ const LoginWithSkillWallet: React.FunctionComponent = () => {
       ) : (
         <AutPageBox>
           <AutHeader logoId="new-user-logo" title="Welcome back" />
-          <Box
-            sx={{
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <ConnectorBtn marginTop={29} setConnector={changeConnector} connectorType={ConnectorTypes.Metamask} />
-            <ConnectorBtn marginTop={30} setConnector={changeConnector} connectorType={ConnectorTypes.WalletConnect} />
-          </Box>
+          <ConnectorBtn marginTop={93} setConnector={changeConnector} connectorType={ConnectorTypes.Metamask} />
+          <ConnectorBtn marginTop={53} setConnector={changeConnector} connectorType={ConnectorTypes.WalletConnect} />
         </AutPageBox>
       )}
     </>
   );
 };
 
-export default LoginWithSkillWallet;
+export default LoginWithAut;
