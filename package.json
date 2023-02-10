@@ -83,7 +83,7 @@
   },
   "devDependencies": {
     "@aut-labs-private/abi-types": "^0.0.4",
-    "@aut-labs-private/sdk": "^0.0.4",
+    "@aut-labs-private/sdk": "^0.0.8",
     "@aut-labs-private/sdk-biconomy": "^0.0.2",
     "@aut-protocol/sdk": "^0.0.78",
     "@aut-protocol/sdk-biconomy": "^0.0.7",
