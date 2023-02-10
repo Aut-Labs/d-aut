@@ -11,9 +11,10 @@ import { OutputEventTypes } from './types/event-types';
 import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { WebButton } from './components/WebButton';
-import { setAlternativeRpc, setSelectedNetwork } from './store/wallet-provider';
+import { SelectedNetwork, setAlternativeRpc, setSelectedNetwork } from './store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
 import { Typography } from '@mui/material';
+import { userData } from './store/user-data.reducer';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
@@ -42,7 +43,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   const history = useHistory();
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
-
+  const selectedNetwork = useSelector(SelectedNetwork);
   const [buttonType, setButtonType] = useState('simple');
   const [buttonHidden, setButtonHidden] = useState(false);
   const { connector, isActive, chainId, provider } = useWeb3React();
@@ -122,6 +123,10 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     // setAnchorEl(null);
   };
 
+  const handleProfileButtonClicked = async () => {
+    window.open(`https://my.aut.id/${selectedNetwork}/${uiState.tempUserData.username}`, '_blank');
+  };
+
   useEffect(() => {
     setAttributes();
     dispatchEvent(OutputEventTypes.Init);
@@ -149,7 +154,14 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   return (
     <>
       <Portal container={container}>
-        {!buttonHidden && <WebButton onClick={handleButtonClick} menuClick={handleMenuButtonClicked} container={container} />}
+        {!buttonHidden && (
+          <WebButton
+            onClick={handleButtonClick}
+            disconnectClick={handleMenuButtonClicked}
+            profileClick={handleProfileButtonClicked}
+            container={container}
+          />
+        )}
       </Portal>
     </>
   );

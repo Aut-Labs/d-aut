@@ -14,6 +14,7 @@ import { AutButton } from './AutButton';
 import { BorderColor } from '@mui/icons-material';
 import { pxToRem } from '../utils/utils';
 import { useAppDispatch } from '../store/store.model';
+import { userData } from '../store/user-data.reducer';
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -53,12 +54,13 @@ const StyledMenu = styled((props: MenuProps) => (
 }));
 
 interface WebCompButtonProps extends ButtonProps {
-  menuClick?: any;
+  disconnectClick?: any;
+  profileClick?: any;
   container: HTMLElement;
 }
 
-export const WebButton = ({ container, menuClick, onClick }: WebCompButtonProps) => {
-  const userData = { name: 'sass' };
+export const WebButton = ({ container, disconnectClick, profileClick, onClick }: WebCompButtonProps) => {
+  const userData = useSelector(user);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMouseEnter = (event) => {
@@ -72,7 +74,12 @@ export const WebButton = ({ container, menuClick, onClick }: WebCompButtonProps)
   };
 
   const handleDisconnectClick = () => {
-    menuClick();
+    disconnectClick();
+    handleHideMenu();
+  };
+
+  const handleProfileClick = () => {
+    profileClick();
     handleHideMenu();
   };
 
@@ -136,7 +143,7 @@ export const WebButton = ({ container, menuClick, onClick }: WebCompButtonProps)
                   }}
                   alt="User image."
                   // Make this not the badge
-                  src="https://ichef.bbci.co.uk/news/999/cpsprodpb/15951/production/_117310488_16.jpg"
+                  src={ipfsCIDToHttpUrl(userData.properties.avatar)}
                 />
               </Box>
             </Box>
@@ -189,7 +196,7 @@ export const WebButton = ({ container, menuClick, onClick }: WebCompButtonProps)
         MenuListProps={{ onMouseLeave: handleHideMenu }}
       >
         <MenuItem sx={{ p: '0px', width: '100%' }}>
-          <Button className="buttonOption" onClick={handleDisconnectClick}>
+          <Button className="buttonOption" onClick={handleProfileClick}>
             <Typography align="right" className="buttonOptionText" variant="button">
               Profile
             </Typography>
