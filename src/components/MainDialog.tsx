@@ -11,18 +11,10 @@ const DialogContent = styled(Box)(({ theme }) => ({
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
-  // backgroundColor: `black`,
-  [theme.breakpoints.down('xl')]: {
+  backgroundColor: `black`,
+  [theme.breakpoints.down('xs')]: {
     width: '520px',
     height: '500px',
-  },
-  [theme.breakpoints.down('md')]: {
-    width: '500px',
-    height: '480px',
-  },
-  [theme.breakpoints.down('sm')]: {
-    width: 'calc(100% - 10px)',
-    height: 'calc(100% - 10px)',
   },
 }));
 

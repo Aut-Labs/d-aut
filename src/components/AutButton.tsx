@@ -4,6 +4,7 @@ import { pxToRem } from '../utils/utils';
 
 export const AutButton = styled<ButtonProps<any, any>>(Button)(() => ({
   '&.MuiButton-root': {
+    textTransform: 'uppercase',
     color: 'white',
     borderColor: '#FFF',
     '&.Mui-disabled': {
@@ -23,9 +24,8 @@ export const SmallerAutButton = styled<ButtonProps<'button', any>>(Button)(() =>
     width: '190px',
     border: `${pxToRem(3)} solid #009FE3`,
     borderRadius: '50px',
-    textDecoration: 'uppercase',
+    textTransform: 'uppercase',
     color: 'white',
-    textTransform: 'none',
     letterSpacing: '3px',
     fontSize: pxToRem(14),
     '&.Mui-disabled': {

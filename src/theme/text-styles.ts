@@ -4,9 +4,9 @@ import { Typography, TypographyOptions } from '@mui/material/styles/createTypogr
 export const textStyles = {
   h1: {
     fontSize: {
-      xs: '68px',
-      sm: '68px',
-      md: '68px',
+      xs: '72px',
+      sm: '72px',
+      md: '72px',
       lg: '72px',
       xxl: '72px',
     },
@@ -16,9 +16,9 @@ export const textStyles = {
   },
   h2: {
     fontSize: {
-      xs: '42px',
-      sm: '42px',
-      md: '42px',
+      xs: '45px',
+      sm: '45px',
+      md: '45px',
       lg: '45px',
       xxl: '45px',
     },
@@ -28,7 +28,7 @@ export const textStyles = {
   },
   h3: {
     fontSize: {
-      xs: '32px',
+      xs: '35px',
       sm: '35px',
       md: '35px',
       lg: '35px',
@@ -40,9 +40,9 @@ export const textStyles = {
   },
   subtitle1: {
     fontSize: {
-      xs: '23px',
-      sm: '23px',
-      md: '23px',
+      xs: '25px',
+      sm: '25px',
+      md: '25px',
       lg: '25px',
       xxl: '25px',
     },
@@ -52,9 +52,9 @@ export const textStyles = {
   },
   subtitle2: {
     fontSize: {
-      xs: '16px',
-      sm: '16px',
-      md: '16px',
+      xs: '18px',
+      sm: '18px',
+      md: '18px',
       lg: '18px',
       xxl: '18px',
     },
