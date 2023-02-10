@@ -28,10 +28,12 @@ declare module '@mui/material/Button' {
     normal: true;
     chunky: true;
     square: true;
+    half: true;
   }
 
   interface ButtonPropsVariantOverrides {
     square: true;
+    half: true;
   }
 
   interface ButtonPropsColorOverrides {

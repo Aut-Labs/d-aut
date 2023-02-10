@@ -61,12 +61,22 @@ export const AutNavigationButtons = ({ hideBack = false, hideClose = false, back
         display: 'flex',
         alignItems: 'center',
         justifyContent: !hideBack && !hideClose ? 'space-between' : hideBack && !hideClose ? 'flex-end' : 'flex-start',
-        padding: '0px 20px',
-        width: 'calc(100% - 40px)',
+        padding: '5px 0px',
+        width: '100%',
       }}
     >
-      <StyledButton sx={{ display: hideBack ? 'none' : '' }} onClick={() => handleClick()} />
-      <StyledCrossButton sx={{ display: hideClose ? 'none' : '' }} onClick={() => handleClose()}>
+      <StyledButton
+        style={{ backgroundColor: 'transparent' }}
+        disableRipple
+        sx={{ display: hideBack ? 'none' : '' }}
+        onClick={() => handleClick()}
+      />
+      <StyledCrossButton
+        style={{ backgroundColor: 'transparent' }}
+        disableRipple
+        sx={{ display: hideClose ? 'none' : '' }}
+        onClick={() => handleClose()}
+      >
         <CrossIcon />
       </StyledCrossButton>
     </Box>

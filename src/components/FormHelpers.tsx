@@ -21,5 +21,5 @@ export const FormContent = styled(Box)({
 });
 
 export const FormAction = styled(Box)({
-  marginBottom: '70px',
+  marginBottom: '60px',
 });

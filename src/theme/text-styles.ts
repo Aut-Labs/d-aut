@@ -98,6 +98,19 @@ export const textStyles = {
     letterSpacing: '0.004em',
     fontFamily: 'FractulRegular',
   },
+  button: {
+    fontSize: {
+      xs: '20px',
+      sm: '20px',
+      md: '20px',
+      lg: '20px',
+      xxl: '20px',
+    },
+    fontWeight: 'normal',
+    letterSpacing: '0.015em',
+    fontFamily: 'FractulAltLight',
+    textTransform: 'uppercase',
+  },
   overline: {
     fontSize: {
       xs: '12px',

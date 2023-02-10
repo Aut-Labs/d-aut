@@ -41,7 +41,7 @@ const Commitment: React.FunctionComponent = (props) => {
     } else {
       const result = await dispatch(mintMembership());
       if (!(result as any).error) {
-        history.push('mintsuccess');
+        history.push('congrats');
       }
     }
   };
@@ -51,9 +51,10 @@ const Commitment: React.FunctionComponent = (props) => {
       <AutHeader
         logoId="commitment-logo"
         title={
-          <>
-            You picked<span style={{ fontStyle: 'italic' }}> {userInput.roleName}</span>
-          </>
+          // <>
+          //   You picked<span style={{ fontStyle: 'italic' }}> {userInput.roleName}</span>
+          // </>
+          <>Your Level of Commitment</>
         }
         subtitle={
           <>
@@ -73,6 +74,7 @@ const Commitment: React.FunctionComponent = (props) => {
                 minCommitment={coreState.community.minCommitment}
                 value={value}
                 name={name}
+                sx={{ mt: '63px' }}
                 errors={errors as any}
                 sliderProps={{
                   defaultValue: 0,

@@ -37,6 +37,42 @@ export const buttonStyles = {
       xxl: '48px',
     },
   },
+  half: {
+    width: '210px',
+    height: '75px',
+    fontFamily: 'FractulAltLight',
+    letterSpacing: '0.01em',
+    fontSize: {
+      xs: '17px',
+      sm: '17px',
+      md: '17px',
+      xxl: '17px',
+    },
+    paddingTop: {
+      xs: '10px',
+      sm: '12px',
+      md: '12px',
+      xxl: '15px',
+    },
+    paddingBottom: {
+      xs: '10px',
+      sm: '12px',
+      md: '12px',
+      xxl: '15px',
+    },
+    paddingLeft: {
+      xs: '32px',
+      sm: '40px',
+      md: '48px',
+      xxl: '48px',
+    },
+    paddingRight: {
+      xs: '32px',
+      sm: '40px',
+      md: '48px',
+      xxl: '48px',
+    },
+  },
   chunky: {
     fontFamily: 'FractulAltLight',
     letterSpacing: '0.01em',
@@ -106,6 +142,42 @@ export const buttonStyles = {
       xxl: '30px',
     },
   },
+  web: {
+    fontFamily: 'FractulAltLight',
+    letterSpacing: '0.01em',
+    textTransform: 'uppercase',
+    borderRadius: 0,
+    fontSize: {
+      xs: '20px',
+      sm: '20px',
+      md: '20px',
+      xxl: '20px',
+    },
+    paddingTop: {
+      xs: '0px',
+      sm: '0px',
+      md: '0px',
+      xxl: '0px',
+    },
+    paddingBottom: {
+      xs: '0px',
+      sm: '0px',
+      md: '0px',
+      xxl: '0px',
+    },
+    paddingLeft: {
+      xs: '0px',
+      sm: '0px',
+      md: '0px',
+      xxl: '0px',
+    },
+    paddingRight: {
+      xs: '0px',
+      sm: '0px',
+      md: '0px',
+      xxl: '0px',
+    },
+  },
 };
 
 export default (theme: Theme) =>
@@ -146,6 +218,19 @@ export default (theme: Theme) =>
           '&.MuiButton-root': {
             borderWidth: '3px',
             borderStyle: 'solid',
+          },
+        },
+      },
+      {
+        props: {
+          variant: 'web',
+        },
+        style: {
+          '&.MuiButton-root': {
+            borderColor: theme.palette.offWhite.main,
+            borderWidth: '2px',
+            borderStyle: 'solid',
+            borderRadius: '50px',
           },
         },
       },

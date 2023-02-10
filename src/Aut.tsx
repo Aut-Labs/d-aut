@@ -10,7 +10,7 @@ import { AutButtonProps } from './types/d-aut-config';
 import { OutputEventTypes } from './types/event-types';
 import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
-import { RoundedWebButton } from './components/WebButton';
+import { WebButton } from './components/WebButton';
 import { setAlternativeRpc, setSelectedNetwork } from './store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
 import { Typography } from '@mui/material';
@@ -149,14 +149,7 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   return (
     <>
       <Portal container={container}>
-        {!buttonHidden && (
-          <RoundedWebButton
-            buttontype={buttonType?.toLowerCase()}
-            onClick={handleButtonClick}
-            menuClick={handleMenuButtonClicked}
-            container={container}
-          />
-        )}
+        {!buttonHidden && <WebButton onClick={handleButtonClick} menuClick={handleMenuButtonClicked} container={container} />}
       </Portal>
     </>
   );

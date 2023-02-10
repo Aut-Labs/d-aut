@@ -10,8 +10,11 @@ import {
   ComponentsOverrides,
   ComponentsProps,
   ComponentsVariants,
+  Box,
 } from '@mui/material';
 import { pxToRem } from '../utils/utils';
+
+import staticBackground from '../assets/slider-blue.png';
 
 const CommitmentMessages = (value: number) => {
   switch (+value) {
@@ -77,11 +80,51 @@ export const AutCommitmentSlider = ({ value, name, minCommitment, errors, sx, sl
         <Slider
           {...sliderProps}
           sx={{
-            backgroundImage: `-webkit-linear-gradient(left, #6A6A6A, #6A6A6A ${minCommitment * 10}%, transparent ${
-              minCommitment * 10
+            '.MuiSlider-track': {
+              borderRight: value > 0 ? `1px solid white` : `0px solid white`,
+            },
+            backgroundImage: `-webkit-linear-gradient(left, #707070, #707070 ${minCommitment * 10 + 0.5}%, transparent ${
+              minCommitment * 10 + 0.5
             }%, transparent 100%)`,
           }}
         />
+        {/* <Box sx={{ width: '168px', px: '4px', display: 'flex', justifyContent: 'space-between' }}>
+          <Typography
+            align="center"
+            variant="h5"
+            sx={{
+              fontWeight: '400',
+              maxWidth: '320px',
+              color: '#000',
+            }}
+          >
+            1
+          </Typography>
+          <Typography
+            align="center"
+            variant="h5"
+            sx={{
+              transform: 'translate(0px, -22px);',
+              mixBlendMode: 'difference',
+              fontWeight: '400',
+              maxWidth: '320px',
+              pointerEvents: 'none',
+            }}
+          >
+            {4}
+          </Typography>
+          <Typography
+            align="center"
+            variant="h5"
+            sx={{
+              fontWeight: '400',
+              maxWidth: '320px',
+              color: '#000',
+            }}
+          >
+            10
+          </Typography>
+        </Box> */}
       </div>
       <div
         style={{
@@ -103,17 +146,20 @@ export const AutCommitmentSlider = ({ value, name, minCommitment, errors, sx, sl
 const generateColors = (color: PaletteColor) => ({
   color: color.dark,
   '.MuiSlider-mark': {
-    borderColor: color.light,
+    borderColor: '#256BB0',
   },
   '.MuiSlider-track': {
-    background: color.light,
+    backgroundImage: `url(${staticBackground})`,
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
   },
   '.MuiSlider-thumb': {
-    background: color.main,
-    boxShadow: `0px 0px 0px 0px`,
+    background: '#256BB0',
+    boxShadow: 'inset 0px 0px 0px 1px #FFF',
   },
   '.MuiTypography-root': {
-    color: color.main,
+    color: 'color.main',
   },
 });
 
@@ -122,11 +168,11 @@ export default (theme: Theme) =>
     ...theme.components.MuiSelect,
     styleOverrides: {
       root: {
-        '&.MuiSlider-colorPrimary': generateColors(theme.palette.offWhite),
-        width: pxToRem(400),
-        height: pxToRem(45),
+        '&.MuiSlider-colorPrimary': generateColors(theme.palette.white),
+        width: '400px',
+        height: '42px',
         borderRadius: '0',
-        borderWidth: '2px',
+        borderWidth: '1px',
         borderStyle: 'solid',
         padding: '0',
 
@@ -137,10 +183,6 @@ export default (theme: Theme) =>
           display: 'none',
         },
         '.MuiSlider-thumb': {
-          borderWidth: '2px',
-          borderColor: 'white',
-          background: '#256BB0',
-          boxShadow: 'inset 0px 0px 0px 1px #FFF',
           width: '25px',
           height: '25px',
         },

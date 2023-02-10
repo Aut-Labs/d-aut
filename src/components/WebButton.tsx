@@ -1,5 +1,5 @@
-import { Box, Button, ButtonProps, Menu, MenuItem, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Box, Button, ButtonProps, Menu, MenuItem, MenuProps, Typography } from '@mui/material';
+import { alpha, styled } from '@mui/material/styles';
 import { ReactComponent as Oval } from '../assets/oval.svg';
 import { ReactComponent as DarkOval } from '../assets/darker-oval.svg';
 import { ReactComponent as BlackOval } from '../assets/oval-black.svg';
@@ -13,34 +13,57 @@ import { useState } from 'react';
 import { AutButton } from './AutButton';
 import { BorderColor } from '@mui/icons-material';
 import { pxToRem } from '../utils/utils';
+import { useAppDispatch } from '../store/store.model';
 
-const menuButtonColors = {
-  simple: {
-    borderImage:
-      'linear-gradient(45.57deg, #009fe3 0%, #0399de 8%, #0e8bd3 19%, #2072bf 30%, #3a50a4 41%, #5a2583 53%, #453f94 71%, #38519f 88%, #3458a4 100%) 1',
-    backgroundColor: '#000',
-    borderColor: 'none',
-    backgroundHover: '#6FA1C3',
-    textColor: '#FFF',
-    disconnectIcon: <DisconnectIconWhite />,
+const StyledMenu = styled((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'right',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'right',
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  '& .MuiPaper-root': {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color: theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+    boxShadow:
+      'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+    '& .MuiMenu-list': {
+      padding: '4px 0',
+    },
+    '& .MuiMenuItem-root': {
+      '& .MuiSvgIcon-root': {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      '&:active': {
+        backgroundColor: alpha(theme.palette.primary.main, theme.palette.action.selectedOpacity),
+      },
+    },
   },
-};
+}));
 
 interface WebCompButtonProps extends ButtonProps {
-  buttontype?: string;
   menuClick?: any;
-  container?: any;
+  container: HTMLElement;
 }
 
-const buttonTypes = ['round-bright', 'square-bright', 'square-dark', 'round-dark', 'round-light', 'square-light', 'simple'];
-
-export const RoundedWebButton = (props: WebCompButtonProps) => {
-  const userData = useSelector(user);
+export const WebButton = ({ container, menuClick, onClick }: WebCompButtonProps) => {
+  const userData = { name: 'sass' };
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMouseEnter = (event) => {
     if (anchorEl !== event.currentTarget && userData) {
-      setAnchorEl(props.container);
+      setAnchorEl(event.currentTarget);
     }
   };
 
@@ -49,26 +72,38 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
   };
 
   const handleDisconnectClick = () => {
-    props.menuClick();
+    menuClick();
     handleHideMenu();
   };
 
   return (
     <>
-      <AutButton size="normal" variant="outlined" onClick={props.onClick} onMouseEnter={handleMouseEnter}>
-        <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
-          <Box
-            sx={{
-              width: '100%',
-              height: '100%',
-              position: 'relative',
-              zIndex: '101',
-              display: 'flex',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-            }}
-          >
-            {userData ? (
+      <AutButton
+        variant="web"
+        sx={{
+          height: '55px',
+          width: '270px',
+          background: userData ? '#EBEBF2' : 'transparent',
+          overflow: 'hidden',
+          zIndex: '99999',
+        }}
+        size="web"
+        onClick={onClick}
+        onMouseEnter={handleMouseEnter}
+      >
+        {userData && (
+          <Box sx={{ width: '100%', height: '100%', position: 'relative', p: '0px 20px' }}>
+            <Box
+              sx={{
+                width: '100%',
+                height: '100%',
+                position: 'relative',
+                zIndex: '101',
+                display: 'flex',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+              }}
+            >
               <Box
                 sx={{
                   height: '100%',
@@ -78,91 +113,93 @@ export const RoundedWebButton = (props: WebCompButtonProps) => {
                   justifyContent: 'space-between',
                 }}
               >
-                <Typography
+                <Box
                   sx={{
-                    fontFamily: 'FractulAltLight',
+                    height: '100%',
+                    width: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}
-                  variant="body1"
                 >
-                  {userData.name}
-                </Typography>
+                  <Typography color="black" variant="button">
+                    {userData?.name}
+                  </Typography>
+                </Box>
                 <Box
                   component="img"
                   sx={{
-                    width: pxToRem(50),
+                    height: '100%',
+                    objectFit: 'cover',
+                    width: '60px',
                     maxWidth: '100%',
                   }}
                   alt="User image."
                   // Make this not the badge
-                  src={ipfsCIDToHttpUrl(userData.properties.avatar)}
+                  src="https://ichef.bbci.co.uk/news/999/cpsprodpb/15951/production/_117310488_16.jpg"
                 />
               </Box>
-            ) : (
-              <Typography
-                sx={{
-                  fontFamily: 'FractulAltLight',
-                }}
-                variant="body1"
-              >
-                Connect with āut
-              </Typography>
-            )}
+            </Box>
           </Box>
-        </Box>
+        )}
+        {!userData && 'Connect Wallet'}
       </AutButton>
       <Menu
         sx={{
           '& .MuiPaper-root': {
+            borderTop: '0px',
+            width: '200px',
+            borderColor: '#EBEBF2',
             backgroundColor: 'transparent',
-            ml: pxToRem(32),
+            paddingBottom: '10px',
+            paddingTop: '8px',
+            ml: '32px',
             boxShadow: 'none',
           },
           '& .MuiMenu-list': {
             '&.MuiTouchRipple-child': {
-              backgroundColor: 'red',
+              backgroundColor: '#89898C',
             },
             padding: '0px',
           },
           '.MuiBackdrop-root': {
             backdropFilter: 'none',
           },
-          '& .buttonOption': {
-            border: `${pxToRem(3)} solid`,
+          '.buttonOption': {
             borderTop: '0px',
             borderLeft: '0px',
-            borderColor: menuButtonColors[props.buttontype].borderColor,
-            borderImage: menuButtonColors[props.buttontype].borderImage,
-            backgroundColor: menuButtonColors[props.buttontype].backgroundColor,
-            '& .MuiButton-startIcon': {
-              ml: pxToRem(7),
-            },
-            cursor: 'pointer',
-            '& .buttonOptionText': {
-              color: menuButtonColors[props.buttontype].textColor,
-              mt: pxToRem(1),
-              textTransform: 'none',
-              fontSize: pxToRem(12),
-            },
-            height: pxToRem(35),
-            width: pxToRem(140),
-            '&:hover': {
-              backgroundColor: menuButtonColors[props.buttontype].backgroundHover,
+            borderRight: '0px',
+            borderBottom: '0px',
+            borderColor: '#EBEBF2',
+            backgroundColor: 'transparent',
+            height: '32px',
+            width: '100%',
+            ':hover': {
+              backgroundColor: '#EBEBF2',
+              '.buttonOptionText': {
+                color: 'black',
+              },
             },
           },
         }}
-        container={props.container}
+        container={container}
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleHideMenu}
         MenuListProps={{ onMouseLeave: handleHideMenu }}
       >
-        <MenuItem sx={{ p: '0px' }}>
-          <Button startIcon={menuButtonColors[props.buttontype].disconnectIcon} className="buttonOption" onClick={handleDisconnectClick}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
-              <Typography className="buttonOptionText" variant="h4" color="#FFFFFF">
-                Disconnect
-              </Typography>
-            </Box>
+        <MenuItem sx={{ p: '0px', width: '100%' }}>
+          <Button className="buttonOption" onClick={handleDisconnectClick}>
+            <Typography align="right" className="buttonOptionText" variant="button">
+              Profile
+            </Typography>
+          </Button>
+        </MenuItem>
+        <MenuItem sx={{ p: '0px', width: '100%' }}>
+          <Button className="buttonOption" onClick={handleDisconnectClick}>
+            <Typography align="right" className="buttonOptionText" variant="button">
+              Disconnect
+            </Typography>
           </Button>
         </MenuItem>
       </Menu>
