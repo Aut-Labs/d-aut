@@ -229,7 +229,7 @@ export const DAOExpanderAddress = (state: any) => state.aut.daoExpanderAddress a
 
 export const community = createSelector(
   (state) => state.aut.community,
-  (community) => community
+  (community) => community as typeof initialState.community
 );
 
 export const autState = createSelector(
@@ -239,17 +239,17 @@ export const autState = createSelector(
 
 export const loadingStatus = createSelector(
   (state) => state.aut.status,
-  (status) => status
+  (status) => status as typeof initialState.status
 );
 
 export const user = createSelector(
   (state) => state.aut.user,
-  (user) => user
+  (user) => user as typeof initialState.user
 );
 
 export const errorState = createSelector(
   (state) => state.aut.errorStateAction,
-  (state) => state
+  (state) => state as typeof initialState.errorStateAction
 );
 // export const currentCommunity = createSelector(
 //   (state) => state.swAuth.community as Community & PartnerAgreementKey,

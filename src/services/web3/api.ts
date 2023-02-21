@@ -13,6 +13,7 @@ import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
 import { AutId, NetworkConfig } from '../ProviderFactory/web3.connectors';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AutSDK, { DAOExpander } from '@aut-labs-private/sdk';
+import { RootState } from '../../store/store.model';
 
 export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue }) => {
   const sdk = AutSDK.getInstance();
@@ -48,7 +49,7 @@ export async function dataUrlToFile(dataUrl: string, fileName: string): Promise<
 }
 
 export const mintMembership = createAsyncThunk('membership/mint', async (_args, { getState, dispatch, rejectWithValue }) => {
-  const { userData, walletProvider, aut } = getState() as any;
+  const { userData, walletProvider, aut } = getState() as RootState;
   // console.log(userData);
   const { username, picture, role, commitment } = userData;
   const { selectedNetwork } = walletProvider;
@@ -60,7 +61,7 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
   const nftIdResp = await contract.getNextTokenID();
   const config = {
     name: username,
-    role,
+    role: role.toString(),
     dao: aut.community.name,
     avatar: userData.picture,
     hash: `#${nftIdResp.data.toString()}`,
@@ -95,7 +96,8 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
   // console.log('Avatar -> ', ipfsCIDToHttpUrl(avatarCid));
   // console.log('Role -> ', role);
   // console.log('Commitment -> ', commitment);
-  const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.communityExtensionAddress;
+
+  const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
   const response = await contract.mint(username, cid, role, commitment, requiredAddress);
   if (response?.isSuccess) {
     await dispatch(setUserData({ badge: ipfsCIDToHttpUrl(metadataJsons.image) }));
@@ -109,7 +111,7 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
 export const joinCommunity = createAsyncThunk(
   'membership/join',
   async (selectedAddress: string, { getState, rejectWithValue, dispatch }) => {
-    const { aut, userData } = getState() as any;
+    const { aut, userData } = getState() as RootState;
 
     const sdk = AutSDK.getInstance();
     const { contract } = sdk.autID;
@@ -134,7 +136,7 @@ export const joinCommunity = createAsyncThunk(
 );
 
 export const getAutId = createAsyncThunk('membership/get', async (selectedAddress: string, { dispatch, getState, rejectWithValue }) => {
-  const { aut, walletProvider } = getState() as any;
+  const { aut, walletProvider } = getState() as RootState;
   const sdk = AutSDK.getInstance();
   const { contract } = sdk.autID;
   const balanceOf = await contract.balanceOf(selectedAddress);
@@ -245,7 +247,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
 export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
   'membership/scan',
   async (selectedAddress: string, { rejectWithValue, getState, dispatch }) => {
-    const { aut, walletProvider } = getState() as any;
+    const { aut, walletProvider } = getState() as RootState;
     const { selectedNetwork } = walletProvider;
     let autIDs: AutId[] = [];
     try {
@@ -367,7 +369,7 @@ export const checkIfNameTaken = createAsyncThunk('membership/nametaken', async (
 });
 
 export const checkIfAutIdExists = createAsyncThunk('membership/exists', async (selectedAddress: string, { getState, rejectWithValue }) => {
-  const { aut } = getState() as any;
+  const { aut } = getState() as RootState;
   const sdk = AutSDK.getInstance();
   const { contract } = sdk.autID;
   const balanceOf = await contract.balanceOf(selectedAddress);
