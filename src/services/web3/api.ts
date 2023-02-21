@@ -212,14 +212,14 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
       const expander = sdk.initService<DAOExpander>(DAOExpander, communityAddress);
       const metadataUri = await expander.contract.metadata.getMetadataUri();
 
-      // const isCoreTeam = await expander.isCoreTeam(selectedAddress);
+      const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
       const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data));
       const communityJson = await communityMetadata.json();
 
       const a = new BaseNFTModel({
         ...communityJson,
         properties: {
-          // isCoreTeam,
+          isAdmin,
           address: communityAddress,
           ...communityJson.properties,
           userData: {
@@ -321,7 +321,8 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
 
           const expander = sdk.initService<DAOExpander>(DAOExpander, communityAddress);
           const metadataUri = await expander.contract.metadata.getMetadataUri();
-          // const isCoreTeam = await communityExtensioncontract.isCoreTeam(selectedAddress);
+
+          const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
 
           const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data));
           const communityJson = await communityMetadata.json();
@@ -329,7 +330,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
           const a = new BaseNFTModel({
             ...communityJson,
             properties: {
-              // isCoreTeam,
+              isAdmin,
               address: communityAddress,
               ...communityJson.properties,
               userData: {

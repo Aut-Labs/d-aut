@@ -92,7 +92,7 @@ export const WebButton = ({ container, disconnectClick, profileClick, onClick }:
           width: '270px',
           background: userData ? '#EBEBF2' : 'transparent',
           overflow: 'hidden',
-          zIndex: '99999',
+          zIndex: '100',
         }}
         size="web"
         onClick={onClick}
