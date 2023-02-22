@@ -24,14 +24,14 @@ function replaceAll(str, find, replace) {
   return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
 
-export function ipfsCIDToHttpUrl(url: string, isJson = false) {
+export function ipfsCIDToHttpUrl(url: string, customGateway: string = null, isJson = false) {
   if (!url) {
     return url;
   }
   if (!url.includes('https://'))
     return isJson
-      ? `${env.REACT_APP_IPFS_URL}/${replaceAll(url, 'ipfs://', '')}/metadata.json`
-      : `${env.REACT_APP_IPFS_URL}/${replaceAll(url, 'ipfs://', '')}`;
+      ? `${customGateway || env.REACT_APP_IPFS_URL}/${replaceAll(url, 'ipfs://', '')}/metadata.json`
+      : `${customGateway || env.REACT_APP_IPFS_URL}/${replaceAll(url, 'ipfs://', '')}`;
   return url;
 }
 

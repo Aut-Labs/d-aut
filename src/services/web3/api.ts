@@ -15,7 +15,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import AutSDK, { DAOExpander } from '@aut-labs-private/sdk';
 import { RootState } from '../../store/store.model';
 
-export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue }) => {
+export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue, getState }) => {
+  const { customIpfsGateway } = (getState() as RootState).walletProvider;
   const sdk = AutSDK.getInstance();
   const daoExpander = sdk.daoExpander.contract;
   const metadataUri = await daoExpander.metadata.getMetadataUri();
@@ -24,7 +25,7 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
   }
   // console.log(resp);
   // const communityMetadata = await fetch(cidToHttpUrl(`${resp[2]}/metadata.json`));
-  const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data));
+  const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
   if (communityMetadata.status === 504) {
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
   }
@@ -52,7 +53,7 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
   const { userData, walletProvider, aut } = getState() as RootState;
   // console.log(userData);
   const { username, picture, role, commitment } = userData;
-  const { selectedNetwork } = walletProvider;
+  const { selectedNetwork, customIpfsGateway } = walletProvider;
   const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
 
   const sdk = AutSDK.getInstance();
@@ -85,7 +86,7 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
     },
   };
   const cid = await storeMetadata(metadataJson);
-  const metadata = await fetch(ipfsCIDToHttpUrl(cid));
+  const metadata = await fetch(ipfsCIDToHttpUrl(cid, customIpfsGateway));
   if (metadata.status === 504) {
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
   }
@@ -100,7 +101,7 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
   const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
   const response = await contract.mint(username, cid, role, commitment, requiredAddress);
   if (response?.isSuccess) {
-    await dispatch(setUserData({ badge: ipfsCIDToHttpUrl(metadataJsons.image) }));
+    await dispatch(setUserData({ badge: ipfsCIDToHttpUrl(metadataJsons.image, customIpfsGateway) }));
   } else {
     return rejectWithValue(response?.errorMessage);
   }
@@ -111,17 +112,17 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
 export const joinCommunity = createAsyncThunk(
   'membership/join',
   async (selectedAddress: string, { getState, rejectWithValue, dispatch }) => {
-    const { aut, userData } = getState() as RootState;
+    const { aut, userData, walletProvider } = getState() as RootState;
 
     const sdk = AutSDK.getInstance();
     const { contract } = sdk.autID;
-
+    const { customIpfsGateway } = walletProvider;
     const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
     const result = await contract.joinDAO(userData.role, userData.commitment, requiredAddress);
     if (result.isSuccess) {
       const tokenId = await contract.getTokenIdByOwner(selectedAddress);
       const tokenURI = await contract.getTokenUri(tokenId.data);
-      const response = await fetch(ipfsCIDToHttpUrl(tokenURI.data));
+      const response = await fetch(ipfsCIDToHttpUrl(tokenURI.data, customIpfsGateway));
       if (response.status === 504) {
         return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
       }
@@ -137,6 +138,7 @@ export const joinCommunity = createAsyncThunk(
 
 export const getAutId = createAsyncThunk('membership/get', async (selectedAddress: string, { dispatch, getState, rejectWithValue }) => {
   const { aut, walletProvider } = getState() as RootState;
+  const { customIpfsGateway } = walletProvider;
   const sdk = AutSDK.getInstance();
   const { contract } = sdk.autID;
   const balanceOf = await contract.balanceOf(selectedAddress);
@@ -145,7 +147,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   }
   const tokenId = await contract.getTokenIdByOwner(selectedAddress);
   const tokenURI = await contract.getTokenUri(tokenId.data);
-  const response = await fetch(ipfsCIDToHttpUrl(tokenURI.data));
+  const response = await fetch(ipfsCIDToHttpUrl(tokenURI.data, customIpfsGateway));
   if (response.status === 504) {
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
   }
@@ -215,7 +217,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
       const metadataUri = await expander.contract.metadata.getMetadataUri();
 
       const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
-      const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data));
+      const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
       const communityJson = await communityMetadata.json();
 
       const a = new BaseNFTModel({
@@ -248,7 +250,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
   'membership/scan',
   async (selectedAddress: string, { rejectWithValue, getState, dispatch }) => {
     const { aut, walletProvider } = getState() as RootState;
-    const { selectedNetwork } = walletProvider;
+    const { selectedNetwork, customIpfsGateway } = walletProvider;
     let autIDs: AutId[] = [];
     try {
       const result = await axios.get(`https://api.skillwallet.id/api/autid/scanNetworks/${selectedAddress}`);
@@ -269,7 +271,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
       if (holderData.network !== selectedNetwork) {
         return rejectWithValue(InternalErrorTypes.FoundAnAutIDOnADifferentNetwork);
       }
-      const response = await fetch(ipfsCIDToHttpUrl(holderData.metadataUri));
+      const response = await fetch(ipfsCIDToHttpUrl(holderData.metadataUri, customIpfsGateway));
       if (response.status === 504) {
         return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
       }
@@ -326,7 +328,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
 
           const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
 
-          const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data));
+          const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
           const communityJson = await communityMetadata.json();
 
           const a = new BaseNFTModel({

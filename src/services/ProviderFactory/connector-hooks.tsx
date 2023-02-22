@@ -21,7 +21,7 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
   const { isActive, provider, account, connector } = useWeb3React();
 
   const initializeSDK = async (signer: ethers.providers.JsonRpcSigner) => {
-    const networkConfig = networks.find((n) => n.network === selectedNetwork);
+    const networkConfig = networks.find((n) => n.networkName === selectedNetwork);
     const sdk = AutSDK.getInstance();
     // const biconomy =
     //   networkConfig.biconomyApiKey &&
@@ -71,7 +71,7 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
     }
     await c.deactivate();
     const config = networks.find((n) => n.chainId?.toString() === chainId?.toString());
-    await dispatch(setSelectedNetwork(config.network));
+    await dispatch(setSelectedNetwork(config.networkName));
     try {
       await c.activate();
       await EnableAndChangeNetwork(c.provider, config);
@@ -86,7 +86,7 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
   const switchNetworkLocalConnector = async (chainId: number) => {
     await connectorLocal.deactivate();
     const config = networks.find((n) => n.chainId?.toString() === chainId?.toString());
-    await dispatch(setSelectedNetwork(config.network));
+    await dispatch(setSelectedNetwork(config.networkName));
     try {
       await connectorLocal.activate();
       await EnableAndChangeNetwork(connectorLocal.provider, config);

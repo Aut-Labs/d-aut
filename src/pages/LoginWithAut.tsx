@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { useAppDispatch } from '../store/store.model';
@@ -16,6 +16,10 @@ const LoginWithAut: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { account } = useWeb3React();
+
+  useEffect(() => {
+    console.warn('LOGIN WITH ATUT');
+  }, []);
 
   const onConnected = async () => {
     await dispatch(getAutId(account));

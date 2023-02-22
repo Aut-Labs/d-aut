@@ -61,7 +61,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
       static get observedAttributes() {
         // Add all tracked attributes to this array
-        return [AttributeNames.hideButton, AttributeNames.disableCreateNewUser];
+        return [AttributeNames.hideButton];
       }
 
       attributeChangedCallback(name: string, oldValue: string, newValue: string) {
@@ -74,12 +74,10 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
       connectedCallback() {
         const jss = create(jssPreset());
-        console.log(jss);
         const attributes = extractAttributes(this);
 
         let content: JSX.Element = null;
         let mountPoint: HTMLElement = null;
-        console.log(this);
 
         if (authConfig?.container) {
           if (!isElement(authConfig.container)) {
@@ -94,10 +92,10 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             overflow: 'hidden',
             ...(authConfig.containerStyles || {}),
           });
-          const mConfig = createShadowElement({ container: authConfig.container, className: 'sw-auth-modal' });
+          const mConfig = createShadowElement({ container: authConfig.container, className: 'aut-modal' });
 
           // mConfig.shadowRoot.insertB(style);
-          const bConfig = createShadowElement({ container: this, className: 'sw-auth-button' });
+          const bConfig = createShadowElement({ container: this, className: 'aut-button' });
 
           // bConfig.shadowRoot.appendChild(style);
           mountPoint = mConfig.mountPoint;
@@ -118,7 +116,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             </>
           );
         } else {
-          const config = createShadowElement({ container: this, className: 'sw-auth' });
+          const config = createShadowElement({ container: this, className: 'aut' });
           // config.shadowRoot.appendChild(style);
           mountPoint = config.mountPoint;
           content = (

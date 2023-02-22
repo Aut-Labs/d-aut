@@ -65,7 +65,7 @@ const NetworkSelector = ({ onSelect, onBack }) => {
                         return 'Select Network';
                       }
                       const networkConfig = networkConfigs.find((c) => c.chainId === selected);
-                      return networkConfig.network || selected;
+                      return networkConfig.networkName || selected;
                     }}
                     name={name}
                     color="primary"
@@ -77,8 +77,8 @@ const NetworkSelector = ({ onSelect, onBack }) => {
                   >
                     {networkConfigs &&
                       networkConfigs.map((config) => (
-                        <MenuItem key={`autId-${config.network}`} color="primary" value={config.chainId}>
-                          {config.network}
+                        <MenuItem key={`autId-${config.networkName}`} color="primary" value={config.chainId}>
+                          {config.networkName}
                         </MenuItem>
                       ))}
                   </AutSelectField>

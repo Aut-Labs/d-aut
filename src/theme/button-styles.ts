@@ -277,8 +277,6 @@ export default (theme: Theme) =>
             style: currStyle,
           },
         ];
-
-        console.log(prev, 'prev');
         return prev;
       }, [] as ComponentsVariants['MuiButton']),
     ],

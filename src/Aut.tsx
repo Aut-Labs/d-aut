@@ -11,7 +11,7 @@ import { OutputEventTypes } from './types/event-types';
 import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { WebButton } from './components/WebButton';
-import { SelectedNetwork, setAlternativeRpc, setSelectedNetwork } from './store/wallet-provider';
+import { SelectedNetwork, setCustomIpfsGateway, setNetworks, setSelectedNetwork } from './store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
 import { Typography } from '@mui/material';
 import { userData } from './store/user-data.reducer';
@@ -44,7 +44,6 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
   const selectedNetwork = useSelector(SelectedNetwork);
-  const [buttonType, setButtonType] = useState('simple');
   const [buttonHidden, setButtonHidden] = useState(false);
   const { connector, isActive, chainId, provider } = useWeb3React();
 
@@ -68,14 +67,20 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     } else {
       // console.log('nocommunity extension');
     }
-    if (attributes.rpc) {
-      dispatch(setAlternativeRpc(attributes.rpc as string));
+    if (attributes.chainId && attributes.networkName && attributes.rpcUrls && attributes.explorerUrls) {
+      // const networkConfig = {
+      //   chainId: attributes.chainId,
+      //   networkName: attributes.networkName,
+      //   rpcUrls: (attributes.rpcUrls as string).split(','),
+      //   explorerUrls: (attributes.explorerUrls as string).split(','),
+      // };
+      // console.warn(networkConfig);
+      // if (networkConfig) {
+      //   dispatch(setNetworks([networkConfig]));
+      // }
     }
-    if (attributes.buttonType) {
-      // console.log(attributes.buttonType);
-      setButtonType(attributes.buttonType as string);
-    } else {
-      setButtonType(null);
+    if (attributes.ipfsGateway) {
+      dispatch(setCustomIpfsGateway(attributes.ipfsGateway as string));
     }
     selectEnvironment();
   };
@@ -130,21 +135,6 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   useEffect(() => {
     setAttributes();
     dispatchEvent(OutputEventTypes.Init);
-    // setButtonHidden(attributes.hideButton as boolean);
-    // dispatch(setDisableCreateNewUser(attributes.disableCreateNewUser as boolean));
-
-    // setAttrCallback((name: string, prevValue: string, currVal: string) => {
-    //   const notChanged = !checkIfAttributeHasChanged(prevValue, currVal);
-    //   if (notChanged) {
-    //     return; // do nothing if its the same
-    //   }
-    //   const value = parseAttributeValue(name, currVal);
-    //   if (name === AttributeNames.hideButton) {
-    //     setButtonHidden(value);
-    //   } else if (name === AttributeNames.disableCreateNewUser) {
-    //     dispatch(setDisableCreateNewUser(value));
-    //   }
-    // });
   }, []);
 
   useEffect(() => {

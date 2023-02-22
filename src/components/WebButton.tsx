@@ -15,6 +15,7 @@ import { BorderColor } from '@mui/icons-material';
 import { pxToRem } from '../utils/utils';
 import { useAppDispatch } from '../store/store.model';
 import { userData } from '../store/user-data.reducer';
+import { IPFSCusomtGateway } from '../store/wallet-provider';
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -61,6 +62,7 @@ interface WebCompButtonProps extends ButtonProps {
 
 export const WebButton = ({ container, disconnectClick, profileClick, onClick }: WebCompButtonProps) => {
   const userData = useSelector(user);
+  const customIpfsGateway = useSelector(IPFSCusomtGateway);
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMouseEnter = (event) => {
@@ -143,7 +145,7 @@ export const WebButton = ({ container, disconnectClick, profileClick, onClick }:
                   }}
                   alt="User image."
                   // Make this not the badge
-                  src={ipfsCIDToHttpUrl(userData.properties.avatar)}
+                  src={ipfsCIDToHttpUrl(userData.properties.avatar, customIpfsGateway)}
                 />
               </Box>
             </Box>
