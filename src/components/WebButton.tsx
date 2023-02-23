@@ -1,21 +1,17 @@
-import { Box, Button, ButtonProps, Menu, MenuItem, MenuProps, Typography } from '@mui/material';
+import { Box, Button, ButtonProps, debounce, Menu, MenuItem, MenuProps, Typography } from '@mui/material';
 import { alpha, styled } from '@mui/material/styles';
-import { ReactComponent as Oval } from '../assets/oval.svg';
-import { ReactComponent as DarkOval } from '../assets/darker-oval.svg';
-import { ReactComponent as BlackOval } from '../assets/oval-black.svg';
-import { ReactComponent as DisconnectIconGradient } from '../assets/disconnect/disconnect-vaporwave.svg';
-import { ReactComponent as DisconnectIconBlack } from '../assets/disconnect/disconnect-black.svg';
-import { ReactComponent as DisconnectIconWhite } from '../assets/disconnect/disconnect-white.svg';
 import { ipfsCIDToHttpUrl } from '../services/storage/storage.hub';
 import { useSelector } from 'react-redux';
 import { user } from '../store/aut.reducer';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AutButton } from './AutButton';
-import { BorderColor } from '@mui/icons-material';
-import { pxToRem } from '../utils/utils';
-import { useAppDispatch } from '../store/store.model';
-import { userData } from '../store/user-data.reducer';
 import { IPFSCusomtGateway } from '../store/wallet-provider';
+
+const checkIfElementIntersects = (event: MouseEvent, element: HTMLElement) => {
+  if (!element) return false;
+  const rect = element.getBoundingClientRect();
+  return event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+};
 
 const StyledMenu = styled((props: MenuProps) => (
   <Menu
@@ -64,10 +60,30 @@ export const WebButton = ({ container, disconnectClick, profileClick, onClick }:
   const userData = useSelector(user);
   const customIpfsGateway = useSelector(IPFSCusomtGateway);
   const [anchorEl, setAnchorEl] = useState(null);
+  const buttonRef = useRef<HTMLButtonElement>();
+  const menuRef = useRef<any>();
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      if (!menuRef.current) {
+        return;
+      }
+      const isOverBtn = checkIfElementIntersects(event, buttonRef.current);
+      const isOverMenu = checkIfElementIntersects(event, menuRef.current);
+      if (!isOverBtn && !isOverMenu) {
+        setAnchorEl(null);
+      }
+    };
+    const debounceFn = debounce(handleMouseMove, 100);
+    window.addEventListener('mousemove', debounceFn);
+    return () => {
+      window.removeEventListener('mousemove', debounceFn);
+    };
+  }, []);
 
   const handleMouseEnter = (event) => {
-    if (anchorEl !== event.currentTarget && userData) {
-      setAnchorEl(event.currentTarget);
+    if (anchorEl !== buttonRef.current && userData) {
+      setAnchorEl(buttonRef.current);
     }
   };
 
@@ -89,6 +105,7 @@ export const WebButton = ({ container, disconnectClick, profileClick, onClick }:
     <>
       <AutButton
         variant="web"
+        ref={buttonRef}
         sx={{
           height: '55px',
           width: '270px',
@@ -160,8 +177,6 @@ export const WebButton = ({ container, disconnectClick, profileClick, onClick }:
             width: '200px',
             borderColor: '#EBEBF2',
             backgroundColor: 'transparent',
-            paddingBottom: '10px',
-            paddingTop: '8px',
             ml: '32px',
             boxShadow: 'none',
           },
@@ -169,7 +184,7 @@ export const WebButton = ({ container, disconnectClick, profileClick, onClick }:
             '&.MuiTouchRipple-child': {
               backgroundColor: '#89898C',
             },
-            padding: '0px',
+            padding: '8px 0px',
           },
           '.MuiBackdrop-root': {
             backdropFilter: 'none',
@@ -191,6 +206,7 @@ export const WebButton = ({ container, disconnectClick, profileClick, onClick }:
             },
           },
         }}
+        ref={menuRef}
         container={container}
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
