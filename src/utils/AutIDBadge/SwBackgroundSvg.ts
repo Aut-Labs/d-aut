@@ -105,7 +105,7 @@ export const AutMumbaiLabel = (): string => {
         </g>
       </g>
     </g>
-    <text id="Mumbai" transform="translate(91 40.273)" fill="#ebebf2" font-size="25" font-family="FractulAlt-Bold, FractulAlt" font-weight="700"><tspan x="0" y="0">Mumbai</tspan></text>
+    <text id="Mumbai" transform="translate(91 40.273)" fill="#ebebf2" font-size="25" font-family="FractulAltBold" font-weight="700"><tspan x="0" y="0">Mumbai</tspan></text>
     <g id="polygon-matic-seeklogo.com" transform="translate(60 20.373)">
       <path id="Path_25330" data-name="Path 25330" d="M16.981,5.931a1.492,1.492,0,0,0-1.405,0L12.3,7.863l-2.225,1.23-3.22,1.932a1.492,1.492,0,0,1-1.405,0L2.928,9.5a1.427,1.427,0,0,1-.7-1.23V5.346a1.444,1.444,0,0,1,.7-1.23L5.446,2.652a1.492,1.492,0,0,1,1.405,0L9.369,4.174a1.427,1.427,0,0,1,.7,1.23V7.336L12.3,6.048V4.057a1.444,1.444,0,0,0-.7-1.23L6.909.076A1.492,1.492,0,0,0,5.5.076L.7,2.886A1.288,1.288,0,0,0,0,4.057v5.5a1.444,1.444,0,0,0,.7,1.23l4.743,2.752a1.492,1.492,0,0,0,1.405,0l3.22-1.874L12.3,10.381l3.22-1.874a1.492,1.492,0,0,1,1.405,0L19.44,9.971a1.427,1.427,0,0,1,.7,1.23v2.928a1.444,1.444,0,0,1-.7,1.23l-2.459,1.464a1.492,1.492,0,0,1-1.405,0l-2.518-1.464a1.427,1.427,0,0,1-.7-1.23V12.255L10.13,13.543v1.932a1.444,1.444,0,0,0,.7,1.23l4.743,2.752a1.492,1.492,0,0,0,1.405,0l4.743-2.752a1.427,1.427,0,0,0,.7-1.23V9.913a1.444,1.444,0,0,0-.7-1.23Z" fill="#ebebf2"/>
     </g>
@@ -259,15 +259,15 @@ export const AutBackgroundSvg = ({ timestamp, hash, name, role, dao }): string =
         <rect x="0.5" y="0.5" width="398" height="569" rx="19.5" fill="none"/>
       </g>
     </g> 
-      <text id="Āut_ID" data-name="Āut ID" transform="translate(52.635 77.25)" fill="#ebebf2" font-size="37" font-family="FractulAlt-Bold, FractulAlt" font-weight="700"><tspan x="0" y="0">Āut</tspan><tspan y="0" xml:space="preserve" font-family="FractulAlt-Light, Fractul Alt" font-weight="300"> ID</tspan></text> 
-    <text id="${name}" data-name="${name}" transform="translate(85.635 496.25)" fill="#262626" font-size="40" font-family="FractulAlt-Bold, FractulAlt" font-weight="700" letter-spacing="0.001em"><tspan x="0" y="0">${name}</tspan></text>
-    <text id="${timestamp}" data-name="${timestamp}" transform="translate(140.635 538.25)" fill="#262626" font-size="12" font-family="Fractul-Regular, Fractul" letter-spacing="0.02em"><tspan x="0" y="0">18:02:36 | 28/01/22</tspan></text>
-    <text id="Rabit_Whole" data-name="${dao}" transform="translate(140.635 565.25)" fill="#262626" font-size="12" font-family="Fractul-Regular, Fractul" letter-spacing="0.02em"><tspan x="0" y="0">${dao}</tspan></text>
-    <text id="${role}" transform="translate(140.635 585.25)" fill="#262626" font-size="12" font-family="Fractul-Regular, Fractul" letter-spacing="0.02em"><tspan x="0" y="0">${role}</tspan></text>
-    <text id="_039531" data-name="${hash}" transform="translate(85.635 624.25)" fill="#fff" font-size="14" font-family="Fractul-Regular, Fractul" letter-spacing="0.02em" style="mix-blend-mode: difference;isolation: isolate"><tspan x="0" y="0">${hash}</tspan></text>
-    <text id="Joined" transform="translate(85.635 538.25)" fill="#256bb0" font-size="12" font-family="Fractul-Bold, Fractul" font-weight="700" letter-spacing="0.02em"><tspan x="0" y="0">Joined</tspan></text>
-    <text id="DAO" transform="translate(85.635 565.25)" fill="#256bb0" font-size="12" font-family="Fractul-Bold, Fractul" font-weight="700" letter-spacing="0.02em"><tspan x="0" y="0">DAO</tspan></text>
-    <text id="Role" transform="translate(85.635 585.25)" fill="#256bb0" font-size="12" font-family="Fractul-Bold, Fractul" font-weight="700" letter-spacing="0.02em"><tspan x="0" y="0">Role</tspan></text>
+      <text id="Āut_ID" data-name="Āut ID" transform="translate(52.635 77.25)" fill="#ebebf2" font-size="37" font-family="FractulAltBold" font-weight="700"><tspan x="0" y="0">Āut</tspan><tspan y="0" xml:space="preserve" font-family="FractulAltLight" font-weight="300"> ID</tspan></text> 
+    <text id="${name}" data-name="${name}" transform="translate(85.635 496.25)" fill="#262626" font-size="40" font-family="FractulAltBold" font-weight="700" letter-spacing="0.001em"><tspan x="0" y="0">${name}</tspan></text>
+    <text id="${timestamp}" data-name="${timestamp}" transform="translate(140.635 538.25)" fill="#262626" font-size="12" font-family="FractulRegular" letter-spacing="0.02em"><tspan x="0" y="0">18:02:36 | 28/01/22</tspan></text>
+    <text id="Rabit_Whole" data-name="${dao}" transform="translate(140.635 565.25)" fill="#262626" font-size="12" font-family="FractulRegular" letter-spacing="0.02em"><tspan x="0" y="0">${dao}</tspan></text>
+    <text id="${role}" transform="translate(140.635 585.25)" fill="#262626" font-size="12" font-family="FractulRegular" letter-spacing="0.02em"><tspan x="0" y="0">${role}</tspan></text>
+    <text id="_039531" data-name="${hash}" transform="translate(85.635 624.25)" fill="#fff" font-size="14" font-family="FractulRegular" letter-spacing="0.02em" style="mix-blend-mode: difference;isolation: isolate"><tspan x="0" y="0">${hash}</tspan></text>
+    <text id="Joined" transform="translate(85.635 538.25)" fill="#256bb0" font-size="12" font-family="FractulAltBold" font-weight="700" letter-spacing="0.02em"><tspan x="0" y="0">Joined</tspan></text>
+    <text id="DAO" transform="translate(85.635 565.25)" fill="#256bb0" font-size="12" font-family="FractulAltBold" font-weight="700" letter-spacing="0.02em"><tspan x="0" y="0">DAO</tspan></text>
+    <text id="Role" transform="translate(85.635 585.25)" fill="#256bb0" font-size="12" font-family="FractulAltBold" font-weight="700" letter-spacing="0.02em"><tspan x="0" y="0">Role</tspan></text>
   </svg>
   
 

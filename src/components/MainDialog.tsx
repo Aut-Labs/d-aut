@@ -1,13 +1,13 @@
 import { Box, Dialog, styled, useMediaQuery, useTheme } from '@mui/material';
 import { Route, Switch, RouteComponentProps } from 'react-router-dom';
-import background from '../assets/static-background.png';
 import routes from '../config/routes';
+import { dialogBackground } from '../assets/base64assets';
 
 const DialogContent = styled(Box)(({ theme }) => ({
   width: '570px',
   height: '550px',
   display: 'flex',
-  background: `url(${background})`,
+  background: `${dialogBackground}`,
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
@@ -25,8 +25,6 @@ function MainDialog({ container, open, handleClose }) {
     <>
       <Dialog fullScreen={sm} container={container} open={open} onClose={handleClose}>
         <DialogContent>
-          {/* {autState.status === ResultState.Failed && <ErrorBox />}
-          {autState.status === ResultState.Loading && <LoadingProgress />} */}
           <Switch>
             {routes.map((route, index) => {
               return (

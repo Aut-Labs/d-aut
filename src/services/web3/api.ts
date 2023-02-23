@@ -88,23 +88,10 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
     },
   };
   const cid = await storeMetadata(metadataJson);
-  const metadata = await fetch(ipfsCIDToHttpUrl(cid, customIpfsGateway));
-  if (metadata.status === 504) {
-    return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
-  }
-  const metadataJsons = await metadata.json();
-  // console.log(metadataJsons);
-  // console.log(metadata);
-  // console.log('Generated AutID -> ', ipfsCIDToHttpUrl(cid));
-  // console.log('Avatar -> ', ipfsCIDToHttpUrl(avatarCid));
-  // console.log('Role -> ', role);
-  // console.log('Commitment -> ', commitment);
 
   const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
   const response = await contract.mint(username, cid, role, commitment, requiredAddress);
-  if (response?.isSuccess) {
-    await dispatch(setUserData({ badge: ipfsCIDToHttpUrl(metadataJsons.image, customIpfsGateway) }));
-  } else {
+  if (!response?.isSuccess) {
     return rejectWithValue(response?.errorMessage);
   }
 

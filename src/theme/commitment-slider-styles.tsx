@@ -12,9 +12,7 @@ import {
   ComponentsVariants,
   Box,
 } from '@mui/material';
-import { pxToRem } from '../utils/utils';
-
-import staticBackground from '../assets/slider-blue.png';
+import { sliderTrackColor } from '../assets/base64assets';
 
 const CommitmentMessages = (value: number) => {
   switch (+value) {
@@ -149,7 +147,7 @@ const generateColors = (color: PaletteColor) => ({
     borderColor: '#256BB0',
   },
   '.MuiSlider-track': {
-    backgroundImage: `url(${staticBackground})`,
+    backgroundImage: `${sliderTrackColor}`,
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
     backgroundSize: 'cover',
