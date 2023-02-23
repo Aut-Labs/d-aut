@@ -43,7 +43,6 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   const history = useHistory();
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
-  const selectedNetwork = useSelector(SelectedNetwork);
   const [buttonHidden, setButtonHidden] = useState(false);
   const { connector, isActive, chainId, provider } = useWeb3React();
 
@@ -129,7 +128,8 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   };
 
   const handleProfileButtonClicked = async () => {
-    window.open(`https://my.aut.id/${selectedNetwork}/${uiState.tempUserData.username}`, '_blank');
+    const autId = JSON.parse(sessionStorage.getItem('aut-data'));
+    window.open(`https://my.aut.id/${autId.network}/${autId.name}`, '_blank');
   };
 
   useEffect(() => {

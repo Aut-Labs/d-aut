@@ -1,6 +1,6 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "main": "build/cjs/index.js",
   "module": "build/ems/index.js",
   "types": "build/index.d.ts",
@@ -82,8 +82,8 @@
     }
   },
   "devDependencies": {
-    "@aut-labs-private/abi-types": "^0.0.15",
-    "@aut-labs-private/sdk": "^0.0.12",
+    "@aut-labs-private/abi-types": "^0.0.16",
+    "@aut-labs-private/sdk": "^0.0.14",
     "@aut-labs-private/sdk-biconomy": "^0.0.2",
     "@aut-protocol/sdk": "^0.0.78",
     "@aut-protocol/sdk-biconomy": "^0.0.7",

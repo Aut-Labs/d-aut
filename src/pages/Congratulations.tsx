@@ -57,7 +57,7 @@ const Congratulations: React.FunctionComponent = () => {
           size="half"
           variant="outlined"
           onClick={() => {
-            window.open(`https://my.aut.id/${selectedNetwork}/${autData.tempUserData.username}`, '_blank');
+            window.open(`https://my.aut.id/${selectedNetwork}/${userInput?.username}`, '_blank');
           }}
         >
           SEE PROFILE

@@ -35,7 +35,7 @@ const Share: React.FunctionComponent = () => {
       <Typography textAlign="center" color="white" variant="subtitle2" sx={{ maxWidth: '300px', wordBreak: 'break-all' }}>
         I'm now a {userInput?.roleName} @ {autData.community?.name} 🎉
         <br />
-        <br /> Look at my self-sovereign AutID,
+        <br /> Look at my self-sovereign ĀutID,
         <br /> and follow my journey 🖖
         <br />
         <br /> https://my.aut.id/{selectedNetwork}/{userInput?.username}
@@ -67,9 +67,9 @@ const Share: React.FunctionComponent = () => {
           }}
         >
           <LinkedinShareButton
-            url={`https://my.aut.id/${selectedNetwork}/${autData.tempUserData?.username}`}
+            url={`https://my.aut.id/${selectedNetwork}/${userInput?.username}`}
             className="social-button"
-            summary={shareContent(userInput?.roleName, autData.tempUserData?.username, autData.community?.name, selectedNetwork)}
+            summary={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
             title="My ĀutID"
           >
             <LinkedInIcon
@@ -82,9 +82,9 @@ const Share: React.FunctionComponent = () => {
             />
           </LinkedinShareButton>
           <TelegramShareButton
-            url={`https://my.aut.id/${selectedNetwork}/${autData.tempUserData?.username}`}
+            url={`https://my.aut.id/${selectedNetwork}/${userInput?.username}`}
             className="social-button"
-            title={shareContent(userInput?.roleName, autData.tempUserData?.username, autData.community?.name, selectedNetwork)}
+            title={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
           >
             <TelegramIcon
               sx={{
@@ -95,9 +95,9 @@ const Share: React.FunctionComponent = () => {
             />
           </TelegramShareButton>
           <TwitterShareButton
-            url={`https://my.aut.id/${selectedNetwork}/${autData.tempUserData?.username}`}
+            url={`https://my.aut.id/${selectedNetwork}/${userInput?.username}`}
             className="social-button"
-            title={shareContent(userInput?.roleName, autData.tempUserData?.username, autData.community?.name, selectedNetwork)}
+            title={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
             hashtags={['Aut', 'DAO', 'Blockchain']}
           >
             <TwitterIcon

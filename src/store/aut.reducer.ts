@@ -49,7 +49,6 @@ export interface AutState {
   transactionState: string;
   user: BaseNFTModel<any>;
   userBadge: string;
-  tempUserData: any;
   justJoin: boolean;
   provider: any;
   selectedAddress: any;
@@ -68,7 +67,6 @@ export const initialState: AutState = {
   transactionState: null,
   user: null,
   userBadge: null,
-  tempUserData: null,
   justJoin: false,
   provider: null,
   selectedAddress: null,
@@ -106,9 +104,6 @@ export const autSlice = createSlice({
     },
     errorAction(state, action) {
       state.status = ResultState.Idle;
-    },
-    setTempUserData(state, action: ActionPayload<any>) {
-      state.tempUserData = action.payload;
     },
     setUser(state, action: ActionPayload<any>) {
       state.user = action.payload;
@@ -219,7 +214,6 @@ export const {
   updateTransactionState,
   updateErrorState,
   errorAction,
-  setTempUserData,
   setSelectedUnjoinedCommunityAddress,
   setAutIdsOnDifferentNetworks,
   setStatus,

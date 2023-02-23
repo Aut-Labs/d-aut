@@ -5,7 +5,7 @@ import * as ethers from 'ethers';
 import { ipfsCIDToHttpUrl, storeImageAsBlob, storeMetadata } from '../storage/storage.hub';
 import { BaseNFTModel } from './models';
 import { InternalErrorTypes } from '../../utils/error-parser';
-import { setAutIdsOnDifferentNetworks, setTempUserData, updateErrorState } from '../../store/aut.reducer';
+import { setAutIdsOnDifferentNetworks, updateErrorState } from '../../store/aut.reducer';
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
 import { base64toFile } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
@@ -14,10 +14,12 @@ import { AutId, NetworkConfig } from '../ProviderFactory/web3.connectors';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AutSDK, { DAOExpander } from '@aut-labs-private/sdk';
 import { RootState } from '../../store/store.model';
+import { debug } from 'console';
 
 export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue, getState }) => {
   const { customIpfsGateway } = (getState() as RootState).walletProvider;
   const sdk = AutSDK.getInstance();
+  debugger;
   const daoExpander = sdk.daoExpander.contract;
   const metadataUri = await daoExpander.metadata.getMetadataUri();
   if (!metadataUri.isSuccess) {
@@ -70,7 +72,7 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
     expanderAddress: aut.daoExpanderAddress,
     timestamp: `${timeStamp}`,
   } as SWIDParams;
-  const { toFile, download } = await AutIDBadgeGenerator(config);
+  const { toFile } = await AutIDBadgeGenerator(config);
   const badgeFile = await toFile();
   const avatarFile = base64toFile(picture, 'avatar');
   const avatarCid = await storeImageAsBlob(avatarFile as File);
@@ -127,8 +129,7 @@ export const joinCommunity = createAsyncThunk(
         return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
       }
       const autId = await response.json();
-
-      await dispatch(setTempUserData({ username: autId.name }));
+      await dispatch(setUserData({ username: autId.name }));
 
       return true;
     }
@@ -241,6 +242,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   autId.provider = walletProvider.selectedWalletType;
   autId.network = walletProvider.selectedNetwork;
   autId.address = selectedAddress;
+  await dispatch(setUserData({ username: autId.name }));
 
   window.sessionStorage.setItem('aut-data', JSON.stringify(autId));
   return autId;
