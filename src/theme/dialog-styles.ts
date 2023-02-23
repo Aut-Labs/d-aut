@@ -111,7 +111,7 @@ export default (theme: Theme) =>
     ...theme.components.MuiDialog,
     styleOverrides: {
       container: {
-        backdropFilter: 'blur(30px)',
+        backdropFilter: 'blur(5px)',
       },
       paper: {
         backgroundColor: theme.palette.nightBlack.main,

@@ -5,7 +5,7 @@ export const FormWrapper = styled('form')({
   width: 'calc(100% - 40px)',
   flex: '1',
   display: 'flex',
-  justifyContent: 'center',
+  justifyContent: 'flex-start',
   flexDirection: 'column',
   alignItems: 'center',
 });
@@ -13,8 +13,7 @@ export const FormWrapper = styled('form')({
 export const FormContent = styled(Box)({
   maxWidth: '380px',
   display: 'flex',
-  gridGap: '20px',
-  justifyContent: 'center',
+  justifyContent: 'flex-start',
   flexDirection: 'column',
   alignItems: 'center',
   width: '100%',
@@ -22,5 +21,5 @@ export const FormContent = styled(Box)({
 });
 
 export const FormAction = styled(Box)({
-  marginBottom: '30px',
+  marginBottom: '60px',
 });

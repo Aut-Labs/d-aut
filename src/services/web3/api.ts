@@ -5,7 +5,7 @@ import * as ethers from 'ethers';
 import { ipfsCIDToHttpUrl, storeImageAsBlob, storeMetadata } from '../storage/storage.hub';
 import { BaseNFTModel } from './models';
 import { InternalErrorTypes } from '../../utils/error-parser';
-import { setAutIdsOnDifferentNetworks, setTempUserData, updateErrorState } from '../../store/aut.reducer';
+import { setAutIdsOnDifferentNetworks, updateErrorState } from '../../store/aut.reducer';
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
 import { base64toFile } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
@@ -13,9 +13,13 @@ import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
 import { AutId, NetworkConfig } from '../ProviderFactory/web3.connectors';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AutSDK, { DAOExpander } from '@aut-labs-private/sdk';
+import { RootState } from '../../store/store.model';
+import { debug } from 'console';
 
-export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue }) => {
+export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue, getState }) => {
+  const { customIpfsGateway } = (getState() as RootState).walletProvider;
   const sdk = AutSDK.getInstance();
+  debugger;
   const daoExpander = sdk.daoExpander.contract;
   const metadataUri = await daoExpander.metadata.getMetadataUri();
   if (!metadataUri.isSuccess) {
@@ -23,7 +27,7 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
   }
   // console.log(resp);
   // const communityMetadata = await fetch(cidToHttpUrl(`${resp[2]}/metadata.json`));
-  const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data));
+  const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
   if (communityMetadata.status === 504) {
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
   }
@@ -48,10 +52,10 @@ export async function dataUrlToFile(dataUrl: string, fileName: string): Promise<
 }
 
 export const mintMembership = createAsyncThunk('membership/mint', async (_args, { getState, dispatch, rejectWithValue }) => {
-  const { userData, walletProvider, aut } = getState() as any;
+  const { userData, walletProvider, aut } = getState() as RootState;
   // console.log(userData);
   const { username, picture, role, commitment } = userData;
-  const { selectedNetwork } = walletProvider;
+  const { selectedNetwork, customIpfsGateway } = walletProvider;
   const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
 
   const sdk = AutSDK.getInstance();
@@ -60,7 +64,7 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
   const nftIdResp = await contract.getNextTokenID();
   const config = {
     name: username,
-    role,
+    role: role.toString(),
     dao: aut.community.name,
     avatar: userData.picture,
     hash: `#${nftIdResp.data.toString()}`,
@@ -68,7 +72,7 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
     expanderAddress: aut.daoExpanderAddress,
     timestamp: `${timeStamp}`,
   } as SWIDParams;
-  const { toFile, download } = await AutIDBadgeGenerator(config);
+  const { toFile } = await AutIDBadgeGenerator(config);
   const badgeFile = await toFile();
   const avatarFile = base64toFile(picture, 'avatar');
   const avatarCid = await storeImageAsBlob(avatarFile as File);
@@ -84,22 +88,10 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
     },
   };
   const cid = await storeMetadata(metadataJson);
-  const metadata = await fetch(ipfsCIDToHttpUrl(cid));
-  if (metadata.status === 504) {
-    return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
-  }
-  const metadataJsons = await metadata.json();
-  // console.log(metadataJsons);
-  // console.log(metadata);
-  // console.log('Generated AutID -> ', ipfsCIDToHttpUrl(cid));
-  // console.log('Avatar -> ', ipfsCIDToHttpUrl(avatarCid));
-  // console.log('Role -> ', role);
-  // console.log('Commitment -> ', commitment);
-  const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.communityExtensionAddress;
+
+  const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
   const response = await contract.mint(username, cid, role, commitment, requiredAddress);
-  if (response?.isSuccess) {
-    await dispatch(setUserData({ badge: ipfsCIDToHttpUrl(metadataJsons.image) }));
-  } else {
+  if (!response?.isSuccess) {
     return rejectWithValue(response?.errorMessage);
   }
 
@@ -109,23 +101,22 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
 export const joinCommunity = createAsyncThunk(
   'membership/join',
   async (selectedAddress: string, { getState, rejectWithValue, dispatch }) => {
-    const { aut, userData } = getState() as any;
+    const { aut, userData, walletProvider } = getState() as RootState;
 
     const sdk = AutSDK.getInstance();
     const { contract } = sdk.autID;
-
+    const { customIpfsGateway } = walletProvider;
     const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
     const result = await contract.joinDAO(userData.role, userData.commitment, requiredAddress);
     if (result.isSuccess) {
       const tokenId = await contract.getTokenIdByOwner(selectedAddress);
       const tokenURI = await contract.getTokenUri(tokenId.data);
-      const response = await fetch(ipfsCIDToHttpUrl(tokenURI.data));
+      const response = await fetch(ipfsCIDToHttpUrl(tokenURI.data, customIpfsGateway));
       if (response.status === 504) {
         return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
       }
       const autId = await response.json();
-
-      await dispatch(setTempUserData({ username: autId.name }));
+      await dispatch(setUserData({ username: autId.name }));
 
       return true;
     }
@@ -134,7 +125,8 @@ export const joinCommunity = createAsyncThunk(
 );
 
 export const getAutId = createAsyncThunk('membership/get', async (selectedAddress: string, { dispatch, getState, rejectWithValue }) => {
-  const { aut, walletProvider } = getState() as any;
+  const { aut, walletProvider } = getState() as RootState;
+  const { customIpfsGateway } = walletProvider;
   const sdk = AutSDK.getInstance();
   const { contract } = sdk.autID;
   const balanceOf = await contract.balanceOf(selectedAddress);
@@ -143,7 +135,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   }
   const tokenId = await contract.getTokenIdByOwner(selectedAddress);
   const tokenURI = await contract.getTokenUri(tokenId.data);
-  const response = await fetch(ipfsCIDToHttpUrl(tokenURI.data));
+  const response = await fetch(ipfsCIDToHttpUrl(tokenURI.data, customIpfsGateway));
   if (response.status === 504) {
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
   }
@@ -212,14 +204,14 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
       const expander = sdk.initService<DAOExpander>(DAOExpander, communityAddress);
       const metadataUri = await expander.contract.metadata.getMetadataUri();
 
-      // const isCoreTeam = await expander.isCoreTeam(selectedAddress);
-      const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data));
+      const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
+      const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
       const communityJson = await communityMetadata.json();
 
       const a = new BaseNFTModel({
         ...communityJson,
         properties: {
-          // isCoreTeam,
+          isAdmin,
           address: communityAddress,
           ...communityJson.properties,
           userData: {
@@ -237,6 +229,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   autId.provider = walletProvider.selectedWalletType;
   autId.network = walletProvider.selectedNetwork;
   autId.address = selectedAddress;
+  await dispatch(setUserData({ username: autId.name }));
 
   window.sessionStorage.setItem('aut-data', JSON.stringify(autId));
   return autId;
@@ -245,8 +238,8 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
 export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
   'membership/scan',
   async (selectedAddress: string, { rejectWithValue, getState, dispatch }) => {
-    const { aut, walletProvider } = getState() as any;
-    const { selectedNetwork } = walletProvider;
+    const { aut, walletProvider } = getState() as RootState;
+    const { selectedNetwork, customIpfsGateway } = walletProvider;
     let autIDs: AutId[] = [];
     try {
       const result = await axios.get(`https://api.skillwallet.id/api/autid/scanNetworks/${selectedAddress}`);
@@ -267,7 +260,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
       if (holderData.network !== selectedNetwork) {
         return rejectWithValue(InternalErrorTypes.FoundAnAutIDOnADifferentNetwork);
       }
-      const response = await fetch(ipfsCIDToHttpUrl(holderData.metadataUri));
+      const response = await fetch(ipfsCIDToHttpUrl(holderData.metadataUri, customIpfsGateway));
       if (response.status === 504) {
         return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
       }
@@ -321,15 +314,16 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
 
           const expander = sdk.initService<DAOExpander>(DAOExpander, communityAddress);
           const metadataUri = await expander.contract.metadata.getMetadataUri();
-          // const isCoreTeam = await communityExtensioncontract.isCoreTeam(selectedAddress);
 
-          const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data));
+          const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
+
+          const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
           const communityJson = await communityMetadata.json();
 
           const a = new BaseNFTModel({
             ...communityJson,
             properties: {
-              // isCoreTeam,
+              isAdmin,
               address: communityAddress,
               ...communityJson.properties,
               userData: {
@@ -366,7 +360,7 @@ export const checkIfNameTaken = createAsyncThunk('membership/nametaken', async (
 });
 
 export const checkIfAutIdExists = createAsyncThunk('membership/exists', async (selectedAddress: string, { getState, rejectWithValue }) => {
-  const { aut } = getState() as any;
+  const { aut } = getState() as RootState;
   const sdk = AutSDK.getInstance();
   const { contract } = sdk.autID;
   const balanceOf = await contract.balanceOf(selectedAddress);

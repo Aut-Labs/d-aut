@@ -49,7 +49,6 @@ export interface AutState {
   transactionState: string;
   user: BaseNFTModel<any>;
   userBadge: string;
-  tempUserData: any;
   justJoin: boolean;
   provider: any;
   selectedAddress: any;
@@ -68,7 +67,6 @@ export const initialState: AutState = {
   transactionState: null,
   user: null,
   userBadge: null,
-  tempUserData: null,
   justJoin: false,
   provider: null,
   selectedAddress: null,
@@ -106,9 +104,6 @@ export const autSlice = createSlice({
     },
     errorAction(state, action) {
       state.status = ResultState.Idle;
-    },
-    setTempUserData(state, action: ActionPayload<any>) {
-      state.tempUserData = action.payload;
     },
     setUser(state, action: ActionPayload<any>) {
       state.user = action.payload;
@@ -219,7 +214,6 @@ export const {
   updateTransactionState,
   updateErrorState,
   errorAction,
-  setTempUserData,
   setSelectedUnjoinedCommunityAddress,
   setAutIdsOnDifferentNetworks,
   setStatus,
@@ -229,7 +223,7 @@ export const DAOExpanderAddress = (state: any) => state.aut.daoExpanderAddress a
 
 export const community = createSelector(
   (state) => state.aut.community,
-  (community) => community
+  (community) => community as typeof initialState.community
 );
 
 export const autState = createSelector(
@@ -239,17 +233,17 @@ export const autState = createSelector(
 
 export const loadingStatus = createSelector(
   (state) => state.aut.status,
-  (status) => status
+  (status) => status as typeof initialState.status
 );
 
 export const user = createSelector(
   (state) => state.aut.user,
-  (user) => user
+  (user) => user as typeof initialState.user
 );
 
 export const errorState = createSelector(
   (state) => state.aut.errorStateAction,
-  (state) => state
+  (state) => state as typeof initialState.errorStateAction
 );
 // export const currentCommunity = createSelector(
 //   (state) => state.swAuth.community as Community & PartnerAgreementKey,

@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import AutFileUpload from '../components/AutFileUpload';
 import { setUserData, userData } from '../store/user-data.reducer';
-import { AutTextField, FormHelperText } from '../components/Fields';
+import { FormHelperText } from '../components/Fields';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { useAppDispatch } from '../store/store.model';
@@ -16,6 +16,7 @@ import { FormWrapper, FormContent, FormAction } from '../components/FormHelpers'
 import { AutHeader } from '../components/AutHeader';
 import { useWeb3React } from '@web3-react/core';
 import { setSelectedNetwork } from '../store/wallet-provider';
+import { AutTextField } from '../theme/field-text-styles';
 
 const UserDetails: React.FunctionComponent = (props) => {
   const history = useHistory();
@@ -32,7 +33,6 @@ const UserDetails: React.FunctionComponent = (props) => {
   });
 
   const onSubmit = async (data) => {
-    // console.log(data);
     const result = await dispatch(checkIfNameTaken({ username: data.username }));
     if (result.payload !== InternalErrorTypes.UsernameAlreadyTaken) {
       await dispatch(setUserData(data));
@@ -57,7 +57,6 @@ const UserDetails: React.FunctionComponent = (props) => {
             control={control}
             rules={{
               required: true,
-
               validate: {
                 fileSize: (v) => {
                   const file = base64toFile(v, 'pic');
@@ -67,28 +66,18 @@ const UserDetails: React.FunctionComponent = (props) => {
             }}
             render={({ field: { name, value, onChange }, fieldState, formState }) => {
               return (
-                <Box
-                  sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: '75px',
+                <AutFileUpload
+                  errors={errors}
+                  name="picture"
+                  initialPreviewUrl={value}
+                  fileChange={async (file) => {
+                    if (file) {
+                      onChange(await toBase64(file));
+                    } else {
+                      onChange(null);
+                    }
                   }}
-                >
-                  <AutFileUpload
-                    errors={errors}
-                    name="picture"
-                    initialPreviewUrl={value}
-                    fileChange={async (file) => {
-                      if (file) {
-                        onChange(await toBase64(file));
-                      } else {
-                        onChange(null);
-                      }
-                    }}
-                  />
-                </Box>
+                />
               );
             }}
           />
@@ -97,11 +86,11 @@ const UserDetails: React.FunctionComponent = (props) => {
             control={control}
             rules={{ required: true, pattern: /^\S+$/ }}
             render={({ field: { name, value, onChange }, formState }) => (
-              // <TextField onChange={onChange} value={value} label="username" />
               <AutTextField
                 inputProps={{ maxLength: 16 }}
-                width="360"
                 variant="standard"
+                color="offWhite"
+                sx={{ width: '335px', mt: '22px' }}
                 required
                 autoFocus
                 name={name}

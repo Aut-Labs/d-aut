@@ -23,12 +23,12 @@ export default {
     dark: '#c20000',
     contrastText: '#000000',
   },
-  // white: {
-  //   main: "#ffffff",
-  //   light: "#ffffff",
-  //   dark: "#cccccc",
-  //   contrastText: "#000000"
-  // },
+  white: {
+    main: '#ffffff',
+    light: '#ffffff',
+    dark: '#cccccc',
+    contrastText: '#000000',
+  },
   offWhite: {
     main: '#EBEBF2',
     light: '#ffffff',

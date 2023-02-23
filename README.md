@@ -85,7 +85,7 @@ export default App;
    import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
    ```
 
-5. Add the custom HTML tag and populate the partner-key property
+5. Add the custom HTML tag and populate the dao-expander property
 
 app.component.ts:
 
@@ -150,7 +150,7 @@ app.component.ts:
    Init();
    ```
 
-4. Add the custom HTML tag and populate the partner-key property
+4. Add the custom HTML tag and populate the dao-expander property
 
 App.vue:
 
@@ -173,5 +173,29 @@ App.vue:
 
 ## Web Component Custom HTML element attributes
 
+'chainId' = 'string',
+'explorerUrls' = 'string',
+'networkName' = 'string',
+'rpcUrls' = 'string',
+'ipfsGateway' = 'string',
+
 1. `dao-expander`
    The address you are given after [Integrating](https://playground.aut.id/) your DAO
+2. `chain-id`
+   Chain id for the desired network defaults to 80001
+3. `network-name`
+   Name of desired network defaults to Mumbai
+4. `rps-urls`
+   Rpc Urls (separate by commas if multiple)
+   example: "https://rpc-mumbai.maticvigil.com/,https://rpc-mumbai.maticvigil.com/"
+   default: "https://rpc-mumbai.maticvigil.com/"
+5. `explorer-urls`
+   Explorer Urls (separate by commas if multiple)
+   example: "https://explorer-mumbai.maticvigil.com/,https://explorer-mumbai.maticvigil.com/"
+   default: "https://explorer-mumbai.maticvigil.com/"
+6. `ipfs-gateway`
+   Set a custom ipfs gateway (useful when getting ipfs timeouts) defaults to https://cloudflare-ipfs.com/ipfs
+
+   ## Note about setting custom network parameters:
+
+   All four network attributes need to be provided for the custom config to be successfully set - chain-id, network-name, rps-urls, explorer-urls

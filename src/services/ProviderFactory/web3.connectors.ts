@@ -11,8 +11,7 @@ export interface NetworkContracts {
 }
 
 export interface NetworkConfig {
-  network: string;
-  name: string;
+  networkName: string;
   chainId: string | number;
   rpcUrls: string[];
   explorerUrls: string[];

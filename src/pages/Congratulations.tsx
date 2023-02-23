@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { TwitterShareButton } from 'react-share';
-import { SmallerAutButton } from '../components/AutButton';
+import { AutButton, SmallerAutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
@@ -30,12 +30,12 @@ const Congratulations: React.FunctionComponent = () => {
           <>
             <br />
             <br />
-            You are now {userInput.roleName} in {autData.community.name}.
+            You are now {userInput.roleName} in {autData.community?.name}.
             <br /> Let it be known to the people of the Internet
             <br /> or check out your beautiful NFT ID in your public profile.
             <br />
             <br />
-            <span style={{ textDecoration: 'underline' }}>Reminder:</span> Your identity isn't rare. It's unique.
+            Reminder: Your identity isn't rare. It's unique.
           </>
         }
       />
@@ -47,19 +47,21 @@ const Congratulations: React.FunctionComponent = () => {
           alignItems: 'center',
           justifyContent: 'space-around',
           mt: 'auto',
-          mb: '30px',
+          mb: '60px',
         }}
       >
-        <SmallerAutButton onClick={gotToShare} component="div">
-          SHARE NOW
-        </SmallerAutButton>
-        <SmallerAutButton
+        <AutButton size="half" variant="outlined" onClick={gotToShare}>
+          SHARE
+        </AutButton>
+        <AutButton
+          size="half"
+          variant="outlined"
           onClick={() => {
-            window.open(`https://my.aut.id/${selectedNetwork}/${autData.tempUserData.username}`, '_blank');
+            window.open(`https://my.aut.id/${selectedNetwork}/${userInput?.username}`, '_blank');
           }}
         >
           SEE PROFILE
-        </SmallerAutButton>
+        </AutButton>
       </Box>
     </AutPageBox>
   );

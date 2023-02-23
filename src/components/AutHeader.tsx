@@ -14,11 +14,11 @@ export const AutHeader = ({
     <>
       <AutNavigationButtons hideBack={hideBackBtn} hideClose={hideCloseBtn} backAction={backAction} />
       <AutLogo id={logoId} />
-      <Typography variant="subtitle1" sx={{ color: '#FFF', mt: '25px' }}>
+      <Typography sx={{ mt: subtitle ? '14px' : '33px' }} color="white" variant="subtitle1">
         {title}
       </Typography>
       {subtitle && (
-        <Typography variant="subtitle1" sx={{ color: '#FFF', mt: '25px', textAlign: 'center' }}>
+        <Typography color="white" variant="subtitle2" sx={{ textAlign: 'center' }}>
           {subtitle}
         </Typography>
       )}

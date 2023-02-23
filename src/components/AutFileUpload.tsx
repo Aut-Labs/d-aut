@@ -10,14 +10,13 @@ import { FormHelperText } from './Fields';
 import { pxToRem } from '../utils/utils';
 
 const UploadWrapper = styled('div')({
-  height: pxToRem(100),
-  width: pxToRem(100),
+  height: '90px',
+  width: '90px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   border: '1px solid #FFF',
-  marginBottom: '3px',
-  marginRight: pxToRem(20),
+  marginTop: '30px',
   cursor: 'pointer',
   position: 'relative',
 });
@@ -133,7 +132,7 @@ const AutFileUpload = ({ fileChange = (file: File) => null, initialPreviewUrl = 
             },
           }}
         >
-          <UploadIcon height={pxToRem(32)} />
+          <UploadIcon height="32px" />
         </Avatar>
         <Action className={`${showAction ? 'show' : ''}`}>{preview ? <HighlightOffIcon className="remove" /> : null}</Action>
         <FormHelperText errorTypes={errorTypes} name={name} errors={errors} positionAbsolute={false} />

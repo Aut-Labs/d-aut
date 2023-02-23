@@ -10,10 +10,11 @@ import { AutButtonProps } from './types/d-aut-config';
 import { OutputEventTypes } from './types/event-types';
 import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
-import { RoundedWebButton } from './components/WebButton';
-import { setAlternativeRpc, setSelectedNetwork } from './store/wallet-provider';
+import { WebButton } from './components/WebButton';
+import { SelectedNetwork, setCustomIpfsGateway, setNetworks, setSelectedNetwork } from './store/wallet-provider';
 import { useWeb3React } from '@web3-react/core';
 import { Typography } from '@mui/material';
+import { userData } from './store/user-data.reducer';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
@@ -42,8 +43,6 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   const history = useHistory();
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
-
-  const [buttonType, setButtonType] = useState('simple');
   const [buttonHidden, setButtonHidden] = useState(false);
   const { connector, isActive, chainId, provider } = useWeb3React();
 
@@ -67,14 +66,20 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     } else {
       // console.log('nocommunity extension');
     }
-    if (attributes.rpc) {
-      dispatch(setAlternativeRpc(attributes.rpc as string));
+    if (attributes.chainId && attributes.networkName && attributes.rpcUrls && attributes.explorerUrls) {
+      // const networkConfig = {
+      //   chainId: attributes.chainId,
+      //   networkName: attributes.networkName,
+      //   rpcUrls: (attributes.rpcUrls as string).split(','),
+      //   explorerUrls: (attributes.explorerUrls as string).split(','),
+      // };
+      // console.warn(networkConfig);
+      // if (networkConfig) {
+      //   dispatch(setNetworks([networkConfig]));
+      // }
     }
-    if (attributes.buttonType) {
-      // console.log(attributes.buttonType);
-      setButtonType(attributes.buttonType as string);
-    } else {
-      setButtonType(null);
+    if (attributes.ipfsGateway) {
+      dispatch(setCustomIpfsGateway(attributes.ipfsGateway as string));
     }
     selectEnvironment();
   };
@@ -122,24 +127,14 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     // setAnchorEl(null);
   };
 
+  const handleProfileButtonClicked = async () => {
+    const autId = JSON.parse(sessionStorage.getItem('aut-data'));
+    window.open(`https://my.aut.id/${autId.network}/${autId.name}`, '_blank');
+  };
+
   useEffect(() => {
     setAttributes();
     dispatchEvent(OutputEventTypes.Init);
-    // setButtonHidden(attributes.hideButton as boolean);
-    // dispatch(setDisableCreateNewUser(attributes.disableCreateNewUser as boolean));
-
-    // setAttrCallback((name: string, prevValue: string, currVal: string) => {
-    //   const notChanged = !checkIfAttributeHasChanged(prevValue, currVal);
-    //   if (notChanged) {
-    //     return; // do nothing if its the same
-    //   }
-    //   const value = parseAttributeValue(name, currVal);
-    //   if (name === AttributeNames.hideButton) {
-    //     setButtonHidden(value);
-    //   } else if (name === AttributeNames.disableCreateNewUser) {
-    //     dispatch(setDisableCreateNewUser(value));
-    //   }
-    // });
   }, []);
 
   useEffect(() => {
@@ -150,10 +145,10 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     <>
       <Portal container={container}>
         {!buttonHidden && (
-          <RoundedWebButton
-            buttontype={buttonType?.toLowerCase()}
+          <WebButton
             onClick={handleButtonClick}
-            menuClick={handleMenuButtonClicked}
+            disconnectClick={handleMenuButtonClicked}
+            profileClick={handleProfileButtonClicked}
             container={container}
           />
         )}

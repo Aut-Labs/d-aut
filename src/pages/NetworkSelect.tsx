@@ -32,13 +32,13 @@ const NetworkSelect: React.FunctionComponent = () => {
   });
 
   const checkNetwork = async (selectedNetwork) => {
-    const network = networkConfigs.find((n) => n.network === selectedNetwork);
+    const network = networkConfigs.find((n) => n.networkName === selectedNetwork);
     // @ts-ignore
     const foundChainId = Number(connector?.provider?.chainId);
     if (foundChainId === network.chainId) {
       await dispatch(getAutId(account));
     } else {
-      await dispatch(setSelectedNetwork(network.network));
+      await dispatch(setSelectedNetwork(network.networkName));
       try {
         await EnableAndChangeNetwork(connector.provider, network);
         const sdk = AutSDK.getInstance();

@@ -16,7 +16,7 @@ const drawCanvasElements = (canvas: HTMLCanvasElement, ctx: CanvasRenderingConte
       timestamp: timestamp.text,
     });
     const backgroundImage = await LoadImage(url);
-    ctx.drawImage(backgroundImage, 35, 0);
+    ctx.drawImage(backgroundImage, 27, 0);
   };
 
   const drawAvatar = async (avatar: string) => {
@@ -33,28 +33,28 @@ const drawCanvasElements = (canvas: HTMLCanvasElement, ctx: CanvasRenderingConte
     if (ihScaled < maxHeight) {
       offsetY = maxHeight / 2 - ihScaled / 2;
     }
-    ctx.drawImage(avatarImage, 107 + offsetX, 112 + offsetY, iwScaled, ihScaled);
+    ctx.drawImage(avatarImage, 99 + offsetX, 112 + offsetY, iwScaled, ihScaled);
   };
 
   const drawAvatarGradient = async () => {
     let url = null;
     url = AutAvatarGradient();
     const avatarGradient = await LoadImage(url);
-    ctx.drawImage(avatarGradient, 95, 112);
+    ctx.drawImage(avatarGradient, 87, 112);
   };
 
   const drawLabel = async () => {
     let url = null;
     url = AutMumbaiLabel();
     const labelImage = await LoadImage(url);
-    ctx.drawImage(labelImage, 8, 114);
+    ctx.drawImage(labelImage, 0, 114);
   };
 
   const drawSigil = async (expanderAddress: string) => {
     const { toBase64 } = await generateAutIdDAOSigil(expanderAddress);
     const sigilImage = await LoadImage(toBase64());
     const { iwScaled, ihScaled } = ScaleImage(245, 245, sigilImage);
-    ctx.drawImage(sigilImage, 250, 460, iwScaled, ihScaled);
+    ctx.drawImage(sigilImage, 242, 460, iwScaled, ihScaled);
   };
 
   return {
@@ -77,7 +77,7 @@ const defaulConfig = (
   expanderAddress: string
 ): ContentConfig => {
   const WIDTH = config?.width || 530;
-  const HEIGHT = config?.height || 763;
+  const HEIGHT = config?.height || 737;
   return {
     width: WIDTH,
     height: HEIGHT,

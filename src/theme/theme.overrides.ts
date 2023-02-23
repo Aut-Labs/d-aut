@@ -28,10 +28,12 @@ declare module '@mui/material/Button' {
     normal: true;
     chunky: true;
     square: true;
+    half: true;
   }
 
   interface ButtonPropsVariantOverrides {
     square: true;
+    half: true;
   }
 
   interface ButtonPropsColorOverrides {
@@ -97,7 +99,7 @@ declare module '@mui/material/styles' {
   interface Palette {
     offWhite?: PaletteColor;
     nightBlack?: PaletteColor;
-    // white?: PaletteColor;
+    white?: PaletteColor;
   }
 }
 

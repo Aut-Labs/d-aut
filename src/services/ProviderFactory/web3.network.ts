@@ -10,7 +10,7 @@ export const EnableAndChangeNetwork = async (provider: any, config: NetworkConfi
   const params = [
     {
       chainId: toHex(config.chainId),
-      chainName: config.network,
+      chainName: config.networkName,
       rpcUrls: config.rpcUrls,
       blockExplorerUrls: config.explorerUrls,
     },
