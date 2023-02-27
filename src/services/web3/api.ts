@@ -3,7 +3,7 @@ import axios from 'axios';
 import dateFormat from 'dateformat';
 import * as ethers from 'ethers';
 import { ipfsCIDToHttpUrl, storeImageAsBlob, storeMetadata } from '../storage/storage.hub';
-import { BaseNFTModel } from './models';
+import { BaseNFTModel, Community } from './models';
 import { InternalErrorTypes } from '../../utils/error-parser';
 import { setAutIdsOnDifferentNetworks, updateErrorState } from '../../store/aut.reducer';
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
@@ -12,7 +12,7 @@ import { setUserData } from '../../store/user-data.reducer';
 import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
 import { AutId, NetworkConfig } from '../ProviderFactory/web3.connectors';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import AutSDK, { DAOExpander } from '@aut-labs-private/sdk';
+import AutSDK, { DAOExpander, fetchMetadata } from '@aut-labs-private/sdk';
 import { RootState } from '../../store/store.model';
 import { debug } from 'console';
 
@@ -135,12 +135,12 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   }
   const tokenId = await contract.getTokenIdByOwner(selectedAddress);
   const tokenURI = await contract.getTokenUri(tokenId.data);
-  const response = await fetch(ipfsCIDToHttpUrl(tokenURI.data, customIpfsGateway));
-  if (response.status === 504) {
+  const metadata = await fetchMetadata<any>(tokenURI.data, customIpfsGateway);
+  if (!metadata) {
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
   }
 
-  const autId = await response.json();
+  const autId = metadata;
   const holderCommunities = await contract.getHolderDAOs(selectedAddress);
   // CHECK FOR UNJOINED COMMUNITIES IF WE'RE NOT IN AUT ID
   // const unjoinedCommunities = [];
@@ -205,15 +205,14 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
       const metadataUri = await expander.contract.metadata.getMetadataUri();
 
       const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
-      const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
-      const communityJson = await communityMetadata.json();
+      const metadata = await fetchMetadata<BaseNFTModel<Community>>(metadataUri.data, customIpfsGateway);
 
       const a = new BaseNFTModel({
-        ...communityJson,
+        ...metadata,
         properties: {
           isAdmin,
           address: communityAddress,
-          ...communityJson.properties,
+          ...metadata?.properties,
           userData: {
             role: role.toString(),
             commitment: commitment.toString(),
@@ -260,12 +259,13 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
       if (holderData.network !== selectedNetwork) {
         return rejectWithValue(InternalErrorTypes.FoundAnAutIDOnADifferentNetwork);
       }
-      const response = await fetch(ipfsCIDToHttpUrl(holderData.metadataUri, customIpfsGateway));
-      if (response.status === 504) {
+
+      const metadata = await fetchMetadata<any>(holderData.metadataUri, customIpfsGateway);
+      if (!metadata) {
         return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
       }
 
-      const autId = await response.json();
+      const autId = metadata;
       const sdk = AutSDK.getInstance();
       const { contract } = sdk.autID;
       const holderCommunities = await contract.getHolderDAOs(selectedAddress);
@@ -317,15 +317,14 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
 
           const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
 
-          const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
-          const communityJson = await communityMetadata.json();
+          const metadata = await fetchMetadata<BaseNFTModel<AutId>>(metadataUri.data, customIpfsGateway);
 
           const a = new BaseNFTModel({
-            ...communityJson,
+            ...metadata,
             properties: {
               isAdmin,
               address: communityAddress,
-              ...communityJson.properties,
+              ...metadata?.properties,
               userData: {
                 role: role.toString(),
                 commitment: commitment.toString(),
