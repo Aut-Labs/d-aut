@@ -1,13 +1,8 @@
-import { useEffect } from 'react';
 import { ReactComponent as Metamask } from '../assets/metamask.svg';
 import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
-import { SxProps, Typography } from '@mui/material';
-import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../store/store.model';
-import { ConnectorTypes, NetworkConnector, setWallet } from '../store/wallet-provider';
+import { ConnectorTypes, setWallet } from '../store/wallet-provider';
 import { AutButton } from './AutButton';
-import { margin } from '@mui/system';
-import { pxToRem } from '../utils/utils';
 
 const btnConfig = {
   [ConnectorTypes.Metamask]: {
@@ -30,20 +25,12 @@ export default function ConnectorBtn({
   marginTop?: number;
 }) {
   const dispatch = useAppDispatch();
-  const [connector] = useSelector(NetworkConnector(connectorType));
-
-  useEffect(() => {
-    if (connector) {
-      // connector.connectEagerly();
-    }
-  }, [connector]);
 
   return (
     <AutButton
       onClick={async () => {
-        await connector.connectEagerly();
         dispatch(setWallet(connectorType));
-        setConnector(connector);
+        setConnector(connectorType);
       }}
       sx={{ mt: `${marginTop}px` }}
       color="white"

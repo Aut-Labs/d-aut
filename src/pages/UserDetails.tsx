@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Box } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import AutFileUpload from '../components/AutFileUpload';
 import { setUserData, userData } from '../store/user-data.reducer';
@@ -14,15 +13,12 @@ import { InternalErrorTypes } from '../utils/error-parser';
 import { base64toFile, toBase64 } from '../utils/utils';
 import { FormWrapper, FormContent, FormAction } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
-import { useWeb3React } from '@web3-react/core';
-import { setSelectedNetwork } from '../store/wallet-provider';
 import { AutTextField } from '../theme/field-text-styles';
 
 const UserDetails: React.FunctionComponent = (props) => {
   const history = useHistory();
   const userInput = useSelector(userData);
   const dispatch = useAppDispatch();
-  const { connector } = useWeb3React();
   const {
     handleSubmit,
     control,
@@ -41,10 +37,10 @@ const UserDetails: React.FunctionComponent = (props) => {
   };
 
   const deactivateConnector = async () => {
-    if (connector) {
-      await dispatch(setSelectedNetwork(null));
-      await connector.deactivate();
-    }
+    // if (connector) {
+    //   await dispatch(setSelectedNetwork(null));
+    //   await connector.deactivate();
+    // }
   };
 
   return (

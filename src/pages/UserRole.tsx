@@ -9,12 +9,10 @@ import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { FormWrapper } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
-import { useWeb3React } from '@web3-react/core';
 
 const UserRole: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const { connector } = useWeb3React();
   const autData = useSelector(autState);
   const communityData = useSelector(community);
 
@@ -33,11 +31,11 @@ const UserRole: React.FunctionComponent = (props) => {
   }, []);
 
   const deactivateConnector = async () => {
-    if (autData.justJoin) {
-      if (connector) {
-        await connector.deactivate();
-      }
-    }
+    // if (autData.justJoin) {
+    //   if (connector) {
+    //     await connector.deactivate();
+    //   }
+    // }
   };
 
   return (

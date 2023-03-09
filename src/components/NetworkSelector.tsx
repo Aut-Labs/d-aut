@@ -1,6 +1,5 @@
 import { Box, MenuItem } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useWeb3React } from '@web3-react/core';
 import { Controller, useForm } from 'react-hook-form';
 import { NetworksConfig } from '../store/wallet-provider';
 import { AutPageBox } from './AutPageBox';
@@ -11,20 +10,12 @@ import { AutButton } from './AutButton';
 
 const NetworkSelector = ({ onSelect, onBack }) => {
   const networkConfigs = useSelector(NetworksConfig);
-  const { connector } = useWeb3React();
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
   });
 
   const onSubmit = async (data: any) => {
     onSelect(data.chainId);
-  };
-
-  const onBackClicked = async () => {
-    if (connector) {
-      await connector.deactivate();
-    }
-    onBack();
   };
 
   return (
@@ -40,7 +31,7 @@ const NetworkSelector = ({ onSelect, onBack }) => {
         }}
       >
         <AutHeader
-          backAction={onBackClicked}
+          backAction={onBack}
           logoId="networks-logo"
           title="Unsupported network detected."
           subtitle="Pick a supported network to connect."
@@ -65,7 +56,7 @@ const NetworkSelector = ({ onSelect, onBack }) => {
                         return 'Select Network';
                       }
                       const networkConfig = networkConfigs.find((c) => c.chainId === selected);
-                      return networkConfig.networkName || selected;
+                      return networkConfig.network || selected;
                     }}
                     name={name}
                     color="primary"
@@ -77,8 +68,8 @@ const NetworkSelector = ({ onSelect, onBack }) => {
                   >
                     {networkConfigs &&
                       networkConfigs.map((config) => (
-                        <MenuItem key={`autId-${config.networkName}`} color="primary" value={config.chainId}>
-                          {config.networkName}
+                        <MenuItem key={`autId-${config.network}`} color="primary" value={config.chainId}>
+                          {config.network}
                         </MenuItem>
                       ))}
                   </AutSelectField>

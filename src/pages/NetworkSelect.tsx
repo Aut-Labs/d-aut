@@ -1,21 +1,20 @@
 import React from 'react';
 import { Box, MenuItem } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState, DAOExpanderAddress, ResultState, setStatus, updateErrorState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { useWeb3React } from '@web3-react/core';
 import { Controller, useForm } from 'react-hook-form';
 import { FormAction, FormWrapper, FormContent } from '../components/FormHelpers';
 import { AutSelectField, FormHelperText } from '../components/Fields';
 import { useAppDispatch } from '../store/store.model';
 import { getAutId } from '../services/web3/api';
-import { IsConnected, NetworksConfig, SelectedNetwork, setSelectedNetwork } from '../store/wallet-provider';
+import { NetworksConfig, SelectedNetwork, setSelectedNetwork } from '../store/wallet-provider';
 import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { InternalErrorTypes } from '../utils/error-parser';
 import AutSDK from '@aut-labs-private/sdk';
+import { useEthers } from '@usedapp/core';
 
 const NetworkSelect: React.FunctionComponent = () => {
   const networkConfigs = useSelector(NetworksConfig);
@@ -23,7 +22,7 @@ const NetworkSelect: React.FunctionComponent = () => {
   const autData = useSelector(autState);
   const selectedNetwork = useSelector(SelectedNetwork);
   const dispatch = useAppDispatch();
-  const { connector, provider, account } = useWeb3React();
+  const { account } = useEthers();
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -31,44 +30,31 @@ const NetworkSelect: React.FunctionComponent = () => {
     },
   });
 
-  const checkNetwork = async (selectedNetwork) => {
-    const network = networkConfigs.find((n) => n.networkName === selectedNetwork);
+  const checkNetwork = async (selectedNetwork: string) => {
+    const network = networkConfigs.find((n) => n.network === selectedNetwork);
     // @ts-ignore
     const foundChainId = Number(connector?.provider?.chainId);
     if (foundChainId === network.chainId) {
       await dispatch(getAutId(account));
     } else {
-      await dispatch(setSelectedNetwork(network.networkName));
+      await dispatch(setSelectedNetwork(network.network));
       try {
-        await EnableAndChangeNetwork(connector.provider, network);
+        // @ts-ignore
+        const { provider } = conn.provider;
+        await EnableAndChangeNetwork(provider, network);
         const sdk = AutSDK.getInstance();
-        // const biconomy =
-        //   networkConfig.biconomyApiKey &&
-        //   new SDKBiconomyWrapper({
-        //     enableDebugMode: true,
-        //     apiKey: networkConfig.biconomyApiKey,
-        //     contractAddresses: [networkConfig.contracts.daoExpanderRegistryAddress],
-        //   });
-        await sdk.init(
-          provider.getSigner(),
-          {
-            daoExpanderAddress: daoExpanderAddress as string,
-          }
-          // biconomy
-        );
+        const signer = provider.getSigner();
+        await sdk.init(signer, {
+          daoExpanderAddress: daoExpanderAddress as string,
+        });
 
-        // fetch autId contract address
         const result = await sdk.daoExpander.contract.getAutIDContractAddress();
         console.log(result);
 
-        await sdk.init(
-          provider.getSigner(),
-          {
-            daoExpanderAddress,
-            autIDAddress: result.data,
-          }
-          // biconomy
-        );
+        await sdk.init(signer, {
+          daoExpanderAddress,
+          autIDAddress: result.data,
+        });
 
         await dispatch(getAutId(account));
       } catch (e) {
@@ -86,9 +72,6 @@ const NetworkSelect: React.FunctionComponent = () => {
 
   const onBackClicked = async () => {
     await dispatch(setSelectedNetwork(null));
-    if (connector) {
-      await connector.deactivate();
-    }
   };
 
   return (

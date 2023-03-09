@@ -1,25 +1,17 @@
-import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Box } from '@mui/material';
 import { useAppDispatch } from '../store/store.model';
-import { checkAvailableNetworksAndGetAutId, getAutId } from '../services/web3/api';
+import { getAutId } from '../services/web3/api';
 import { AutPageBox } from '../components/AutPageBox';
-import { InternalErrorTypes } from '../utils/error-parser';
 import { AutHeader } from '../components/AutHeader';
 import { ConnectorTypes } from '../store/wallet-provider';
 import ConnectorBtn from '../components/ConnectorButton';
 import NetworkSelector from '../components/NetworkSelector';
+import { useEthers } from '@usedapp/core';
 import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
-import { useWeb3React } from '@web3-react/core';
+import { LoadingProgress } from '../components/LoadingProgress';
 
 const LoginWithAut: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
-  const history = useHistory();
-  const { account } = useWeb3React();
-
-  useEffect(() => {
-    console.warn('LOGIN WITH ATUT');
-  }, []);
+  const { account } = useEthers();
 
   const onConnected = async () => {
     await dispatch(getAutId(account));
@@ -32,26 +24,26 @@ const LoginWithAut: React.FunctionComponent = () => {
     // }
   };
 
-  const { selectingNetwork, changeConnector, setSelectingNetwork, changeNetwork } = useWeb3ReactConnectorHook({ onConnected });
+  const { selectingNetwork, waitingForConfirmation, changeConnector, setSelectingNetwork, changeNetwork } = useWeb3ReactConnectorHook({
+    onConnected,
+  });
 
   return (
     <>
-      {selectingNetwork ? (
-        <NetworkSelector
-          onSelect={async (chainId) => {
-            await changeNetwork(chainId);
-            setSelectingNetwork(false);
-          }}
-          onBack={() => {
-            setSelectingNetwork(false);
-          }}
-        />
+      {waitingForConfirmation ? (
+        <LoadingProgress />
       ) : (
-        <AutPageBox>
-          <AutHeader logoId="new-user-logo" title="Welcome back" />
-          <ConnectorBtn marginTop={93} setConnector={changeConnector} connectorType={ConnectorTypes.Metamask} />
-          <ConnectorBtn marginTop={53} setConnector={changeConnector} connectorType={ConnectorTypes.WalletConnect} />
-        </AutPageBox>
+        <>
+          {selectingNetwork ? (
+            <NetworkSelector onSelect={changeNetwork} onBack={() => setSelectingNetwork(false)} />
+          ) : (
+            <AutPageBox>
+              <AutHeader logoId="new-user-logo" title="Welcome back" />
+              <ConnectorBtn marginTop={93} setConnector={changeConnector} connectorType={ConnectorTypes.Metamask} />
+              <ConnectorBtn marginTop={53} setConnector={changeConnector} connectorType={ConnectorTypes.WalletConnect} />
+            </AutPageBox>
+          )}
+        </>
       )}
     </>
   );
