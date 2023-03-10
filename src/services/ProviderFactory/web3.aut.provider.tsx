@@ -8,6 +8,7 @@ import { Network } from '@ethersproject/networks';
 import { ethers } from 'ethers';
 import { Config, DAppProvider, MetamaskConnector } from '@usedapp/core';
 import { setNetworks } from '../../store/wallet-provider';
+import axios from 'axios';
 
 const generateConfig = (networks: NetworkConfig[]): Config => {
   const readOnlyUrls = networks.reduce((prev, curr) => {
@@ -25,20 +26,6 @@ const generateConfig = (networks: NetworkConfig[]): Config => {
 
   return {
     readOnlyUrls,
-    // networks: networks
-    //   .filter((n) => !n.disabled)
-    //   .map(
-    //     (n) =>
-    //       ({
-    //         isLocalChain: false,
-    //         isTestChain: true,
-    //         chainId: n.chainId,
-    //         chainName: n.network,
-    //         rpcUrl: n.rpcUrls[0],
-    //         nativeCurrency: n.nativeCurrency,
-    //       } as any)
-    //   ),
-    // gasLimitBufferPercentage: 50000,
     connectors: {
       metamask: new MetamaskConnector(),
       walletConnect: new WalletConnectConnector({
@@ -53,25 +40,40 @@ const generateConfig = (networks: NetworkConfig[]): Config => {
   };
 };
 
+export const getAppConfig = (): Promise<NetworkConfig[]> => {
+  return axios.get(`${env.REACT_APP_API_URL}/autid/config/network/testing`).then((r) => r.data);
+};
+
 export default function Web3AutProvider({ children }) {
   const dispatch = useAppDispatch();
   const [config, setConfig] = useState<Config>(null);
 
   useEffect(() => {
-    const sdk = new AutSDK({
-      nftStorageApiKey: env.REACT_APP_NFT_STORAGE_KEY,
+    getAppConfig().then(async (res) => {
+      const networks = res.filter((n) => !n.disabled);
+      dispatch(setNetworks(networks));
+      setConfig(generateConfig(networks));
+      const sdk = new AutSDK({
+        nftStorageApiKey: env.REACT_APP_NFT_STORAGE_KEY,
+      });
     });
-    const networks = [
-      {
-        network: env.REACT_APP_NETWORK,
-        chainId: env.REACT_APP_CHAIN_ID,
-        explorerUrls: env.REACT_APP_EXPLORER_URLS,
-        name: env.REACT_APP_NETWORK,
-        rpcUrls: env.REACT_APP_RPC_URLS,
-      } as NetworkConfig,
-    ];
-    dispatch(setNetworks(networks));
-    setConfig(generateConfig(networks));
   }, []);
+
+  // useEffect(() => {
+  //   const sdk = new AutSDK({
+  //     nftStorageApiKey: env.REACT_APP_NFT_STORAGE_KEY,
+  //   });
+  //   const networks = [
+  //     {
+  //       network: env.REACT_APP_NETWORK,
+  //       chainId: env.REACT_APP_CHAIN_ID,
+  //       explorerUrls: env.REACT_APP_EXPLORER_URLS,
+  //       name: env.REACT_APP_NETWORK,
+  //       rpcUrls: env.REACT_APP_RPC_URLS,
+  //     } as NetworkConfig,
+  //   ];
+  //   dispatch(setNetworks(networks));
+  //   setConfig(generateConfig(networks));
+  // }, []);
   return <>{!!config && <DAppProvider config={config}>{children}</DAppProvider>}</>;
 }

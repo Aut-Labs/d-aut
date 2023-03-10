@@ -1,8 +1,7 @@
-/* eslint-disable prefer-destructuring */
 import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../store/store.model';
-import AutSDK from '@aut-labs-private/sdk';
+import AutSDK, { AutID } from '@aut-labs-private/sdk';
 import { NetworksConfig, SelectedWalletType, setSelectedNetwork, updateWalletProviderState } from '../../store/wallet-provider';
 import { EnableAndChangeNetwork } from './web3.network';
 import { DAOExpanderAddress, ResultState, setStatus, updateErrorState } from '../../store/aut.reducer';
@@ -11,6 +10,7 @@ import { ethers } from 'ethers';
 import { Connector, useConnector, useEthers } from '@usedapp/core';
 import { authoriseWithWeb3 } from '../web3/auth.api';
 import { NetworkConfig } from './web3.connectors';
+import { SDKBiconomyWrapper } from '@aut-labs-private/sdk-biconomy';
 
 export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
   const dispatch = useAppDispatch();
@@ -21,22 +21,43 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
   const [selectingNetwork, setSelectingNetwork] = useState(false);
   const { connector, activate } = useConnector();
   const [waitingForConfirmation, setIsWaitingForCofirmation] = useState(false);
-  const { activateBrowserWallet, switchNetwork, chainId, account } = useEthers();
+  const { activateBrowserWallet, switchNetwork, account } = useEthers();
 
-  const initializeSDK = async (signer: ethers.providers.JsonRpcSigner) => {
+  const initializeSDK = async (network: NetworkConfig, signer: ethers.providers.JsonRpcSigner) => {
     const sdk = AutSDK.getInstance();
-    await sdk.init(signer, {
-      daoExpanderAddress,
-    });
 
-    // fetch autId contract address
-    const result = await sdk.daoExpander.contract.getAutIDContractAddress();
-    console.log(result);
+    let autIdContractAddress = network?.contracts?.autIDAddress;
 
-    await sdk.init(signer, {
-      daoExpanderAddress,
-      autIDAddress: result.data,
-    });
+    const biconomy =
+      network?.biconomyApiKey &&
+      new SDKBiconomyWrapper({
+        enableDebugMode: true,
+        apiKey: network.biconomyApiKey,
+        contractAddresses: [autIdContractAddress],
+      });
+
+    // If dao expander is provided then to ensure is the correct autId address
+    // we will fetch contract address from daoExpanderAddress contract
+    if (daoExpanderAddress) {
+      await sdk.init(
+        signer,
+        {
+          daoExpanderAddress,
+        },
+        biconomy
+      );
+      const result = await sdk.daoExpander.contract.getAutIDContractAddress();
+      autIdContractAddress = result?.data;
+      sdk.autID = sdk.initService<AutID>(AutID, autIdContractAddress);
+    } else {
+      await sdk.init(
+        signer,
+        {
+          autIDAddress: autIdContractAddress,
+        },
+        biconomy
+      );
+    }
   };
 
   const activateNetwork = async (network: NetworkConfig, conn: Connector) => {
@@ -47,7 +68,7 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
       await switchNetwork(+network.chainId);
       if (conn.name === 'metamask') {
         // @ts-ignore
-        const provider = conn.provider.provider;
+        const { provider } = conn.provider;
         await EnableAndChangeNetwork(provider, network);
       }
       const signer = conn?.provider?.getSigner();
@@ -66,7 +87,7 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
           delete itemsToUpdate.selectedWalletType;
         }
         await dispatch(updateWalletProviderState(itemsToUpdate));
-        await initializeSDK(signer as ethers.providers.JsonRpcSigner);
+        await initializeSDK(network, signer as ethers.providers.JsonRpcSigner);
         onConnected(account);
       } else {
         const itemsToUpdate = {
@@ -92,10 +113,27 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
     }
   };
 
+  const tryConnect = async () => {
+    const [config] = networks.filter((n) => !n.disabled);
+    // .find(
+    //   // (n) => n.chainId?.toString() === chainId?.toString()
+    //   (n) => n.chainId?.toString() === chainId?.toString()
+    // );
+    if (config && connector?.connector) {
+      await activateNetwork(config, connector.connector);
+    } else {
+      setTryEagerConnect(false);
+      // setSelectingNetwork(true);
+    }
+  };
+
   const changeConnector = async (connectorType: string) => {
     activateBrowserWallet({ type: connectorType });
-    console.log(connector?.connector, chainId, account);
-    setTryEagerConnect(true);
+    if (!connector?.connector) {
+      setTryEagerConnect(true);
+    } else {
+      await tryConnect();
+    }
   };
 
   const canConnectEagerly = useMemo(() => {
@@ -103,16 +141,6 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
   }, [connector, tryEagerConnect, account]);
 
   useEffect(() => {
-    const tryConnect = async () => {
-      const config = networks.find((n) => n.chainId?.toString() === chainId?.toString());
-      if (config && connector?.connector) {
-        await activateNetwork(config, connector.connector);
-      } else {
-        setTryEagerConnect(false);
-        setSelectingNetwork(true);
-      }
-    };
-
     if (canConnectEagerly) {
       tryConnect();
     }
@@ -122,7 +150,7 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
     const network = networks.find((n) => n.chainId?.toString() === selectedChainId?.toString());
     await dispatch(setStatus(ResultState.Loading));
     await activateNetwork(network, connector.connector);
-    setSelectingNetwork(false);
+    // setSelectingNetwork(false);
   };
 
   return { changeNetwork, changeConnector, setSelectingNetwork, selectingNetwork, waitingForConfirmation };
