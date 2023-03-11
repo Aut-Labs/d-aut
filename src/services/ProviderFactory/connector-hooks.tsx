@@ -28,17 +28,18 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
 
     let autIdContractAddress = network?.contracts?.autIDAddress;
 
-    const biconomy =
-      network?.biconomyApiKey &&
-      new SDKBiconomyWrapper({
-        enableDebugMode: true,
-        apiKey: network.biconomyApiKey,
-        contractAddresses: [autIdContractAddress],
-      });
-
     // If dao expander is provided then to ensure is the correct autId address
     // we will fetch contract address from daoExpanderAddress contract
     if (daoExpanderAddress) {
+      // only when daoExpanderAddress is present we can create a new user
+      // and so only then we should inject biconomy
+      const biconomy =
+        network?.biconomyApiKey &&
+        new SDKBiconomyWrapper({
+          enableDebugMode: true,
+          apiKey: network.biconomyApiKey,
+          contractAddresses: [autIdContractAddress],
+        });
       await sdk.init(
         signer,
         {
@@ -50,13 +51,9 @@ export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
       autIdContractAddress = result?.data;
       sdk.autID = sdk.initService<AutID>(AutID, autIdContractAddress);
     } else {
-      await sdk.init(
-        signer,
-        {
-          autIDAddress: autIdContractAddress,
-        },
-        biconomy
-      );
+      await sdk.init(signer, {
+        autIDAddress: autIdContractAddress,
+      });
     }
   };
 
