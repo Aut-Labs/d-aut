@@ -7,7 +7,7 @@ import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
 import { dispatchEvent } from './utils/utils';
 import { AutButtonProps } from './types/d-aut-config';
-import { OutputEventTypes } from './types/event-types';
+import { InputEventTypes, OutputEventTypes } from './types/event-types';
 import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { WebButton } from './components/WebButton';
@@ -43,9 +43,9 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   const [buttonHidden, setButtonHidden] = useState(false);
   useEffect(() => {
     setAttrCallback(async (name: string, value: string, newVal: string) => {
-      // if (name === 'network') {
-      //   await dispatch(setNetwork(newVal as string));
-      // }
+      if (name === 'dao-expander') {
+        dispatch(setCommunityExtesnionAddress(newVal as string));
+      }
     });
   });
 
@@ -134,6 +134,8 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
 
   useEffect(() => {
     initializeAut();
+    window.addEventListener(InputEventTypes.Open, handleButtonClick);
+    return () => window.removeEventListener(InputEventTypes.Open, handleButtonClick);
   }, []);
 
   return (

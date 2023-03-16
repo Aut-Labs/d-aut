@@ -7,17 +7,15 @@ import { setJustJoining } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { ConnectorTypes, setSelectedNetwork } from '../store/wallet-provider';
 import ConnectorBtn from '../components/ConnectorButton';
-import NetworkSelector from '../components/NetworkSelector';
 import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
-import { useEthers } from '@usedapp/core';
 import { LoadingProgress } from '../components/LoadingProgress';
 
 const NewUser: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const { account, deactivate } = useEthers();
+  const { connect, waitingUserConfirmation, isLoading } = useWeb3ReactConnectorHook();
 
-  const checkForExistingAutId = async () => {
+  const checkForExistingAutId = async (account: string) => {
     const hasAutId = await dispatch(checkIfAutIdExists(account));
     if (hasAutId.meta.requestStatus !== 'rejected') {
       await dispatch(fetchCommunity());
@@ -32,42 +30,48 @@ const NewUser: React.FunctionComponent = (props) => {
   };
 
   useEffect(() => {
-    deactivate();
     dispatch(setSelectedNetwork(null));
   }, []);
 
-  const onConnected = async () => {
-    await checkForExistingAutId();
+  const tryConnect = async (connectorType: string) => {
+    const account = await connect(connectorType);
+    if (account) {
+      await checkForExistingAutId(account);
+    }
   };
-
-  const { selectingNetwork, setSelectingNetwork, changeConnector, changeNetwork, waitingForConfirmation } = useWeb3ReactConnectorHook({
-    onConnected,
-  });
 
   return (
     <>
-      {waitingForConfirmation ? (
-        <LoadingProgress />
+      {isLoading || waitingUserConfirmation ? (
+        <>
+          {/* {waitingUserConfirmation && (
+            <Typography m="0" color="white" variant="subtitle1">
+              Waiting confirmation...
+            </Typography>
+          )} */}
+          <LoadingProgress />
+        </>
       ) : (
         <>
-          {selectingNetwork ? (
+          {/* {selectingNetwork ? (
             <NetworkSelector onSelect={changeNetwork} onBack={() => setSelectingNetwork(false)} />
           ) : (
-            <AutPageBox>
-              <AutHeader
-                logoId="new-user-logo"
-                title="Welcome"
-                subtitle={
-                  <>
-                    First, import your wallet <br /> & claim your Role in your DAO
-                    {/* <span style={{ textDecoration: 'underline' }}>{autData.community?.name}!</span> */}
-                  </>
-                }
-              />
-              <ConnectorBtn marginTop={66} setConnector={changeConnector} connectorType={ConnectorTypes.Metamask} />
-              <ConnectorBtn marginTop={53} setConnector={changeConnector} connectorType={ConnectorTypes.WalletConnect} />
-            </AutPageBox>
-          )}
+            
+          )} */}
+          <AutPageBox>
+            <AutHeader
+              logoId="new-user-logo"
+              title="Welcome"
+              subtitle={
+                <>
+                  First, import your wallet <br /> & claim your Role in your DAO
+                  {/* <span style={{ textDecoration: 'underline' }}>{autData.community?.name}!</span> */}
+                </>
+              }
+            />
+            <ConnectorBtn marginTop={66} setConnector={tryConnect} connectorType={ConnectorTypes.Metamask} />
+            <ConnectorBtn marginTop={53} setConnector={tryConnect} connectorType={ConnectorTypes.WalletConnect} />
+          </AutPageBox>
         </>
       )}
     </>

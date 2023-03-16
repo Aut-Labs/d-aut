@@ -6,13 +6,14 @@ import { BaseNFTModel, Community } from './models';
 import { InternalErrorTypes } from '../../utils/error-parser';
 import { setAutIdsOnDifferentNetworks } from '../../store/aut.reducer';
 import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
-import { base64toFile } from '../../utils/utils';
+import { base64toFile, dispatchEvent } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
 import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
 import { AutId, NetworkConfig } from '../ProviderFactory/web3.connectors';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AutSDK, { DAOExpander, fetchMetadata } from '@aut-labs-private/sdk';
 import { RootState } from '../../store/store.model';
+import { OutputEventTypes } from '../../types/event-types';
 
 export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue, getState }) => {
   const { customIpfsGateway } = (getState() as RootState).walletProvider;
@@ -91,6 +92,8 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
   if (!response?.isSuccess) {
     return rejectWithValue(response?.errorMessage);
   }
+
+  dispatchEvent(OutputEventTypes.Minted, metadataJson);
 
   return true;
 });
