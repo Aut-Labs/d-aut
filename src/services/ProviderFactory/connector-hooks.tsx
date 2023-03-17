@@ -71,6 +71,7 @@ export const useWeb3ReactConnectorHook = () => {
       setIsLoading(true);
       await dispatch(updateWalletProviderState(itemsToUpdate));
       await initializeSDK(network, signer as ethers.providers.JsonRpcSigner);
+      setIsLoading(false);
       return account;
     } catch (error) {
       const itemsToUpdate = {
