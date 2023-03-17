@@ -62,7 +62,7 @@ export const useWeb3ReactConnectorHook = () => {
         sdkInitialized: true,
         selectedWalletType: wallet,
         isOpen: false,
-        selectedNetwork: network,
+        selectedNetwork: network?.network,
         signer,
       };
       if (!wallet) {
