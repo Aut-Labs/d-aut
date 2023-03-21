@@ -7,14 +7,11 @@ import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
 import { dispatchEvent } from './utils/utils';
 import { AutButtonProps } from './types/d-aut-config';
-import { OutputEventTypes } from './types/event-types';
+import { InputEventTypes, OutputEventTypes } from './types/event-types';
 import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { WebButton } from './components/WebButton';
-import { SelectedNetwork, setCustomIpfsGateway, setNetworks, setSelectedNetwork } from './store/wallet-provider';
-import { useWeb3React } from '@web3-react/core';
-import { Typography } from '@mui/material';
-import { userData } from './store/user-data.reducer';
+import { setCustomIpfsGateway, setSelectedNetwork } from './store/wallet-provider';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
@@ -44,13 +41,11 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
   const [buttonHidden, setButtonHidden] = useState(false);
-  const { connector, isActive, chainId, provider } = useWeb3React();
-
   useEffect(() => {
     setAttrCallback(async (name: string, value: string, newVal: string) => {
-      // if (name === 'network') {
-      //   await dispatch(setNetwork(newVal as string));
-      // }
+      if (name === 'dao-expander') {
+        dispatch(setCommunityExtesnionAddress(newVal as string));
+      }
     });
   });
 
@@ -107,10 +102,10 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     if (!uiState.user) {
       history.push('/');
 
-      if (isActive) {
-        await connector.deactivate();
-        // dispatch(setSigner(provider.getSigner()));
-      }
+      // if (isActive) {
+      //   await connector.deactivate();
+      //   // dispatch(setSigner(provider.getSigner()));
+      // }
       if (uiState?.provider?.disconnect) {
         await uiState?.provider?.disconnect();
       }
@@ -139,6 +134,8 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
 
   useEffect(() => {
     initializeAut();
+    window.addEventListener(InputEventTypes.Open, handleButtonClick);
+    return () => window.removeEventListener(InputEventTypes.Open, handleButtonClick);
   }, []);
 
   return (

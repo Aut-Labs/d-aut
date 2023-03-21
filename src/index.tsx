@@ -38,7 +38,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
       static get observedAttributes() {
         // Add all tracked attributes to this array
-        return [AttributeNames.hideButton];
+        return [AttributeNames.hideButton, AttributeNames.daoExpander];
       }
 
       attributeChangedCallback(name: string, oldValue: string, newValue: string) {

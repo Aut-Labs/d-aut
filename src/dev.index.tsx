@@ -5,8 +5,8 @@ import { Init } from './index';
 setTimeout(() => {
   Init();
   // setInterval(() => {
-  //   const el: HTMLElement = document.getElementById('sw-auth');
-  //   const hide = el.getAttribute('disable-create-new-user');
-  //   el.setAttribute('disable-create-new-user', hide === 'true' ? 'false' : 'true');
+  //   const el: HTMLElement = document.getElementById('aut');
+  //   // const hide = el.getAttribute('dao-expander');
+  //   el.setAttribute('dao-expander', 'exapmle dao address');
   // }, 1000);
 }, 100);

@@ -1,9 +1,6 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { Web3ReactHooks } from '@web3-react/core';
-import { MetaMask } from '@web3-react/metamask';
-import { WalletConnect } from '@web3-react/walletconnect';
 import { ethers } from 'ethers';
-import { initializeConnectors, NetworkConfig } from '../services/ProviderFactory/web3.connectors';
+import { NetworkConfig } from '../services/ProviderFactory/web3.connectors';
 
 export enum ConnectorTypes {
   WalletConnect = 'walletConnect',
@@ -14,10 +11,10 @@ export interface WalletProviderState {
   signer: ethers.providers.JsonRpcSigner;
   selectedWalletType: 'metamask' | 'walletConnect';
   selectedNetwork: string;
-  isOpen: boolean;
   networksConfig: NetworkConfig[];
-  connectors: [MetaMask | WalletConnect, Web3ReactHooks][];
+  isOpen: boolean;
   wallets: any;
+  isAuthorised: boolean;
   customIpfsGateway: string;
 }
 
@@ -25,9 +22,9 @@ export const initialState: WalletProviderState = {
   signer: null,
   selectedWalletType: null,
   selectedNetwork: null,
-  networksConfig: [],
   isOpen: false,
-  connectors: [],
+  isAuthorised: false,
+  networksConfig: [],
   wallets: {},
   customIpfsGateway: null,
 };
@@ -36,6 +33,11 @@ export const walletProviderSlice = createSlice({
   name: 'walletProvider',
   initialState,
   reducers: {
+    updateWalletProviderState(state, action) {
+      Object.keys(action.payload).forEach((key: string) => {
+        state[key] = action.payload[key];
+      });
+    },
     setSigner(state, action) {
       state.signer = action.payload;
     },
@@ -45,24 +47,11 @@ export const walletProviderSlice = createSlice({
     setProviderIsOpen(state, action) {
       state.isOpen = action.payload;
     },
-    setNetworks(state, action) {
-      state.networksConfig = action.payload;
-      const { metaMaskConnector, walletConnectConnector } = initializeConnectors(action.payload);
-      const [metamask, metaMaskHooks] = metaMaskConnector;
-      const [walletConnect, walletConnectHooks] = walletConnectConnector;
-
-      const connectors: [MetaMask | WalletConnect, Web3ReactHooks][] = [
-        [metamask, metaMaskHooks],
-        [walletConnect, walletConnectHooks],
-      ];
-      state.wallets = {
-        [ConnectorTypes.Metamask]: metaMaskConnector,
-        [ConnectorTypes.WalletConnect]: walletConnectConnector,
-      };
-      state.connectors = connectors;
-    },
     setSelectedNetwork(state, action) {
       state.selectedNetwork = action.payload as string;
+    },
+    setNetworks(state, action) {
+      state.networksConfig = action.payload;
     },
     setCustomIpfsGateway(state, action) {
       state.customIpfsGateway = action.payload as string;
@@ -71,22 +60,24 @@ export const walletProviderSlice = createSlice({
   },
 });
 
-export const { setSigner, setWallet, setProviderIsOpen, setNetworks, setSelectedNetwork, setCustomIpfsGateway } =
+export const { setSigner, setCustomIpfsGateway, setWallet, setSelectedNetwork, updateWalletProviderState, setNetworks, setProviderIsOpen } =
   walletProviderSlice.actions;
 
+export const IsAuthorised = (state: any) => state.walletProvider.isAuthorised as boolean;
+
+export const StartFromScratch = (state: any) => state.walletProvider.startFromScratch as boolean;
+
 export const NetworkSelectorIsOpen = (state: any) => state.walletProvider.isOpen as boolean;
-export const NetworksConfig = (state: any) => state.walletProvider.networksConfig as NetworkConfig[];
-export const NetworkConnectors = (state: any) => state.walletProvider.connectors as [MetaMask | WalletConnect, Web3ReactHooks][];
 export const SelectedWalletType = (state: any) => state.walletProvider.selectedWalletType as string;
-export const SelectedNetwork = (state: any) => state.walletProvider.selectedNetwork as string;
 export const NetworkSigner = (state: any) => state.walletProvider.signer as ethers.providers.JsonRpcSigner;
+export const NetworksConfig = (state: any) => state.walletProvider.networksConfig as NetworkConfig[];
 export const NetworkWalletConnectors = (state: any) => state.walletProvider.wallets as any;
+export const SelectedNetwork = (state: any) => state.walletProvider.selectedNetwork as string;
 export const IPFSCusomtGateway = (state: any) => state.walletProvider.customIpfsGateway as string;
 
-export const IsConnected = createSelector(NetworkSigner, SelectedNetwork, (signer, selectedNetwork) => {
-  return !!signer && !!selectedNetwork;
-});
-
-export const NetworkConnector = (connectorName: string) => createSelector(NetworkWalletConnectors, (c) => c[connectorName]);
+export const SelectedNetworkConfig = createSelector(NetworksConfig, SelectedNetwork, (networks, networkName) =>
+  networks.find((r) => r.network === networkName)
+);
+export const NetworkConnector = (connectorName: string) => createSelector(NetworkWalletConnectors, (x1) => x1[connectorName]);
 
 export default walletProviderSlice.reducer;

@@ -1,120 +1,96 @@
-import { useWeb3React } from '@web3-react/core';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../store/store.model';
-import AutSDK from '@aut-labs-private/sdk';
-import { NetworksConfig, SelectedNetwork, setSigner, setSelectedNetwork } from '../../store/wallet-provider';
-import type { Connector } from '@web3-react/types';
-import { EnableAndChangeNetwork } from './web3.network';
-import { SDKBiconomyWrapper } from '@aut-labs-private/sdk-biconomy';
-import { DAOExpanderAddress, ResultState, setSelectedAddress, setStatus, updateErrorState } from '../../store/aut.reducer';
+import AutSDK, { AutID } from '@aut-labs-private/sdk';
+import { NetworksConfig, SelectedWalletType, setSelectedNetwork, updateWalletProviderState } from '../../store/wallet-provider';
+import { DAOExpanderAddress, ResultState, setStatus, updateErrorState } from '../../store/aut.reducer';
 import { InternalErrorTypes } from '../../utils/error-parser';
 import { ethers } from 'ethers';
+import { NetworkConfig } from './web3.connectors';
+import { SDKBiconomyWrapper } from '@aut-labs-private/sdk-biconomy';
+import { useAutWalletConnect } from './use-aut-wallet-connect';
 
-export const useWeb3ReactConnectorHook = ({ onConnected = null }) => {
+export const useWeb3ReactConnectorHook = () => {
+  const { connect, isLoading: isConnecting, ...rest } = useAutWalletConnect();
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
   const networks = useSelector(NetworksConfig);
   const daoExpanderAddress = useSelector(DAOExpanderAddress);
-  const [selectingNetwork, setSelectingNetwork] = useState(false);
-  const selectedNetwork = useSelector(SelectedNetwork);
-  const [connectorLocal, setConnector] = useState<Connector>(null);
-  const { isActive, provider, account, connector } = useWeb3React();
+  const wallet = useSelector(SelectedWalletType);
 
-  const initializeSDK = async (signer: ethers.providers.JsonRpcSigner) => {
-    const networkConfig = networks.find((n) => n.networkName === selectedNetwork);
+  const initializeSDK = async (network: NetworkConfig, signer: ethers.providers.JsonRpcSigner) => {
     const sdk = AutSDK.getInstance();
-    // const biconomy =
-    //   networkConfig.biconomyApiKey &&
-    //   new SDKBiconomyWrapper({
-    //     enableDebugMode: true,
-    //     apiKey: networkConfig.biconomyApiKey,
-    //     contractAddresses: [networkConfig.contracts.daoExpanderRegistryAddress],
-    //   });
-    await sdk.init(
-      signer,
-      {
-        daoExpanderAddress,
-      }
-      // biconomy
-    );
+    let autIdContractAddress = network?.contracts?.autIDAddress;
 
-    // fetch autId contract address
-    const result = await sdk.daoExpander.contract.getAutIDContractAddress();
-    console.log(result);
-
-    await sdk.init(
-      signer,
-      {
-        daoExpanderAddress,
-        autIDAddress: result.data,
-      }
-      // biconomy
-    );
-  };
-
-  useEffect(() => {
-    const updateSigner = async () => {
-      await dispatch(setSigner(provider.getSigner()));
-      await initializeSDK(provider.getSigner());
-      if (onConnected) {
-        onConnected();
-      }
-    };
-    if (provider && isActive && selectedNetwork) {
-      updateSigner();
-    }
-  }, [isActive]);
-
-  const switchNetwork = async (c: Connector, chainId: number) => {
-    if (!c) {
-      return;
-    }
-    await c.deactivate();
-    const config = networks.find((n) => n.chainId?.toString() === chainId?.toString());
-    await dispatch(setSelectedNetwork(config.networkName));
-    try {
-      await c.activate();
-      await EnableAndChangeNetwork(c.provider, config);
-    } catch (error) {
-      // await dispatch(setSelectedNetwork(null));
-      // await c.deactivate();
-      await dispatch(setStatus(ResultState.Failed));
-      dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
-    }
-  };
-
-  const switchNetworkLocalConnector = async (chainId: number) => {
-    await connectorLocal.deactivate();
-    const config = networks.find((n) => n.chainId?.toString() === chainId?.toString());
-    await dispatch(setSelectedNetwork(config.networkName));
-    try {
-      await connectorLocal.activate();
-      await EnableAndChangeNetwork(connectorLocal.provider, config);
-    } catch (error) {
-      // await dispatch(setSelectedNetwork(null));
-      // await c.deactivate();
-      await dispatch(setStatus(ResultState.Failed));
-      dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
-    }
-  };
-
-  const changeConnector = async (c: Connector) => {
-    // @ts-ignore
-    const foundChainId = Number(c?.provider?.chainId);
-    const index = networks.map((n) => n.chainId?.toString()).indexOf(foundChainId?.toString());
-    const chainAllowed = index !== -1;
-    setConnector(c);
-    if (chainAllowed) {
-      await switchNetwork(c, foundChainId);
+    // If dao expander is provided then to ensure is the correct autId address
+    // we will fetch contract address from daoExpanderAddress contract
+    if (daoExpanderAddress) {
+      // only when daoExpanderAddress is present we can create a new user
+      // and so only then we should inject biconomy
+      const biconomy =
+        network?.biconomyApiKey &&
+        new SDKBiconomyWrapper({
+          enableDebugMode: true,
+          apiKey: network.biconomyApiKey,
+          contractAddresses: [autIdContractAddress],
+        });
+      await sdk.init(
+        signer,
+        {
+          daoExpanderAddress,
+        },
+        biconomy
+      );
+      const result = await sdk.daoExpander.contract.getAutIDContractAddress();
+      autIdContractAddress = result?.data;
+      sdk.autID = sdk.initService<AutID>(AutID, autIdContractAddress);
     } else {
-      setSelectingNetwork(true);
+      await sdk.init(signer, {
+        autIDAddress: autIdContractAddress,
+      });
     }
   };
 
-  const changeNetwork = async (chainId) => {
-    await dispatch(setStatus(ResultState.Loading));
-    await switchNetworkLocalConnector(chainId);
+  const changeConnector = async (connectorType: string) => {
+    try {
+      const [network] = networks.filter((d) => !d.disabled);
+      const { provider, connected, account } = await connect(connectorType);
+      if (!connected) throw new Error('not connected');
+      const signer = provider.getSigner();
+      const itemsToUpdate = {
+        isAuthorised: connected,
+        sdkInitialized: true,
+        selectedWalletType: wallet,
+        isOpen: false,
+        selectedNetwork: network?.network,
+        signer,
+      };
+      if (!wallet) {
+        delete itemsToUpdate.selectedWalletType;
+      }
+      setIsLoading(true);
+      await dispatch(updateWalletProviderState(itemsToUpdate));
+      await initializeSDK(network, signer as ethers.providers.JsonRpcSigner);
+      setIsLoading(false);
+      return account;
+    } catch (error) {
+      const itemsToUpdate = {
+        isAuthorised: false,
+        sdkInitialized: false,
+        selectedWalletType: null,
+        isOpen: false,
+        selectedNetwork: null,
+        signer: null,
+      };
+      await dispatch(updateWalletProviderState(itemsToUpdate));
+      await dispatch(setSelectedNetwork(null));
+      await dispatch(setStatus(ResultState.Failed));
+      dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
+      setIsLoading(false);
+      return false;
+      // console error
+    }
   };
 
-  return { changeNetwork, selectingNetwork, setSelectingNetwork, changeConnector };
+  return { connect: changeConnector, isLoading: isConnecting || isLoading, ...rest };
 };

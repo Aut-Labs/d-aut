@@ -6,7 +6,6 @@ import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState, setSelectedUnjoinedCommunityAddress } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { useWeb3React } from '@web3-react/core';
 import { Controller, useForm } from 'react-hook-form';
 import { FormAction, FormWrapper, FormContent } from '../components/FormHelpers';
 import { AutSelectField, FormHelperText } from '../components/Fields';
@@ -17,7 +16,6 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
   const history = useHistory();
   const autData = useSelector(autState);
   const dispatch = useAppDispatch();
-  const { connector } = useWeb3React();
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -33,9 +31,6 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
   };
 
   const onBackClicked = async () => {
-    if (connector) {
-      await connector.deactivate();
-    }
     await dispatch(setSelectedUnjoinedCommunityAddress(null));
   };
 

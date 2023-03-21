@@ -1,6 +1,6 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.11",
+  "version": "1.0.17",
   "main": "build/cjs/index.js",
   "module": "build/ems/index.js",
   "types": "build/index.d.ts",
@@ -82,8 +82,7 @@
     }
   },
   "devDependencies": {
-    "@aut-labs-private/abi-types": "^0.0.17",
-    "@aut-labs-private/sdk": "^0.0.18",
+    "@aut-labs-private/sdk": "^0.0.23",
     "@aut-labs-private/sdk-biconomy": "^0.0.2",
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
@@ -106,10 +105,8 @@
     "@types/react-router-dom": "~5.3.0",
     "@typescript-eslint/eslint-plugin": "~5.6.0",
     "@typescript-eslint/parser": "~5.6.0",
-    "@walletconnect/web3-provider": "^1.7.8",
-    "@web3-react/core": "8.0.30-beta.0",
-    "@web3-react/metamask": "8.0.24-beta.0",
-    "@web3-react/walletconnect": "8.0.31-beta.0",
+    "@usedapp/core": "^1.2.2",
+    "@usedapp/wallet-connect-connector": "^1.0.1",
     "assert": "^2.0.0",
     "axios": "^0.24.0",
     "buffer": "^6.0.3",

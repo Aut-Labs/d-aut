@@ -5,20 +5,19 @@ import { Controller, useForm } from 'react-hook-form';
 import { setUserData, userData } from '../store/user-data.reducer';
 import { useAppDispatch } from '../store/store.model';
 import { joinCommunity, mintMembership } from '../services/web3/api';
-import { AutSlider } from '../components/CommitmentSlider';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState } from '../store/aut.reducer';
 import { FormAction, FormContent, FormWrapper } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
-import { useWeb3React } from '@web3-react/core';
 import { AutCommitmentSlider } from '../theme/commitment-slider-styles';
+import { useEthers } from '@usedapp/core';
 
 const Commitment: React.FunctionComponent = (props) => {
   const history = useHistory();
   const userInput = useSelector(userData);
   const coreState = useSelector(autState);
-  const { account } = useWeb3React();
+  const { account } = useEthers();
   const dispatch = useAppDispatch();
 
   const {
