@@ -1,17 +1,19 @@
 import { withRouter, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import Portal from '@mui/material/Portal';
-import { CSSObject } from '@emotion/react';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
-import { dispatchEvent } from './utils/utils';
-import { AutButtonProps } from './types/d-aut-config';
+import { dispatchEvent, parseAttributeValue, toCammelCase } from './utils/utils';
+import { AutButtonProps, SwAttributes } from './types/d-aut-config';
 import { InputEventTypes, OutputEventTypes } from './types/event-types';
-import { autState, setCommunityExtesnionAddress, setUser, showDialog } from './store/aut.reducer';
+import { autState, setCommunityExtesnionAddress, setUser, showDialog, user } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
-import { WebButton } from './components/WebButton';
-import { setCustomIpfsGateway, setSelectedNetwork } from './store/wallet-provider';
+import { IPFSCusomtGateway, NetworksConfig, setCustomIpfsGateway, setNetworks, setSelectedNetwork } from './store/wallet-provider';
+import { ipfsCIDToHttpUrl } from './services/storage/storage.hub';
+import AutButtonMenu from './components/AutButtonMenu/AutButtonMenu';
+import { AutMenuItemType, MenuItemActionType, AutButtonUserProfile } from './components/AutButtonMenu/AutMenuUtils';
+import { NetworkConfig } from './services/ProviderFactory/web3.connectors';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
@@ -36,68 +38,16 @@ const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   );
 });
 
-export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container, setAttrCallback }: AutButtonProps<CSSObject>) => {
+export const AutButton = memo(({ config, attributes: defaultAttributes, container, setAttrCallback }: AutButtonProps) => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
-  const [buttonHidden, setButtonHidden] = useState(false);
-  useEffect(() => {
-    setAttrCallback(async (name: string, value: string, newVal: string) => {
-      if (name === 'dao-expander') {
-        dispatch(setCommunityExtesnionAddress(newVal as string));
-      }
-    });
-  });
+  const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
+  const userData = useSelector(user);
+  const customIpfsGateway = useSelector(IPFSCusomtGateway);
+  const networks = useSelector(NetworksConfig);
 
-  const selectEnvironment = async () => {
-    // getAppConfig().then(async (res) => dispatch(setNetworks(res)));
-    // await dispatch(setNetwork(attributes.network as string));
-  };
-
-  const setAttributes = () => {
-    if (attributes.daoExpander) {
-      // console.log(attributes.daoExpander);
-      dispatch(setCommunityExtesnionAddress(attributes.daoExpander as string));
-    } else {
-      // console.log('nocommunity extension');
-    }
-    if (attributes.chainId && attributes.networkName && attributes.rpcUrls && attributes.explorerUrls) {
-      // const networkConfig = {
-      //   chainId: attributes.chainId,
-      //   networkName: attributes.networkName,
-      //   rpcUrls: (attributes.rpcUrls as string).split(','),
-      //   explorerUrls: (attributes.explorerUrls as string).split(','),
-      // };
-      // console.warn(networkConfig);
-      // if (networkConfig) {
-      //   dispatch(setNetworks([networkConfig]));
-      // }
-    }
-    if (attributes.ipfsGateway) {
-      dispatch(setCustomIpfsGateway(attributes.ipfsGateway as string));
-    }
-    selectEnvironment();
-  };
-
-  const initializeAut = async () => {
-    // check timestamp
-    const autId = JSON.parse(sessionStorage.getItem('aut-data'));
-    if (autId) {
-      const currentTime = new Date().getTime();
-      // 8 Hours
-      const sessionLength = new Date(8 * 60 * 60 * 1000 + autId.loginTimestamp).getTime();
-      if (currentTime < sessionLength) {
-        dispatch(setUser(autId));
-        dispatchEvent(OutputEventTypes.Connected, autId);
-      } else {
-        window.sessionStorage.removeItem('aut-data');
-        dispatch(resetUIState);
-        dispatchEvent(OutputEventTypes.Disconnected);
-      }
-    }
-  };
-
-  const handleButtonClick = async () => {
+  const handleOpen = async () => {
     // if (currentUser.isLoggedIn) {
     if (!uiState.user) {
       history.push('/');
@@ -115,43 +65,115 @@ export const AutButton = ({ buttonStyles, dropdownStyles, attributes, container,
     }
   };
 
-  const handleMenuButtonClicked = async () => {
+  const handleDisconnect = async () => {
     window.sessionStorage.removeItem('aut-data');
     dispatch(resetUIState);
     dispatchEvent(OutputEventTypes.Disconnected);
-    // setAnchorEl(null);
   };
 
-  const handleProfileButtonClicked = async () => {
-    const autId = JSON.parse(sessionStorage.getItem('aut-data'));
-    window.open(`https://my.aut.id/${autId.network}/${autId.name}`, '_blank');
+  const setAttributes = (attributes: SwAttributes) => {
+    if (attributes.daoExpander) {
+      // console.log(attributes.daoExpander);
+      dispatch(setCommunityExtesnionAddress(attributes.daoExpander as string));
+    } else {
+      // console.log('nocommunity extension');
+    }
+    if (attributes.ipfsGateway) {
+      dispatch(setCustomIpfsGateway(attributes.ipfsGateway as string));
+    }
+
+    if (attributes.network) {
+      const updatedNetwork: NetworkConfig = attributes.network as NetworkConfig;
+      const network = networks.find(
+        (n: NetworkConfig) => n.chainId === updatedNetwork.chainId || n.name === updatedNetwork.name || n.network === updatedNetwork.network
+      );
+      if (network) {
+        dispatch(
+          setNetworks([
+            ...networks.filter((n) => network.chainId !== n.chainId), // remove the found network
+            {
+              ...network,
+              ...updatedNetwork,
+            },
+          ])
+        );
+      }
+    }
+
+    if (attributes.menuItems) {
+      try {
+        const items: AutMenuItemType[] = attributes.menuItems as AutMenuItemType[];
+        setMenuItems([
+          ...items.filter((r) => r.actionType !== MenuItemActionType.Default),
+          {
+            name: 'Disconnect',
+            actionType: MenuItemActionType.Default,
+            onClick: handleDisconnect,
+          },
+        ]);
+      } catch (error) {
+        // error handle
+      }
+    }
   };
 
-  useEffect(() => {
-    setAttributes();
+  const initializeAut = async () => {
     dispatchEvent(OutputEventTypes.Init);
-  }, []);
+    // check timestamp
+    const autId = JSON.parse(sessionStorage.getItem('aut-data'));
+    if (autId) {
+      const currentTime = new Date().getTime();
+      // 8 Hours
+      const sessionLength = new Date(8 * 60 * 60 * 1000 + autId.loginTimestamp).getTime();
+      if (currentTime < sessionLength) {
+        dispatch(setUser(autId));
+        dispatchEvent(OutputEventTypes.Connected, autId);
+      } else {
+        window.sessionStorage.removeItem('aut-data');
+        dispatch(resetUIState);
+        dispatchEvent(OutputEventTypes.Disconnected);
+      }
+    }
+  };
 
   useEffect(() => {
+    setMenuItems([
+      {
+        name: 'Disconnect',
+        actionType: MenuItemActionType.Default,
+        onClick: handleDisconnect,
+      },
+    ]);
+    setAttributes(defaultAttributes);
     initializeAut();
-    window.addEventListener(InputEventTypes.Open, handleButtonClick);
-    return () => window.removeEventListener(InputEventTypes.Open, handleButtonClick);
+    setAttrCallback(async (name: string, _: string, newVal: string) => {
+      const key = toCammelCase(name);
+      const updatedAttributes = {
+        [key]: parseAttributeValue(name, newVal),
+      } as SwAttributes;
+      setAttributes(updatedAttributes);
+    });
+    window.addEventListener(InputEventTypes.Open, handleOpen);
+    return () => window.removeEventListener(InputEventTypes.Open, handleOpen);
   }, []);
+
+  const userProfile: AutButtonUserProfile = useMemo(() => {
+    // if (!userData?.name) return;
+    return {
+      role: 'Admin', // @TODO - set the role also.
+      name: 'Taulant Disha',
+      avatar: 'test',
+      // avatar: ipfsCIDToHttpUrl(userData.properties.avatar, customIpfsGateway),
+    };
+  }, [userData, customIpfsGateway]);
 
   return (
     <>
       <Portal container={container}>
-        {!buttonHidden && (
-          <WebButton
-            onClick={handleButtonClick}
-            disconnectClick={handleMenuButtonClicked}
-            profileClick={handleProfileButtonClicked}
-            container={container}
-          />
-        )}
+        <AutButtonMenu config={config} container={container} user={userProfile} onMainBtnClick={handleOpen} menuItems={menuItems} />
       </Portal>
     </>
   );
-};
+});
 
-export default AutModal;
+export default memo(AutModal);
