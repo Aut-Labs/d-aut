@@ -158,12 +158,11 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   }, []);
 
   const userProfile: AutButtonUserProfile = useMemo(() => {
-    // if (!userData?.name) return;
+    if (!userData?.name) return;
     return {
       role: 'Admin', // @TODO - set the role also.
-      name: 'Taulant Disha',
-      avatar: 'test',
-      // avatar: ipfsCIDToHttpUrl(userData.properties.avatar, customIpfsGateway),
+      name: userData.name,
+      avatar: ipfsCIDToHttpUrl(userData.properties.avatar, customIpfsGateway),
     };
   }, [userData, customIpfsGateway]);
 
