@@ -65,6 +65,12 @@ export const parseAttributeValue = (name: string, value: any) => {
       return value === 'true';
     case 'number':
       return Number(value);
+    case 'object':
+      try {
+        return JSON.parse(value);
+      } catch (error) {
+        return null;
+      }
     default:
       return value;
   }

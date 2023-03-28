@@ -1,20 +1,18 @@
+import { IAutButtonConfig } from '../components/AutButtonMenu/AutMenuUtils';
 import { CamelCase } from './camel-case';
 
 export interface SwAuthConfig<CSSObject> {
   container?: HTMLElement;
-  buttonStyles?: CSSObject;
-  dropdownStyles?: CSSObject;
+  config: IAutButtonConfig;
   containerStyles?: CSSObject;
 }
 
 export enum AttributesDefinitions {
   'dao-expander' = 'string',
   'hide-button' = 'boolean',
-  'chainId' = 'string',
-  'explorerUrls' = 'string',
-  'networkName' = 'string',
-  'rpcUrls' = 'string',
-  'ipfsGateway' = 'string',
+  'ipfs-gateway' = 'string',
+  'menu-items' = 'object',
+  'network' = 'object',
 }
 
 type EnumKeys = keyof typeof AttributesDefinitions;
@@ -31,10 +29,9 @@ export interface ShadowRootConfig<EmotionCache> {
 }
 
 export type AttributeCallbackFn = (name: string, value: string, newVal: string) => void;
-export interface AutButtonProps<CSSObject> {
+export interface AutButtonProps {
   attributes: SwAttributes;
   container: HTMLElement;
-  buttonStyles?: CSSObject;
-  dropdownStyles?: CSSObject;
+  config: IAutButtonConfig;
   setAttrCallback: (fn: AttributeCallbackFn) => void;
 }

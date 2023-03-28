@@ -4,7 +4,7 @@ import { create } from 'jss';
 import { StylesProvider, jssPreset } from '@mui/styles';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { CssBaseline, StyledEngineProvider } from '@mui/material';
+import { StyledEngineProvider } from '@mui/material';
 import Theme from './theme/theme';
 import store from './store/store';
 import SwAuthModal, { AutButton } from './Aut';
@@ -38,7 +38,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
       static get observedAttributes() {
         // Add all tracked attributes to this array
-        return [AttributeNames.hideButton, AttributeNames.daoExpander];
+        return [AttributeNames.hideButton, AttributeNames.daoExpander, AttributeNames.menuItems, AttributeNames.network];
       }
 
       attributeChangedCallback(name: string, oldValue: string, newValue: string) {
@@ -80,8 +80,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             <>
               <CacheProvider value={bConfig.cache}>
                 <AutButton
-                  buttonStyles={authConfig && authConfig.buttonStyles}
-                  dropdownStyles={authConfig && authConfig.dropdownStyles}
+                  config={authConfig && authConfig.config}
                   container={bConfig.root}
                   attributes={attributes}
                   setAttrCallback={this.setAttributeChangeCallback}
@@ -100,8 +99,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
             <>
               <CacheProvider value={config.cache}>
                 <AutButton
-                  buttonStyles={authConfig && authConfig.buttonStyles}
-                  dropdownStyles={authConfig && authConfig.dropdownStyles}
+                  config={authConfig && authConfig.config}
                   container={config.root}
                   attributes={attributes}
                   setAttrCallback={this.setAttributeChangeCallback}
