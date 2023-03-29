@@ -37,7 +37,7 @@ const MintSuccess: React.FunctionComponent = () => {
               <br /> Look at my self-sovereign AutID,
               <br /> and follow my journey 🖖
               <br />
-              <br /> https://my.aut.id/{selectedNetwork}/{userInput.username}
+              <br /> https://my.aut.id/{userInput.username}
             </Typography>
           </Box>
           <Box

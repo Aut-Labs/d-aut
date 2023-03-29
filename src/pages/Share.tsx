@@ -38,7 +38,7 @@ const Share: React.FunctionComponent = () => {
         <br /> Look at my self-sovereign ĀutID,
         <br /> and follow my journey 🖖
         <br />
-        <br /> https://my.aut.id/{selectedNetwork}/{userInput?.username}
+        <br /> https://my.aut.id/{userInput?.username}
       </Typography>
 
       <Typography color="white" variant="subtitle2" sx={{ mt: '43px', wordBreak: 'break-all' }}>
@@ -67,7 +67,7 @@ const Share: React.FunctionComponent = () => {
           }}
         >
           <LinkedinShareButton
-            url={`https://my.aut.id/${selectedNetwork}/${userInput?.username}`}
+            url={`https://my.aut.id/${userInput?.username}`}
             className="social-button"
             summary={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
             title="My ĀutID"
@@ -82,7 +82,7 @@ const Share: React.FunctionComponent = () => {
             />
           </LinkedinShareButton>
           <TelegramShareButton
-            url={`https://my.aut.id/${selectedNetwork}/${userInput?.username}`}
+            url={`https://my.aut.id/${userInput?.username}`}
             className="social-button"
             title={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
           >
@@ -95,7 +95,7 @@ const Share: React.FunctionComponent = () => {
             />
           </TelegramShareButton>
           <TwitterShareButton
-            url={`https://my.aut.id/${selectedNetwork}/${userInput?.username}`}
+            url={`https://my.aut.id/${userInput?.username}`}
             className="social-button"
             title={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
             hashtags={['Aut', 'DAO', 'Blockchain']}
