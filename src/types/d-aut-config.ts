@@ -7,12 +7,19 @@ export interface SwAuthConfig<CSSObject> {
   containerStyles?: CSSObject;
 }
 
+export interface FlowConfig {
+  mode?: 'dashboard' | 'tryAut';
+  customCongratsMessage?: string;
+}
+
 export enum AttributesDefinitions {
   'dao-expander' = 'string',
   'hide-button' = 'boolean',
   'ipfs-gateway' = 'string',
   'menu-items' = 'object',
   'network' = 'object',
+  'flow-config' = 'object',
+  'allowed-role-id' = 'string',
 }
 
 type EnumKeys = keyof typeof AttributesDefinitions;

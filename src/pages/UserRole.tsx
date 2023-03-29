@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { autState, community } from '../store/aut.reducer';
+import { AllowedRoleId, autState, community } from '../store/aut.reducer';
 import { useAppDispatch } from '../store/store.model';
 import { fetchCommunity } from '../services/web3/api';
 import { setUserData } from '../store/user-data.reducer';
@@ -13,7 +13,7 @@ import { AutHeader } from '../components/AutHeader';
 const UserRole: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const autData = useSelector(autState);
+  const allowedRole = useSelector(AllowedRoleId);
   const communityData = useSelector(community);
 
   const handleRoleSelect = (role) => {
@@ -54,6 +54,8 @@ const UserRole: React.FunctionComponent = (props) => {
               <AutButton
                 size="normal"
                 variant="outlined"
+                // eslint-disable-next-line eqeqeq
+                disabled={allowedRole && !(role.id == allowedRole)}
                 sx={{
                   mt: '30px',
                 }}

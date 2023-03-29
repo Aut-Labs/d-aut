@@ -70,30 +70,31 @@ export const mintMembership = createAsyncThunk('membership/mint', async (_args, 
     expanderAddress: aut.daoExpanderAddress,
     timestamp: `${timeStamp}`,
   } as SWIDParams;
-  const { toFile } = await AutIDBadgeGenerator(config);
-  const badgeFile = await toFile();
-  const avatarFile = base64toFile(picture, 'avatar');
-  const avatarCid = await storeImageAsBlob(avatarFile as File);
+  const { toFile, download } = await AutIDBadgeGenerator(config);
+  download();
+  // const badgeFile = await toFile();
+  // const avatarFile = base64toFile(picture, 'avatar');
+  // const avatarCid = await storeImageAsBlob(avatarFile as File);
 
-  const metadataJson = {
-    name: username,
-    description: `AutID are a new standard for self-sovereign Identities that do not depend from the provider,
-       therefore, they are universal. They are individual NFT IDs.`,
-    image: badgeFile,
-    properties: {
-      avatar: avatarCid,
-      timestamp: timeStamp,
-    },
-  };
-  const cid = await storeMetadata(metadataJson);
+  // const metadataJson = {
+  //   name: username,
+  //   description: `AutID are a new standard for self-sovereign Identities that do not depend from the provider,
+  //      therefore, they are universal. They are individual NFT IDs.`,
+  //   image: badgeFile,
+  //   properties: {
+  //     avatar: avatarCid,
+  //     timestamp: timeStamp,
+  //   },
+  // };
+  // const cid = await storeMetadata(metadataJson);
 
-  const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
-  const response = await contract.mint(username, cid, role, commitment, requiredAddress);
-  if (!response?.isSuccess) {
-    return rejectWithValue(response?.errorMessage);
-  }
+  // const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
+  // const response = await contract.mint(username, cid, role, commitment, requiredAddress);
+  // if (!response?.isSuccess) {
+  //   return rejectWithValue(response?.errorMessage);
+  // }
 
-  dispatchEvent(OutputEventTypes.Minted, metadataJson);
+  // dispatchEvent(OutputEventTypes.Minted, metadataJson);
 
   return true;
 });
@@ -210,7 +211,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
       const a = new BaseNFTModel({
         ...metadata,
         properties: {
-          isAdmin,
+          isAdmin: isAdmin.data,
           address: communityAddress,
           ...metadata?.properties,
           userData: {

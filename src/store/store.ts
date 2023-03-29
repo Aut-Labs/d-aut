@@ -4,6 +4,7 @@ import { Action, combineReducers } from 'redux';
 import autSliceReducer, { initialState as initAutState } from './aut.reducer';
 import userDataReducer, { initialState as initUserDataState } from './user-data.reducer';
 import walletProvider from './wallet-provider';
+import { stat } from 'fs';
 
 const appReducer = combineReducers({
   aut: autSliceReducer,
@@ -21,6 +22,8 @@ const rootReducer = (state: RootState, action: Action) => {
         ...initAutState,
         showDialog: state.aut.showDialog,
         daoExpanderAddress: state.aut.daoExpanderAddress,
+        flowConfig: state.aut.flowConfig,
+        allowedRoleId: state.aut.allowedRoleId,
       },
       userData: {
         ...initUserDataState,
