@@ -141,7 +141,7 @@ const NetworkSelect: React.FunctionComponent = () => {
           </FormContent>
           <FormAction>
             <AutButton type="submit" disabled={!formState.isValid}>
-              Connect
+              CONNECT
             </AutButton>
           </FormAction>
         </FormWrapper>

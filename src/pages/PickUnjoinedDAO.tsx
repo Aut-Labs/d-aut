@@ -101,7 +101,7 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
           </FormContent>
           <FormAction>
             <AutButton type="submit" disabled={!formState.isValid}>
-              Join DAO
+              JOIN DAO
             </AutButton>
           </FormAction>
         </FormWrapper>

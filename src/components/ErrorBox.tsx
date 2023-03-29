@@ -59,13 +59,13 @@ export const ErrorBox = () => {
               <Link sx={{ color: 'white' }} target="_blank" href={env.REACT_APP_NOVA_SHOWCASE_ADDRESS}>
                 Nova showcase
               </Link>{' '}
-              to browse daos.
+              to browse DAOs.
             </Typography>
           </>
         )}
       </Box>
       <AutButton variant="outlined" size="normal" sx={{ my: '30px' }} onClick={handleError}>
-        Return
+        RETURN
       </AutButton>
     </Box>
   );

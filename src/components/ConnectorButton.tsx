@@ -6,11 +6,11 @@ import { AutButton } from './AutButton';
 
 const btnConfig = {
   [ConnectorTypes.Metamask]: {
-    label: 'Metamask',
+    label: 'METAMASK',
     icon: <Metamask height="20px" />,
   },
   [ConnectorTypes.WalletConnect]: {
-    label: 'WalletConnect',
+    label: 'WALLETCONNECT',
     icon: <WalletConnect height="20px" />,
   },
 };

@@ -111,7 +111,7 @@ const AutShare = (props: SimpleDialogProps) => {
                 color="primary"
                 variant="outlined"
               >
-                Share now
+                SHARE NOW
               </AutButton>
             </TwitterShareButton>
           </div>

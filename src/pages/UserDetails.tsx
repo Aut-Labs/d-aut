@@ -100,7 +100,7 @@ const UserDetails: React.FunctionComponent = (props) => {
         </FormContent>
         <FormAction>
           <AutButton size="normal" variant="outlined" type="submit" disabled={!isValid}>
-            Next
+            NEXT
           </AutButton>
         </FormAction>
       </FormWrapper>
