@@ -21,7 +21,7 @@ const CommitmentMessages = (value: number) => {
     case 10:
       return 'Soulbound ⛓️';
     default:
-      return 'Minimum Commitment Level for new Members.';
+      return 'Minimum Commitment Level shown in grey.';
   }
 };
 
