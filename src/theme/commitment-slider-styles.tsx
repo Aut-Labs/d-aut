@@ -52,8 +52,10 @@ export function CommitmentMessage({ value, children = null }) {
   );
 }
 
-const errorTypes = {
-  min: 'Min 1 commitment level!',
+const errorTypes = (minCommitment) => {
+  return {
+    min: `Min ${minCommitment} commitment level!`,
+  };
 };
 
 interface AutSliderProps {
@@ -131,7 +133,7 @@ export const AutCommitmentSlider = ({ value, name, minCommitment, errors, sx, sl
           justifyContent: 'flex-end',
         }}
       >
-        <FormHelperText errorTypes={errorTypes} name={name} errors={errors}>
+        <FormHelperText errorTypes={errorTypes(minCommitment)} name={name} errors={errors}>
           <Typography color="white" variant="caption">
             No worries, you’ll be able to change this later.
           </Typography>

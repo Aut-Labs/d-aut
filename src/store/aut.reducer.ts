@@ -11,6 +11,7 @@ import {
   mintMembership,
 } from '../services/web3/api';
 import { BaseNFTModel } from '../services/web3/models';
+import { FlowConfig } from '../types/d-aut-config';
 import { OutputEventTypes } from '../types/event-types';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { dispatchEvent } from '../utils/utils';
@@ -53,6 +54,8 @@ export interface AutState {
   provider: any;
   selectedAddress: any;
   isWalletConnect: boolean;
+  flowConfig: FlowConfig;
+  allowedRoleId: string;
   autIdsOnDifferentNetworks: AutId[];
 }
 
@@ -72,6 +75,8 @@ export const initialState: AutState = {
   selectedAddress: null,
   isWalletConnect: false,
   autIdsOnDifferentNetworks: [],
+  allowedRoleId: null,
+  flowConfig: null,
 };
 
 export const autSlice = createSlice({
@@ -83,6 +88,12 @@ export const autSlice = createSlice({
     },
     setCommunityExtesnionAddress: (state, action: ActionPayload<string>) => {
       state.daoExpanderAddress = action.payload;
+    },
+    setFlowConfig: (state, action: ActionPayload<FlowConfig>) => {
+      state.flowConfig = action.payload;
+    },
+    setAllowedRoleId: (state, action: ActionPayload<string>) => {
+      state.allowedRoleId = action.payload;
     },
     showDialog: (state, action: ActionPayload<boolean>) => {
       state.showDialog = action.payload;
@@ -217,9 +228,17 @@ export const {
   setSelectedUnjoinedCommunityAddress,
   setAutIdsOnDifferentNetworks,
   setStatus,
+  setAllowedRoleId,
+  setFlowConfig,
 } = autSlice.actions;
 
 export const DAOExpanderAddress = (state: any) => state.aut.daoExpanderAddress as string;
+
+export const FlowMode = (state: any) => state.aut.flowConfig?.mode as string;
+
+export const AllowedRoleId = (state: any) => state.aut.allowedRoleId as string;
+
+export const CustomCongratsMessage = (state: any) => state.aut.flowConfig?.customCongratsMessage as string;
 
 export const community = createSelector(
   (state) => state.aut.community,

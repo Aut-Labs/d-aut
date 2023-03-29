@@ -98,17 +98,17 @@ export const METAMASK_POSSIBLE_ERRORS = {
 
 export enum InternalErrorTypes {
   CouldNotFindCommunity = 'Could not find community.',
-  FoundAutIDOnMultipleNetworks = 'Found AutID on multiple networks.',
-  FoundAnAutIDOnADifferentNetwork = 'Found an AutID on a different network.',
+  FoundAutIDOnMultipleNetworks = 'Found ĀutID on multiple networks.',
+  FoundAnAutIDOnADifferentNetwork = 'Found an ĀutID on a different network.',
   FailedToSwitchNetwork = 'Failed to switch network.',
-  AutIDNotFound = 'AutID was not found.',
+  AutIDNotFound = 'ĀutID was not found.',
   AutIDAlreadyExistsForAddress = 'ĀutID already exists for this address.',
   AutIDAlreadyInThisCommunity = 'Your ĀutID is already a member of this DAO.',
   UsernameAlreadyTaken = 'This username is already taken.',
   UserHasUnjoinedCommunities = 'User has unjoined DAOs.',
   GatewayTimedOut = 'IPFS: Gateway timed out.',
-  UserNotAMemberOfThisDaoMint = 'Failed to mint āutID. Your address is not a member of this DAO.',
-  UserNotAMemberOfThisDaoJoin = 'Failed to join. Your āutID is not a member of this DAO.',
+  UserNotAMemberOfThisDaoMint = 'Failed to mint ĀutID. Your address is not a member of this DAO.',
+  UserNotAMemberOfThisDaoJoin = 'Failed to join. Your ĀutID is not a member of this DAO.',
 }
 
 export const ParseErrorMessage = (error: any) => {

@@ -5,9 +5,18 @@ import Portal from '@mui/material/Portal';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
 import { dispatchEvent, parseAttributeValue, toCammelCase } from './utils/utils';
-import { AutButtonProps, SwAttributes } from './types/d-aut-config';
+import { AutButtonProps, FlowConfig, SwAttributes } from './types/d-aut-config';
 import { InputEventTypes, OutputEventTypes } from './types/event-types';
-import { autState, setCommunityExtesnionAddress, setUser, showDialog, user } from './store/aut.reducer';
+import {
+  autState,
+  FlowMode,
+  setAllowedRoleId,
+  setCommunityExtesnionAddress,
+  setFlowConfig,
+  setUser,
+  showDialog,
+  user,
+} from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { IPFSCusomtGateway, NetworksConfig, setCustomIpfsGateway, setNetworks, setSelectedNetwork } from './store/wallet-provider';
 import { ipfsCIDToHttpUrl } from './services/storage/storage.hub';
@@ -43,6 +52,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const history = useHistory();
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
+  const flowMode = useSelector(FlowMode);
   const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
   const userData = useSelector(user);
   const customIpfsGateway = useSelector(IPFSCusomtGateway);
@@ -72,7 +82,16 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const handleOpen = async () => {
     // if (currentUser.isLoggedIn) {
     if (!uiState.user) {
-      history.push('/');
+      if (flowMode) {
+        if (flowMode === 'dashboard') {
+          history.push('/autid');
+        }
+        if (flowMode === 'tryAut') {
+          history.push('/newuser');
+        }
+      } else {
+        history.push('/');
+      }
 
       // if (isActive) {
       //   await connector.deactivate();
@@ -102,6 +121,19 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
     }
     if (attributes.ipfsGateway) {
       dispatch(setCustomIpfsGateway(attributes.ipfsGateway as string));
+    }
+
+    if (attributes.allowedRoleId) {
+      debugger;
+      dispatch(setAllowedRoleId(attributes.allowedRoleId as string));
+    }
+
+    if (attributes.flowConfig) {
+      const flowConfig = attributes.flowConfig as FlowConfig;
+      if (flowConfig.mode !== 'dashboard' && flowConfig.mode !== 'tryAut') {
+        flowConfig.mode = null;
+      }
+      dispatch(setFlowConfig(flowConfig));
     }
 
     if (attributes.network) {

@@ -3,14 +3,16 @@ import { useHistory } from 'react-router-dom';
 import { useAppDispatch } from '../store/store.model';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
-import { setJustJoining } from '../store/aut.reducer';
+import { FlowMode, setJustJoining } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { ConnectorTypes, setSelectedNetwork } from '../store/wallet-provider';
 import ConnectorBtn from '../components/ConnectorButton';
 import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
 import { LoadingProgress } from '../components/LoadingProgress';
+import { useSelector } from 'react-redux';
 
 const NewUser: React.FunctionComponent = (props) => {
+  const flowMode = useSelector(FlowMode);
   const dispatch = useAppDispatch();
   const history = useHistory();
   const { connect, waitingUserConfirmation, isLoading } = useWeb3ReactConnectorHook();
@@ -60,6 +62,7 @@ const NewUser: React.FunctionComponent = (props) => {
           )} */}
           <AutPageBox>
             <AutHeader
+              hideBackBtn={!!flowMode}
               logoId="new-user-logo"
               title="Welcome"
               subtitle={

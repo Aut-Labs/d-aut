@@ -94,7 +94,7 @@ const Commitment: React.FunctionComponent = (props) => {
         </FormContent>
         <FormAction>
           <AutButton size="normal" variant="outlined" type="submit" disabled={!isValid}>
-            Join the Community
+            JOIN THE COMMUNITY
           </AutButton>
         </FormAction>
       </FormWrapper>

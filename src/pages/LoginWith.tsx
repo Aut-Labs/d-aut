@@ -21,19 +21,19 @@ const LoginWith: React.FunctionComponent = () => {
 
   return (
     <AutPageBox>
-      <AutHeader hideBackBtn logoId="login-with-logo" title="Login of Sign-up" />
+      <AutHeader hideBackBtn logoId="login-with-logo" title="Login or Sign-up" />
       <AutButton
         color="white"
         size="normal"
         variant="outlined"
-        sx={{ mt: autData.daoExpanderAddress ? '93px' : '133px' }}
+        sx={{ textTransform: 'none', mt: autData.daoExpanderAddress ? '93px' : '133px' }}
         onClick={handleAutIdClicked}
       >
-        Connect with āutID
+        CONNECT WITH ĀutID
       </AutButton>
       {autData.daoExpanderAddress && (
         <AutButton color="white" size="normal" variant="outlined" sx={{ mt: '53px' }} onClick={handleNewUserClicked}>
-          New User
+          NEW USER
         </AutButton>
       )}
     </AutPageBox>

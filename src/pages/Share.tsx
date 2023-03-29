@@ -42,7 +42,7 @@ const Share: React.FunctionComponent = () => {
       </Typography>
 
       <Typography color="white" variant="subtitle2" sx={{ mt: '43px', wordBreak: 'break-all' }}>
-        SHARE YOUR ĀUTID:
+        SHARE YOUR ĀutID:
       </Typography>
       <Box
         sx={{

@@ -210,7 +210,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
       const a = new BaseNFTModel({
         ...metadata,
         properties: {
-          isAdmin,
+          isAdmin: isAdmin.data,
           address: communityAddress,
           ...metadata?.properties,
           userData: {
