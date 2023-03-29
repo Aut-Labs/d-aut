@@ -79,7 +79,7 @@ const NetworkSelector = ({ onSelect, onBack }) => {
           </FormContent>
           <FormAction>
             <AutButton type="submit" disabled={!formState.isValid}>
-              Connect
+              CONNECT
             </AutButton>
           </FormAction>
         </FormWrapper>

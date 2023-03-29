@@ -1,13 +1,15 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { errorAction, errorState } from '../store/aut.reducer';
+import { errorAction, errorState, FlowMode } from '../store/aut.reducer';
 import AutLogo from './AutLogo';
 import { AutButton } from './AutButton';
 import { InternalErrorTypes } from '../utils/error-parser';
+import { env } from '../services/web3/env';
 
 export const ErrorBox = () => {
   const errorMessage = useSelector(errorState);
+  const flowMode = useSelector(FlowMode);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -16,7 +18,13 @@ export const ErrorBox = () => {
       dispatch(errorAction(null));
     } else {
       dispatch(errorAction(null));
-      history.push('/');
+      if (flowMode === 'dashboard') {
+        history.push('/autid');
+      } else if (flowMode === 'tryAut') {
+        history.push('/newuser');
+      } else {
+        history.push('/');
+      }
     }
   };
   return (
@@ -44,9 +52,20 @@ export const ErrorBox = () => {
         <Typography sx={{ color: '#B10000', mt: '25px', textAlign: 'center' }} variant="subtitle1">
           {errorMessage}
         </Typography>
+        {errorMessage === InternalErrorTypes.AutIDNotFound && (
+          <>
+            <Typography sx={{ mt: '25px', textAlign: 'center' }} variant="subtitle1">
+              Go to the{' '}
+              <Link sx={{ color: 'white' }} target="_blank" href={env.REACT_APP_NOVA_SHOWCASE_ADDRESS}>
+                Nova showcase
+              </Link>{' '}
+              to browse DAOs.
+            </Typography>
+          </>
+        )}
       </Box>
       <AutButton variant="outlined" size="normal" sx={{ my: '30px' }} onClick={handleError}>
-        Return
+        RETURN
       </AutButton>
     </Box>
   );

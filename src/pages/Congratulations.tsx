@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { TwitterShareButton } from 'react-share';
 import { AutButton, SmallerAutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
-import { autState } from '../store/aut.reducer';
+import { autState, CustomCongratsMessage } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { userData } from '../store/user-data.reducer';
 import { SelectedNetwork } from '../store/wallet-provider';
@@ -13,6 +13,7 @@ import { SelectedNetwork } from '../store/wallet-provider';
 const Congratulations: React.FunctionComponent = () => {
   const history = useHistory();
   const autData = useSelector(autState);
+  const customMessage = useSelector(CustomCongratsMessage);
   const selectedNetwork = useSelector(SelectedNetwork);
   const userInput = useSelector(userData);
 
@@ -27,16 +28,25 @@ const Congratulations: React.FunctionComponent = () => {
         logoId="new-user-logo"
         title="CONGRATS 🎉"
         subtitle={
-          <>
-            <br />
-            <br />
-            You are now {userInput.roleName} in {autData.community?.name}.
-            <br /> Let it be known to the people of the Internet
-            <br /> or check out your beautiful NFT ID in your public profile.
-            <br />
-            <br />
-            Reminder: Your identity isn't rare. It's unique.
-          </>
+          customMessage ? (
+            <>
+              <br />
+              <br />
+              <br />
+              {customMessage}
+            </>
+          ) : (
+            <>
+              <br />
+              <br />
+              You are now {userInput.roleName} in {autData.community?.name}.
+              <br /> Let it be known to the people of the Internet
+              <br /> or check out your beautiful NFT ID in your public profile.
+              <br />
+              <br />
+              Reminder: Your identity isn't rare. It's unique.
+            </>
+          )
         }
       />
       <Box
@@ -57,7 +67,7 @@ const Congratulations: React.FunctionComponent = () => {
           size="half"
           variant="outlined"
           onClick={() => {
-            window.open(`https://my.aut.id/${selectedNetwork}/${userInput?.username}`, '_blank');
+            window.open(`https://my.aut.id/${userInput?.username}`, '_blank');
           }}
         >
           SEE PROFILE

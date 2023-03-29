@@ -1,5 +1,9 @@
 /* eslint-disable max-len */
 
+import { FractulAltBoldWoffBase64 } from '../../assets/fonts/Fractul/FractulAltBold/base64';
+import { FractulAltLightWoffBase64 } from '../../assets/fonts/Fractul/FractulAltLight/base64';
+import { FractulRegularWoffBase64 } from '../../assets/fonts/Fractul/FractulRegular/base64';
+
 export const AutAvatarGradient = (): string => {
   const SVGDomElement = new DOMParser().parseFromString(
     `
@@ -26,7 +30,25 @@ export const AutAvatarGradient = (): string => {
 export const AutMumbaiLabel = (): string => {
   const SVGDomElement = new DOMParser().parseFromString(
     `
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="224" height="90.279" viewBox="0 0 224 90.279">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="224" height="90.279" viewBox="0 0 224 90.279">    
+  <style>
+    <![CDATA[
+      @font-face {
+        font-family: 'FractulAltBold';
+        src: url(${FractulAltBoldWoffBase64}) format('woff');
+      }
+      
+      @font-face {
+        font-family: 'FractulAltLight';
+        src: url(${FractulAltLightWoffBase64}) format('woff');
+      }
+
+      @font-face {
+        font-family: 'FractulRegular';
+        src: url(${FractulRegularWoffBase64}) format('woff');
+      }
+    ]]>
+  </style>
     <defs>
       <clipPath id="clip-path">
         <rect id="Rectangle_3546" data-name="Rectangle 3546" width="224" height="90.279" fill="none"/>
@@ -121,7 +143,25 @@ export const AutMumbaiLabel = (): string => {
 export const AutBackgroundSvg = ({ timestamp, hash, name, role, dao }): string => {
   const SVGDomElement = new DOMParser().parseFromString(
     `
-    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="506.27" height="762.5" viewBox="0 0 506.27 762.5">
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="506.27" height="762.5" viewBox="0 0 506.27 762.5">    
+  <style>
+    <![CDATA[
+      @font-face {
+        font-family: 'FractulAltBold';
+        src: url(${FractulAltBoldWoffBase64}) format('woff');
+      }
+      
+      @font-face {
+        font-family: 'FractulAltLight';
+        src: url(${FractulAltLightWoffBase64}) format('woff');
+      }
+
+      @font-face {
+        font-family: 'FractulRegular';
+        src: url(${FractulRegularWoffBase64}) format('woff');
+      }
+    ]]>
+  </style>
     <defs>
       <clipPath id="clip-path">
         <path id="Path_8" data-name="Path 8" d="M0,0H506.27V762.5H0Z" fill="none"/>

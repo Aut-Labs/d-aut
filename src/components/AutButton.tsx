@@ -4,7 +4,6 @@ import { pxToRem } from '../utils/utils';
 
 export const AutButton = styled<ButtonProps<any, any>>(Button)(() => ({
   '&.MuiButton-root': {
-    textTransform: 'uppercase',
     color: 'white',
     borderColor: '#FFF',
     '&.Mui-disabled': {

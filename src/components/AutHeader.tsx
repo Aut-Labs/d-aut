@@ -18,7 +18,7 @@ export const AutHeader = ({
         {title}
       </Typography>
       {subtitle && (
-        <Typography color="white" variant="subtitle2" sx={{ textAlign: 'center' }}>
+        <Typography color="white" variant="subtitle2" sx={{ textAlign: 'center', padding: '0px 30px' }}>
           {subtitle}
         </Typography>
       )}

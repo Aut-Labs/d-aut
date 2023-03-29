@@ -7,9 +7,12 @@ import ConnectorBtn from '../components/ConnectorButton';
 import { useEthers } from '@usedapp/core';
 import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
 import { LoadingProgress } from '../components/LoadingProgress';
+import { FlowMode } from '../store/aut.reducer';
+import { useSelector } from 'react-redux';
 
 const LoginWithAut: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
+  const flowMode = useSelector(FlowMode);
   const { connect, waitingUserConfirmation, isLoading } = useWeb3ReactConnectorHook();
 
   const tryConnect = async (connectorType) => {
@@ -45,7 +48,7 @@ const LoginWithAut: React.FunctionComponent = () => {
             
           )} */}
           <AutPageBox>
-            <AutHeader logoId="new-user-logo" title="Welcome back" />
+            <AutHeader hideBackBtn={!!flowMode} logoId="new-user-logo" title="Welcome back" />
             <ConnectorBtn marginTop={93} setConnector={tryConnect} connectorType={ConnectorTypes.Metamask} />
             <ConnectorBtn marginTop={53} setConnector={tryConnect} connectorType={ConnectorTypes.WalletConnect} />
           </AutPageBox>
