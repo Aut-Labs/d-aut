@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-mutable-exports
 export const env = {
   REACT_APP_API_URL: 'http://localhost:4005/api',
-  REACT_APP_NOVA_SHOWCASE_ADDRESS: 'https://showcase.aut.idi',
+  REACT_APP_NOVA_SHOWCASE_ADDRESS: 'https://showcase.aut.id',
   // REACT_APP_API_URL: 'https://api.skillwallet.id/api',
   REACT_APP_IPFS_URL: 'https://cloudflare-ipfs.com/ipfs',
   REACT_APP_NFT_STORAGE_KEY:
