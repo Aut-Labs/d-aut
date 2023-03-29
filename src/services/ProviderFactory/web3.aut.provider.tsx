@@ -25,6 +25,9 @@ const generateConfig = (networks: NetworkConfig[]): Config => {
 
   return {
     readOnlyUrls,
+    notifications: {
+      expirationPeriod: 0,
+    },
     autoConnect: false,
     // @ts-ignore
     networks: networks
@@ -37,6 +40,12 @@ const generateConfig = (networks: NetworkConfig[]): Config => {
         rpcUrl: n.rpcUrls[0],
         nativeCurrency: n.nativeCurrency,
       })),
+    pollingIntervals: networks
+      .filter((n) => !n.disabled)
+      .reduce((prev, curr) => {
+        prev[curr.chainId] = 40000;
+        return prev;
+      }, {}),
     gasLimitBufferPercentage: 50000,
     connectors: {
       metamask: new MetamaskConnector(),

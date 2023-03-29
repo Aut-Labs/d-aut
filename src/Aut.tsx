@@ -14,6 +14,7 @@ import { ipfsCIDToHttpUrl } from './services/storage/storage.hub';
 import AutButtonMenu from './components/AutButtonMenu/AutButtonMenu';
 import { AutMenuItemType, MenuItemActionType, AutButtonUserProfile } from './components/AutButtonMenu/AutMenuUtils';
 import { NetworkConfig } from './services/ProviderFactory/web3.connectors';
+import { useEthers } from '@usedapp/core';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
@@ -46,6 +47,27 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const userData = useSelector(user);
   const customIpfsGateway = useSelector(IPFSCusomtGateway);
   const networks = useSelector(NetworksConfig);
+  const { account, isLoading, activateBrowserWallet } = useEthers();
+
+  /*
+   * isLoading is used to ensure that the wallet provider (metamask or walletConnect) is ready
+   * If userData.address is different from provided address (account)
+   * then we should disconnect
+   */
+  const hasAccountChanged = useMemo(() => {
+    return !isLoading && !!userData?.address && !!account && userData?.address !== account;
+  }, [userData?.address, account, isLoading]);
+
+  /*
+   * isLoading is used to ensure that the wallet provider (metamask or walletConnect) is ready
+   * If wallet provider is loaded and there is userData but not account
+   * it could mean two things:
+   * 1. The user last was loaded by a different provider
+   * 2. Metamask or walletConnect is not connected!
+   */
+  const userWithoutAccount = useMemo(() => {
+    return !isLoading && !account && !!userData?.address;
+  }, [account, userData?.address, isLoading]);
 
   const handleOpen = async () => {
     // if (currentUser.isLoggedIn) {
@@ -128,6 +150,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       if (currentTime < sessionLength) {
         dispatch(setUser(autId));
         dispatchEvent(OutputEventTypes.Connected, autId);
+        activateBrowserWallet({ type: autId?.provider }); // activave provider to get address
       } else {
         window.sessionStorage.removeItem('aut-data');
         dispatch(resetUIState);
@@ -135,6 +158,12 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       }
     }
   };
+
+  useEffect(() => {
+    if (hasAccountChanged || userWithoutAccount) {
+      handleDisconnect();
+    }
+  }, [hasAccountChanged, userWithoutAccount]);
 
   useEffect(() => {
     setMenuItems([

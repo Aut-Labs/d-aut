@@ -47,7 +47,7 @@ export interface AutState {
   status: ResultState;
   errorStateAction: string;
   transactionState: string;
-  user: BaseNFTModel<any>;
+  user: BaseNFTModel<any> & { address: string };
   userBadge: string;
   justJoin: boolean;
   provider: any;
