@@ -38,7 +38,7 @@ const Commitment: React.FunctionComponent = (props) => {
         history.push('congrats');
       }
     } else {
-      const result = await dispatch(mintMembership());
+      const result = await dispatch(mintMembership(account));
       if (!(result as any).error) {
         history.push('congrats');
       }

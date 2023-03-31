@@ -15,7 +15,7 @@ const routes: IRoute[] = [
   {
     path: '/',
     name: 'Login With',
-    component: LoginWith,
+    component: Congratulations,
     exact: true,
   },
   {

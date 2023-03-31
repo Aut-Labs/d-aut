@@ -49,54 +49,63 @@ export async function dataUrlToFile(dataUrl: string, fileName: string): Promise<
   return new File([blob], fileName, { type: 'image/png' });
 }
 
-export const mintMembership = createAsyncThunk('membership/mint', async (_args, { getState, dispatch, rejectWithValue }) => {
-  const { userData, walletProvider, aut } = getState() as RootState;
-  // console.log(userData);
-  const { username, picture, role, commitment } = userData;
-  const { selectedNetwork, customIpfsGateway } = walletProvider;
-  const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
+export const mintMembership = createAsyncThunk(
+  'membership/mint',
+  async (selectedAddress: string, { getState, dispatch, rejectWithValue }) => {
+    const { userData, walletProvider, aut } = getState() as RootState;
+    // console.log(userData);
+    const { username, picture, role, commitment } = userData;
+    const { selectedNetwork, customIpfsGateway } = walletProvider;
+    const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
 
-  const sdk = AutSDK.getInstance();
-  const { contract } = sdk.autID;
+    const sdk = AutSDK.getInstance();
+    const { contract } = sdk.autID;
 
-  const nftIdResp = await contract.getNextTokenID();
-  const config = {
-    name: username,
-    role: role.toString(),
-    dao: aut.community.name,
-    avatar: userData.picture,
-    hash: `#${nftIdResp.data.toString()}`,
-    network: selectedNetwork.toLowerCase(),
-    expanderAddress: aut.daoExpanderAddress,
-    timestamp: `${timeStamp}`,
-  } as SWIDParams;
-  const { toFile } = await AutIDBadgeGenerator(config);
-  const badgeFile = await toFile();
-  const avatarFile = base64toFile(picture, 'avatar');
-  const avatarCid = await storeImageAsBlob(avatarFile as File);
+    const nftIdResp = await contract.getNextTokenID();
+    const config = {
+      name: username,
+      role: role.toString(),
+      dao: aut.community.name,
+      avatar: userData.picture,
+      hash: `#${nftIdResp.data.toString()}`,
+      network: selectedNetwork.toLowerCase(),
+      expanderAddress: aut.daoExpanderAddress,
+      timestamp: `${timeStamp}`,
+    } as SWIDParams;
+    const { toFile } = await AutIDBadgeGenerator(config);
+    const badgeFile = await toFile();
+    const avatarFile = base64toFile(picture, 'avatar');
+    const avatarCid = await storeImageAsBlob(avatarFile as File);
 
-  const metadataJson = {
-    name: username,
-    description: `AutID are a new standard for self-sovereign Identities that do not depend from the provider,
+    const metadataJson = {
+      name: username,
+      description: `AutID are a new standard for self-sovereign Identities that do not depend from the provider,
        therefore, they are universal. They are individual NFT IDs.`,
-    image: badgeFile,
-    properties: {
-      avatar: avatarCid,
-      timestamp: timeStamp,
-    },
-  };
-  const cid = await storeMetadata(metadataJson);
+      image: badgeFile,
+      properties: {
+        avatar: avatarCid,
+        timestamp: timeStamp,
+      },
+    };
+    const cid = await storeMetadata(metadataJson);
 
-  const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
-  const response = await contract.mint(username, cid, role, commitment, requiredAddress);
-  if (!response?.isSuccess) {
-    return rejectWithValue(response?.errorMessage);
+    const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
+    const response = await contract.mint(username, cid, role, commitment, requiredAddress);
+    if (!response?.isSuccess) {
+      return rejectWithValue(response?.errorMessage);
+    }
+
+    const expander = sdk.initService<DAOExpander>(DAOExpander, aut.daoExpanderAddress);
+
+    const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
+
+    await dispatch(setUserData({ isOwner: isAdmin.data }));
+
+    dispatchEvent(OutputEventTypes.Minted, metadataJson);
+
+    return true;
   }
-
-  dispatchEvent(OutputEventTypes.Minted, metadataJson);
-
-  return true;
-});
+);
 
 export const joinCommunity = createAsyncThunk(
   'membership/join',
@@ -116,7 +125,12 @@ export const joinCommunity = createAsyncThunk(
         return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
       }
       const autId = await response.json();
-      await dispatch(setUserData({ username: autId.name }));
+
+      const expander = sdk.initService<DAOExpander>(DAOExpander, aut.daoExpanderAddress);
+
+      const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
+
+      await dispatch(setUserData({ username: autId.name, isOwner: isAdmin.data }));
 
       return true;
     }
