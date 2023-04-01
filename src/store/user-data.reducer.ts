@@ -11,6 +11,7 @@ export interface UserData {
   roleName?: string;
   commitment: number;
   isLoggedIn: boolean;
+  isOwner?: boolean;
 }
 
 export const initialState: UserData = {
@@ -21,6 +22,7 @@ export const initialState: UserData = {
   roleName: undefined,
   commitment: 0,
   isLoggedIn: false,
+  isOwner: false,
 };
 
 export interface UserState {
@@ -57,6 +59,7 @@ export const { setUserData } = userDataSlice.actions;
 //   },
 //   (userState) => userState
 // );
+export const IsOwner = (state) => state.userData.isOwner as boolean;
 
 export const UserAvatar = (state) => state.userData.picture as string;
 
