@@ -225,8 +225,10 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
 
   const userProfile: AutButtonUserProfile = useMemo(() => {
     if (!userData?.name) return;
+    const [community] = userData?.properties?.communities || [];
+    const isAdmin = community?.properties?.isAdmin;
     return {
-      role: 'Admin', // @TODO - set the role also.
+      role: isAdmin ? 'Admin' : 'Member',
       name: userData.name,
       avatar: ipfsCIDToHttpUrl(userData.properties.avatar, customIpfsGateway),
     };
