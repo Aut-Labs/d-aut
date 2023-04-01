@@ -124,7 +124,6 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
     }
 
     if (attributes.allowedRoleId) {
-      debugger;
       dispatch(setAllowedRoleId(attributes.allowedRoleId as string));
     }
 
@@ -217,6 +216,12 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
     window.addEventListener(InputEventTypes.Open, handleOpen);
     return () => window.removeEventListener(InputEventTypes.Open, handleOpen);
   }, []);
+
+  useEffect(() => {
+    window.removeEventListener(InputEventTypes.Open, handleOpen);
+    window.addEventListener(InputEventTypes.Open, handleOpen);
+    return () => window.removeEventListener(InputEventTypes.Open, handleOpen);
+  }, [userData, flowMode, uiState]);
 
   const userProfile: AutButtonUserProfile = useMemo(() => {
     if (!userData?.name) return;
