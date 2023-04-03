@@ -21,7 +21,7 @@ const CommitmentMessages = (value: number) => {
       return 'Just lurking 👀';
     case 3:
     case 4:
-      return 'gm gm 😪';
+      return 'gm gm ☕';
     case 5:
     case 6:
       return 'builder ⚙️';
