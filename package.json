@@ -1,6 +1,6 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.19",
+  "version": "1.0.22",
   "main": "build/cjs/index.js",
   "module": "build/ems/index.js",
   "types": "build/index.d.ts",
@@ -82,7 +82,7 @@
     }
   },
   "devDependencies": {
-    "@aut-labs-private/sdk": "^0.0.23",
+    "@aut-labs-private/sdk": "^0.0.41",
     "@aut-labs-private/sdk-biconomy": "^0.0.2",
     "@commitlint/cli": "^17.0.3",
     "@commitlint/config-conventional": "^17.0.3",
