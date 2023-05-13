@@ -68,7 +68,7 @@ const MintSuccess: React.FunctionComponent = () => {
           title={`I'm now a ${userInput.roleName} in ${autData.community.name} 🎉
 Look at my self-sovereign ĀutID,
 and follow my journey 🖖`}
-          hashtags={['Aut', 'DAO', 'Blockchain']}
+          hashtags={['Aut', 'DAO']}
           className="social-button"
         >
           <AutButton

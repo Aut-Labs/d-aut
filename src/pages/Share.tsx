@@ -97,7 +97,7 @@ const Share: React.FunctionComponent = () => {
             url={`https://my.aut.id/${userInput?.username}`}
             className="social-button"
             title={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
-            hashtags={['Aut', 'DAO', 'Blockchain']}
+            hashtags={['Aut', 'DAO']}
           >
             <TwitterIcon
               color="primary"
