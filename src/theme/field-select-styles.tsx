@@ -9,8 +9,8 @@ import {
   Theme,
   darken,
   styled,
-  useTheme,
 } from '@mui/material';
+import { useTheme } from '@emotion/react';
 import clsx from 'clsx';
 
 const isNullEmptyOrUndefined = (v: any) => v === null || v === '' || v === undefined;
@@ -37,7 +37,7 @@ const fontSize = {
 };
 
 export const AutSelectField = ({ helperText, sx, className, ...props }: AutSelectProps) => {
-  const theme = useTheme();
+  const theme: Theme = useTheme() as Theme;
   return (
     <SelectWrapper sx={sx}>
       <Select

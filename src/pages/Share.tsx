@@ -17,11 +17,7 @@ import { pxToRem } from '../utils/utils';
 import { userData } from '../store/user-data.reducer';
 
 const shareContent = (role, username, community, network) => {
-  return `I'm now a ${role} @ ${community} 🎉\n
-   Look at my self-sovereign AutID,\n
-  and follow my journey 🖖\n 
-  \n
-    https://my.aut.id/${network}/${username}`;
+  return `I'm now a ${role} @ ${community} 🎉\nLook at my self-sovereign ĀutID,\nand follow my journey 🖖`;
 };
 
 const Share: React.FunctionComponent = () => {
@@ -35,10 +31,13 @@ const Share: React.FunctionComponent = () => {
       <Typography textAlign="center" color="white" variant="subtitle2" sx={{ maxWidth: '300px', wordBreak: 'break-all' }}>
         I'm now a {userInput?.roleName} @ {autData.community?.name} 🎉
         <br />
-        <br /> Look at my self-sovereign ĀutID,
-        <br /> and follow my journey 🖖
         <br />
-        <br /> https://my.aut.id/{userInput?.username}
+        Look at my self-sovereign ĀutID,
+        <br />
+        and follow my journey 🖖
+        <br />
+        <br />
+        https://my.aut.id/{userInput?.username}
       </Typography>
 
       <Typography color="white" variant="subtitle2" sx={{ mt: '43px', wordBreak: 'break-all' }}>

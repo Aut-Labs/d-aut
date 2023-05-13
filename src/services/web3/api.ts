@@ -79,7 +79,7 @@ export const mintMembership = createAsyncThunk(
 
     const metadataJson = {
       name: username,
-      description: `AutID are a new standard for self-sovereign Identities that do not depend from the provider,
+      description: `ĀutID are a new standard for self-sovereign Identities that do not depend from the provider,
        therefore, they are universal. They are individual NFT IDs.`,
       image: badgeFile,
       properties: {

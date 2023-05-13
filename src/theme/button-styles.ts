@@ -2,7 +2,12 @@ import { Breakpoint, ComponentsOverrides, ComponentsProps, ComponentsVariants, T
 
 export const buttonStyles = {
   normal: {
-    width: '350px',
+    width: {
+      xs: '300px',
+      sm: '350px',
+      md: '350px',
+      xxl: '350px',
+    },
     height: '75px',
     fontFamily: 'FractulAltLight',
     letterSpacing: '0.01em',
@@ -38,7 +43,12 @@ export const buttonStyles = {
     },
   },
   half: {
-    width: '210px',
+    width: {
+      xs: '160px',
+      sm: '210px',
+      md: '210px',
+      xxl: '210px',
+    },
     height: '75px',
     fontFamily: 'FractulAltLight',
     letterSpacing: '0.01em',
@@ -74,6 +84,12 @@ export const buttonStyles = {
     },
   },
   chunky: {
+    width: {
+      xs: '300px',
+      sm: '350px',
+      md: '350px',
+      xxl: '350px',
+    },
     fontFamily: 'FractulAltLight',
     letterSpacing: '0.01em',
     fontSize: {
@@ -108,6 +124,12 @@ export const buttonStyles = {
     },
   },
   square: {
+    width: {
+      xs: '300px',
+      sm: '350px',
+      md: '350px',
+      xxl: '350px',
+    },
     fontFamily: 'FractulAltLight',
     letterSpacing: '0.01em',
     borderRadius: 0,
@@ -143,6 +165,12 @@ export const buttonStyles = {
     },
   },
   web: {
+    width: {
+      xs: '300px',
+      sm: '300px',
+      md: '350px',
+      xxl: '350px',
+    },
     fontFamily: 'FractulAltLight',
     letterSpacing: '0.01em',
     textTransform: 'uppercase',
@@ -235,7 +263,7 @@ export default (theme: Theme) =>
         },
       },
       ...Object.keys(buttonStyles).reduce((prev, curr) => {
-        const { fontSize, paddingBottom, paddingLeft, paddingRight, paddingTop, ...restStyles } = buttonStyles[curr];
+        const { width, fontSize, paddingBottom, paddingLeft, paddingRight, paddingTop, ...restStyles } = buttonStyles[curr];
         const currStyle = restStyles;
         Object.keys(fontSize).forEach((key: Breakpoint) => {
           currStyle[theme.breakpoints.up(key)] = {
@@ -265,6 +293,13 @@ export default (theme: Theme) =>
           currStyle[theme.breakpoints.up(key)] = {
             ...currStyle[theme.breakpoints.up(key)],
             paddingTop: paddingTop[key],
+          };
+        });
+
+        Object.keys(width).forEach((key: Breakpoint) => {
+          currStyle[theme.breakpoints.up(key)] = {
+            ...currStyle[theme.breakpoints.up(key)],
+            width: width[key],
           };
         });
 

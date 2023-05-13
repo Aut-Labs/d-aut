@@ -1,5 +1,4 @@
 import { FormHelperText } from '../components/Fields';
-import { useTheme } from '@emotion/react';
 import {
   Typography,
   Slider,
@@ -21,10 +20,10 @@ const CommitmentMessages = (value: number) => {
       return 'Just lurking 👀';
     case 3:
     case 4:
-      return 'gm gm 😪';
+      return 'gm gm ☕';
     case 5:
     case 6:
-      return 'builder ⚙️';
+      return 'buidler ⚙️';
     case 7:
     case 8:
       return 'Trusted seed 🌱';
@@ -168,8 +167,14 @@ export default (theme: Theme) =>
     ...theme.components.MuiSelect,
     styleOverrides: {
       root: {
-        '&.MuiSlider-colorPrimary': generateColors(theme.palette.white),
         width: '400px',
+        [theme.breakpoints.down('sm')]: {
+          width: '300px', // Change width to 100% for screens smaller than the 'sm' breakpoint
+        },
+        '@media (pointer: coarse)': {
+          padding: '0px',
+        },
+        '&.MuiSlider-colorPrimary': generateColors(theme.palette.white),
         height: '42px',
         borderRadius: '0',
         borderWidth: '1px',
