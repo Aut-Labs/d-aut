@@ -40,7 +40,7 @@ const Congratulations: React.FunctionComponent = () => {
             <>
               {isOwner ? (
                 <>
-                  You have now claimed your ĀutID as owner of {autData.community?.name}!
+                  You have now claimed your ĀutID as operator of {autData.community?.name}!
                   <br /> You have also claimed your role as {userInput.roleName} and have been verified as an admin for this community.
                   <br />
                   <br /> Let it be known to the people of the Internet or check out your beautiful Self-Sovereign, Sybil-resistant NFT DID
