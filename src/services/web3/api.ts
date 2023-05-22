@@ -54,7 +54,7 @@ export const mintMembership = createAsyncThunk(
   async (selectedAddress: string, { getState, dispatch, rejectWithValue }) => {
     const { userData, walletProvider, aut } = getState() as RootState;
     // console.log(userData);
-    const { username, picture, role, commitment } = userData;
+    const { username, picture, role, roleName, commitment } = userData;
     const { selectedNetwork, customIpfsGateway } = walletProvider;
     const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
 
@@ -64,7 +64,7 @@ export const mintMembership = createAsyncThunk(
     const nftIdResp = await contract.getNextTokenID();
     const config = {
       name: username,
-      role: role.toString(),
+      role: roleName.toString(),
       dao: aut.community.name,
       avatar: userData.picture,
       hash: `#${nftIdResp.data.toString()}`,
