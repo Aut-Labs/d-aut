@@ -301,7 +301,7 @@ export const AutBackgroundSvg = ({ timestamp, hash, name, role, dao }): string =
     </g> 
       <text id="Āut_ID" data-name="Āut ID" transform="translate(52.635 77.25)" fill="#ebebf2" font-size="37" font-family="FractulAltBold" font-weight="700"><tspan x="0" y="0">Āut</tspan><tspan y="0" xml:space="preserve" font-family="FractulAltLight" font-weight="300"> ID</tspan></text> 
     <text id="${name}" data-name="${name}" transform="translate(85.635 496.25)" fill="#262626" font-size="40" font-family="FractulAltBold" font-weight="700" letter-spacing="0.001em"><tspan x="0" y="0">${name}</tspan></text>
-    <text id="${timestamp}" data-name="${timestamp}" transform="translate(140.635 538.25)" fill="#262626" font-size="12" font-family="FractulRegular" letter-spacing="0.02em"><tspan x="0" y="0">18:02:36 | 28/01/22</tspan></text>
+    <text id="${timestamp}" data-name="${timestamp}" transform="translate(140.635 538.25)" fill="#262626" font-size="12" font-family="FractulRegular" letter-spacing="0.02em"><tspan x="0" y="0">${timestamp}</tspan></text>
     <text id="Rabit_Whole" data-name="${dao}" transform="translate(140.635 565.25)" fill="#262626" font-size="12" font-family="FractulRegular" letter-spacing="0.02em"><tspan x="0" y="0">${dao}</tspan></text>
     <text id="${role}" transform="translate(140.635 585.25)" fill="#262626" font-size="12" font-family="FractulRegular" letter-spacing="0.02em"><tspan x="0" y="0">${role}</tspan></text>
     <text id="_039531" data-name="${hash}" transform="translate(85.635 624.25)" fill="#fff" font-size="14" font-family="FractulRegular" letter-spacing="0.02em" style="mix-blend-mode: difference;isolation: isolate"><tspan x="0" y="0">${hash}</tspan></text>
