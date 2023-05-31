@@ -14,6 +14,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import AutSDK, { DAOExpander, fetchMetadata } from '@aut-labs-private/sdk';
 import { RootState } from '../../store/store.model';
 import { OutputEventTypes } from '../../types/event-types';
+import { env } from './env';
 
 export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue, getState }) => {
   const { customIpfsGateway } = (getState() as RootState).walletProvider;
@@ -49,6 +50,19 @@ export async function dataUrlToFile(dataUrl: string, fileName: string): Promise<
   return new File([blob], fileName, { type: 'image/png' });
 }
 
+const dataURLtoFile = (dataurl, filename) => {
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n) {
+    u8arr[n - 1] = bstr.charCodeAt(n - 1);
+    n -= 1; // to make eslint happy
+  }
+  return new File([u8arr], filename, { type: mime });
+};
+
 export const mintMembership = createAsyncThunk(
   'membership/mint',
   async (selectedAddress: string, { getState, dispatch, rejectWithValue }) => {
@@ -66,14 +80,26 @@ export const mintMembership = createAsyncThunk(
       name: username,
       role: roleName.toString(),
       dao: aut.community.name,
-      avatar: userData.picture,
       hash: `#${nftIdResp.data.toString()}`,
       network: selectedNetwork.toLowerCase(),
       expanderAddress: aut.daoExpanderAddress,
       timestamp: `${timeStamp}`,
     } as SWIDParams;
-    const { toFile } = await AutIDBadgeGenerator(config);
-    const badgeFile = await toFile();
+
+    const formData = new FormData();
+    const file = dataURLtoFile(userData.picture, 'avatar');
+    // const blob = new Blob([fileBuffer], { type: 'image/png' });
+    formData.append('avatar', file, 'avatar');
+    formData.append('config', JSON.stringify(config));
+    const result = await axios({
+      method: 'post',
+      url: `${env.REACT_APP_API_URL1}/autid/user/generateBadge`,
+      data: formData,
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    // const { toFile } = await AutIDBadgeGenerator(config);
+    const badgeFile = await dataUrlToFile(result.data.badge, 'AutID.png');
     const avatarFile = base64toFile(picture, 'avatar');
     const avatarCid = await storeImageAsBlob(avatarFile as File);
 
@@ -88,7 +114,6 @@ export const mintMembership = createAsyncThunk(
       },
     };
     const cid = await storeMetadata(metadataJson);
-
     const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
     const response = await contract.mint(username, cid, role, commitment, requiredAddress);
     if (!response?.isSuccess) {
