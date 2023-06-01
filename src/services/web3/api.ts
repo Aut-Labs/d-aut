@@ -70,7 +70,7 @@ export const mintMembership = createAsyncThunk(
     // console.log(userData);
     const { username, picture, role, roleName, commitment } = userData;
     const { selectedNetwork, customIpfsGateway } = walletProvider;
-    const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yyyy');
+    const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yy');
 
     const sdk = AutSDK.getInstance();
     const { contract } = sdk.autID;
