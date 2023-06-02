@@ -93,7 +93,7 @@ export const mintMembership = createAsyncThunk(
     formData.append('config', JSON.stringify(config));
     const result = await axios({
       method: 'post',
-      url: `${env.REACT_APP_API_URL1}/autid/user/generateBadge`,
+      url: `${env.REACT_APP_API_URL}/autid/user/generateBadge`,
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' },
     });
