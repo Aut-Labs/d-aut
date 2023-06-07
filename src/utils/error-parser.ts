@@ -109,6 +109,7 @@ export enum InternalErrorTypes {
   GatewayTimedOut = 'IPFS: Gateway timed out.',
   UserNotAMemberOfThisDaoMint = 'Failed to mint ĀutID. Your address is not a member of this DAO.',
   UserNotAMemberOfThisDaoJoin = 'Failed to join. Your ĀutID is not a member of this DAO.',
+  OnlyOperatorsCanAccessTheDashboard = 'Only operators can access the dashboard.',
 }
 
 export const ParseErrorMessage = (error: any) => {
