@@ -165,6 +165,8 @@ export const joinCommunity = createAsyncThunk(
 
 export const getAutId = createAsyncThunk('membership/get', async (selectedAddress: string, { dispatch, getState, rejectWithValue }) => {
   const { aut, walletProvider } = getState() as RootState;
+  const flowMode = aut.flowConfig?.mode;
+  const daoAddress = aut.daoExpanderAddress;
   const { customIpfsGateway } = walletProvider;
   const sdk = AutSDK.getInstance();
   const { contract } = sdk.autID;
@@ -216,7 +218,13 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   //   // await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
   //   throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
   // }
-
+  if (flowMode === 'dashboard') {
+    const expander = sdk.initService<DAOExpander>(DAOExpander, daoAddress);
+    const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
+    if (!isAdmin?.data) {
+      return rejectWithValue(InternalErrorTypes.OnlyOperatorsCanAccessTheDashboard);
+    }
+  }
   const communities = await Promise.all(
     (holderCommunities.data as any).map(async (communityAddress) => {
       // * communityExtension: string
@@ -242,7 +250,6 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
          */
       const expander = sdk.initService<DAOExpander>(DAOExpander, communityAddress);
       const metadataUri = await expander.contract.metadata.getMetadataUri();
-
       const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
       const metadata = await fetchMetadata<BaseNFTModel<Community>>(metadataUri.data, customIpfsGateway);
 
