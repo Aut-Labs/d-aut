@@ -13,6 +13,7 @@ export interface FlowConfig {
 }
 
 export enum AttributesDefinitions {
+  'use-dev' = 'boolean',
   'dao-expander' = 'string',
   'hide-button' = 'boolean',
   'ipfs-gateway' = 'string',

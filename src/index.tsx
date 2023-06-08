@@ -13,6 +13,7 @@ import { AttributeNames, createShadowElement, extractAttributes, isElement } fro
 import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
 
 import { fonts } from './assets/fonts/Fractul/fontsBase64';
+import { env } from './services/web3/env';
 
 export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
   const TAG_NAME = 'd-aut';
@@ -59,6 +60,10 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
       connectedCallback() {
         const jss = create(jssPreset());
         const attributes = extractAttributes(this);
+
+        if (attributes.useDev) {
+          env.REACT_APP_API_URL = env.REACT_APP_API_URL_DEV;
+        }
 
         let content: JSX.Element = null;
         let mountPoint: HTMLElement = null;

@@ -3,6 +3,7 @@
 namespace NodeJS {
   interface ProcessEnv {
     REACT_APP_API_URL: string;
+    REACT_APP_API_URL_DEV: string;
     REACT_APP_PARTNERS_REGISTRY_ADDRESS: string;
     REACT_APP_DISCORD_API_URL: string;
     REACT_APP_DITO_API_URL: string;
