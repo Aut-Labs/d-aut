@@ -218,13 +218,6 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   //   // await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
   //   throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
   // }
-  if (flowMode === 'dashboard') {
-    const expander = sdk.initService<DAOExpander>(DAOExpander, daoAddress);
-    const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
-    if (!isAdmin?.data) {
-      return rejectWithValue(InternalErrorTypes.OnlyOperatorsCanAccessTheDashboard);
-    }
-  }
   const communities = await Promise.all(
     (holderCommunities.data as any).map(async (communityAddress) => {
       // * communityExtension: string
@@ -269,6 +262,21 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
       return a;
     })
   );
+
+  if (flowMode === 'dashboard') {
+    const activeCommunities = communities.filter((c) => {
+      return c.properties?.userData?.isActive;
+    });
+    if (activeCommunities.length !== 0) {
+      const firstCommunityAddress = activeCommunities[0].properties?.address;
+      const expander = sdk.initService<DAOExpander>(DAOExpander, firstCommunityAddress);
+      const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
+      if (!isAdmin?.data) {
+        return rejectWithValue(InternalErrorTypes.OnlyOperatorsCanAccessTheDashboard);
+      }
+    }
+  }
+
   autId.properties.communities = communities;
   autId.loginTimestamp = new Date().getTime();
   autId.provider = walletProvider.selectedWalletType;
