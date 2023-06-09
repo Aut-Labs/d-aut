@@ -40,14 +40,10 @@ const Congratulations: React.FunctionComponent = () => {
             <>
               {isOwner ? (
                 <>
-                  You have now claimed your ĀutID as operator of {autData.community?.name}!
-                  <br /> You have also claimed your role as {userInput.roleName} and have been verified as an admin for this community.
+                  You’re now a {userInput.roleName} @ {autData.community?.name}🎉
+                  <br /> Your ĀutID is the first identity that you truly own - cause your Identity is not rare. It’s unique.
                   <br />
-                  <br /> Let it be known to the people of the Internet or check out your beautiful Self-Sovereign, Sybil-resistant NFT DID
-                  in your public profile.
-                  <br />
-                  <br />
-                  Reminder: Your identity isn't rare. It's unique.
+                  <br /> Look at your self-sovereign ĀutID, and share your journey 🖖
                 </>
               ) : (
                 <>
