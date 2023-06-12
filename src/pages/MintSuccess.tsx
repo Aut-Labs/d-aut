@@ -6,15 +6,17 @@ import { TwitterShareButton } from 'react-share';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { userData } from '../store/user-data.reducer';
-import { autState } from '../store/aut.reducer';
+import { UsingDev, autState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { SelectedNetwork } from '../store/wallet-provider';
+import { autUrls } from '../services/web3/env';
 
 const MintSuccess: React.FunctionComponent = () => {
   const history = useHistory();
   const userInput = useSelector(userData);
   const selectedNetwork = useSelector(SelectedNetwork);
   const autData = useSelector(autState);
+  const isDev = useSelector(UsingDev);
 
   return (
     <AutPageBox>
@@ -40,7 +42,8 @@ const MintSuccess: React.FunctionComponent = () => {
               and follow my journey 🖖
               <br />
               <br />
-              https://my.aut.id/{userInput.username}
+              {autUrls(isDev).myAut}
+              {userInput.username}
             </Typography>
           </Box>
           <Box
@@ -64,7 +67,7 @@ const MintSuccess: React.FunctionComponent = () => {
           </Box>
         </Box>
         <TwitterShareButton
-          url={`https://my.aut.id/${userInput.username}`}
+          url={`${autUrls(isDev).myAut}${userInput.username}`}
           title={`I'm now a ${userInput.roleName} in ${autData.community.name} 🎉
 Look at my self-sovereign ĀutID,
 and follow my journey 🖖`}

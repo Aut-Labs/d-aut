@@ -13,3 +13,34 @@ export const env = {
   REACT_APP_NETWORK: 'Mumbai',
   REACT_APP_RPC_URLS: ['https://matic-mainnet.chainstacklabs.com/'],
 };
+
+interface ApiUrls {
+  tryAut: string;
+  novaDashboard: string;
+  myAut: string;
+  showcase: string;
+  leaderboard: string;
+  expander: string;
+}
+
+export const autUrls = (isDev: boolean): ApiUrls => {
+  if (isDev) {
+    return {
+      tryAut: 'https://try-internal.aut.id/',
+      novaDashboard: 'https://nova-internal.aut.id/',
+      myAut: 'https://my-internal.aut.id/',
+      showcase: 'https://showcase-internal.aut.id/',
+      leaderboard: 'https://leaderboard-internal.aut.id/',
+      expander: 'https://expander-internal.aut.id/',
+    };
+  }
+
+  return {
+    tryAut: 'https://try.aut.id/',
+    novaDashboard: 'https://nova.aut.id/',
+    myAut: 'https://my.aut.id/',
+    showcase: 'https://showcase.aut.id/',
+    leaderboard: 'https://leaderboard.aut.id/',
+    expander: 'https://expander.aut.id/',
+  };
+};

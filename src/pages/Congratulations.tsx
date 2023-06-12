@@ -5,10 +5,11 @@ import { useHistory } from 'react-router-dom';
 import { TwitterShareButton } from 'react-share';
 import { AutButton, SmallerAutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
-import { autState, CustomCongratsMessage } from '../store/aut.reducer';
+import { autState, CustomCongratsMessage, UsingDev } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { IsOwner, userData } from '../store/user-data.reducer';
 import { SelectedNetwork } from '../store/wallet-provider';
+import { autUrls } from '../services/web3/env';
 
 const Congratulations: React.FunctionComponent = () => {
   const history = useHistory();
@@ -17,6 +18,7 @@ const Congratulations: React.FunctionComponent = () => {
   const isOwner = useSelector(IsOwner);
   const selectedNetwork = useSelector(SelectedNetwork);
   const userInput = useSelector(userData);
+  const isDev = useSelector(UsingDev);
 
   const gotToShare = () => {
     history.push('share');
@@ -79,7 +81,7 @@ const Congratulations: React.FunctionComponent = () => {
           size="half"
           variant="outlined"
           onClick={() => {
-            window.open(`https://my.aut.id/${userInput?.username}`, '_blank');
+            window.open(`${autUrls(isDev).myAut}${userInput?.username}`, '_blank');
           }}
         >
           SEE PROFILE

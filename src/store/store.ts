@@ -23,6 +23,7 @@ const rootReducer = (state: RootState, action: Action) => {
         showDialog: state.aut.showDialog,
         daoExpanderAddress: state.aut.daoExpanderAddress,
         flowConfig: state.aut.flowConfig,
+        useDev: state.aut.useDev,
         allowedRoleId: state.aut.allowedRoleId,
       },
       userData: {

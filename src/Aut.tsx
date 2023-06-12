@@ -13,6 +13,7 @@ import {
   setAllowedRoleId,
   setCommunityExtesnionAddress,
   setFlowConfig,
+  setUseDev,
   setUser,
   showDialog,
   user,
@@ -133,6 +134,10 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
         flowConfig.mode = null;
       }
       dispatch(setFlowConfig(flowConfig));
+    }
+
+    if (attributes.useDev) {
+      dispatch(setUseDev(attributes.useDev as boolean));
     }
 
     if (attributes.network) {

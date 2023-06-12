@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { SmallerAutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
-import { autState } from '../store/aut.reducer';
+import { UsingDev, autState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { SelectedNetwork } from '../store/wallet-provider';
 import TwitterIcon from '@mui/icons-material/Twitter';
@@ -15,6 +15,7 @@ import { LinkedinShareButton, TelegramShareButton, TwitterShareButton } from 're
 import AutClipboardCopy from '../components/ClipboardCopy';
 import { pxToRem } from '../utils/utils';
 import { userData } from '../store/user-data.reducer';
+import { autUrls } from '../services/web3/env';
 
 const shareContent = (role, username, community, network) => {
   return `I'm now a ${role} @ ${community} 🎉\nLook at my self-sovereign ĀutID,\nand follow my journey 🖖`;
@@ -24,6 +25,7 @@ const Share: React.FunctionComponent = () => {
   const autData = useSelector(autState);
   const userInput = useSelector(userData);
   const selectedNetwork = useSelector(SelectedNetwork);
+  const isDev = useSelector(UsingDev);
 
   return (
     <AutPageBox>
@@ -37,7 +39,8 @@ const Share: React.FunctionComponent = () => {
         and follow my journey 🖖
         <br />
         <br />
-        https://my.aut.id/{userInput?.username}
+        {autUrls(isDev).myAut}
+        {userInput?.username}
       </Typography>
 
       <Typography color="white" variant="subtitle2" sx={{ mt: '43px', wordBreak: 'break-all' }}>
@@ -66,7 +69,7 @@ const Share: React.FunctionComponent = () => {
           }}
         >
           <LinkedinShareButton
-            url={`https://my.aut.id/${userInput?.username}`}
+            url={`${autUrls(isDev).myAut}${userInput?.username}`}
             className="social-button"
             summary={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
             title="My ĀutID"
@@ -81,7 +84,7 @@ const Share: React.FunctionComponent = () => {
             />
           </LinkedinShareButton>
           <TelegramShareButton
-            url={`https://my.aut.id/${userInput?.username}`}
+            url={`${autUrls(isDev).myAut}${userInput?.username}`}
             className="social-button"
             title={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
           >
@@ -94,7 +97,7 @@ const Share: React.FunctionComponent = () => {
             />
           </TelegramShareButton>
           <TwitterShareButton
-            url={`https://my.aut.id/${userInput?.username}`}
+            url={`${autUrls(isDev).myAut}${userInput?.username}`}
             className="social-button"
             title={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
             hashtags={['Aut', 'DAO']}

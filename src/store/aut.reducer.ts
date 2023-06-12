@@ -57,6 +57,7 @@ export interface AutState {
   flowConfig: FlowConfig;
   allowedRoleId: string;
   autIdsOnDifferentNetworks: AutId[];
+  useDev: boolean;
 }
 
 export const initialState: AutState = {
@@ -77,6 +78,7 @@ export const initialState: AutState = {
   autIdsOnDifferentNetworks: [],
   allowedRoleId: null,
   flowConfig: null,
+  useDev: false,
 };
 
 export const autSlice = createSlice({
@@ -124,6 +126,9 @@ export const autSlice = createSlice({
     },
     setStatus(state, action) {
       state.status = action.payload;
+    },
+    setUseDev(state, action) {
+      state.useDev = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -230,11 +235,14 @@ export const {
   setStatus,
   setAllowedRoleId,
   setFlowConfig,
+  setUseDev,
 } = autSlice.actions;
 
 export const DAOExpanderAddress = (state: any) => state.aut.daoExpanderAddress as string;
 
 export const FlowMode = (state: any) => state.aut.flowConfig?.mode as string;
+
+export const UsingDev = (state: any) => state.aut.useDev as boolean;
 
 export const AllowedRoleId = (state: any) => state.aut.allowedRoleId as string;
 
