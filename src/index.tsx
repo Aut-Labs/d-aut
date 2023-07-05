@@ -14,6 +14,7 @@ import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
 
 import { fonts } from './assets/fonts/Fractul/fontsBase64';
 import { env } from './services/web3/env';
+import { BiconomyContext } from './biconomy_context';
 
 export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
   const TAG_NAME = 'd-aut';
@@ -128,7 +129,9 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
               <Provider store={store}>
                 <Router initialEntries={['/']}>
                   <Web3AutProvider>
-                    <StylesProvider jss={jss}>{content}</StylesProvider>
+                    <BiconomyContext.Provider value={authConfig.biconomy}>
+                      <StylesProvider jss={jss}>{content}</StylesProvider>
+                    </BiconomyContext.Provider>
                   </Web3AutProvider>
                 </Router>
               </Provider>

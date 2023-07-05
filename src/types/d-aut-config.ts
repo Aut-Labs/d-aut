@@ -1,9 +1,11 @@
+import { ISDKBiconomyWrapper } from '@aut-labs-private/sdk/dist/models/IBiconomyWrapper';
 import { IAutButtonConfig } from '../components/AutButtonMenu/AutMenuUtils';
 import { CamelCase } from './camel-case';
 
 export interface SwAuthConfig<CSSObject> {
   container?: HTMLElement;
   config: IAutButtonConfig;
+  biconomy?: { new (config: any): ISDKBiconomyWrapper };
   containerStyles?: CSSObject;
 }
 

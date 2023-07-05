@@ -1,14 +1,14 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../store/store.model';
 import AutSDK, { AutID } from '@aut-labs-private/sdk';
 import { NetworksConfig, SelectedWalletType, setSelectedNetwork, updateWalletProviderState } from '../../store/wallet-provider';
 import { DAOExpanderAddress, ResultState, setStatus, updateErrorState } from '../../store/aut.reducer';
 import { InternalErrorTypes } from '../../utils/error-parser';
-import { ethers } from 'ethers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { NetworkConfig } from './web3.connectors';
-import { SDKBiconomyWrapper } from '@aut-labs-private/sdk-biconomy';
 import { useAutWalletConnect } from './use-aut-wallet-connect';
+import { BiconomyContext } from '../../biconomy_context';
 
 export const useWeb3ReactConnectorHook = () => {
   const { connect, isLoading: isConnecting, ...rest } = useAutWalletConnect();
@@ -17,8 +17,9 @@ export const useWeb3ReactConnectorHook = () => {
   const networks = useSelector(NetworksConfig);
   const daoExpanderAddress = useSelector(DAOExpanderAddress);
   const wallet = useSelector(SelectedWalletType);
+  const BiconomyRef = useContext(BiconomyContext);
 
-  const initializeSDK = async (network: NetworkConfig, signer: ethers.providers.JsonRpcSigner) => {
+  const initializeSDK = async (network: NetworkConfig, signer: JsonRpcSigner) => {
     const sdk = AutSDK.getInstance();
     let autIdContractAddress = network?.contracts?.autIDAddress;
 
@@ -29,7 +30,8 @@ export const useWeb3ReactConnectorHook = () => {
       // and so only then we should inject biconomy
       const biconomy =
         network?.biconomyApiKey &&
-        new SDKBiconomyWrapper({
+        BiconomyRef &&
+        new BiconomyRef({
           enableDebugMode: true,
           apiKey: network.biconomyApiKey,
           contractAddresses: [autIdContractAddress],
@@ -70,7 +72,7 @@ export const useWeb3ReactConnectorHook = () => {
       }
       setIsLoading(true);
       await dispatch(updateWalletProviderState(itemsToUpdate));
-      await initializeSDK(network, signer as ethers.providers.JsonRpcSigner);
+      await initializeSDK(network, signer as JsonRpcSigner);
       setIsLoading(false);
       return account;
     } catch (error) {

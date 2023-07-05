@@ -1,11 +1,10 @@
 import axios from 'axios';
 import dateFormat from 'dateformat';
-import * as ethers from 'ethers';
+import { constants } from 'ethers';
 import { ipfsCIDToHttpUrl, storeImageAsBlob, storeMetadata } from '../storage/storage.hub';
 import { BaseNFTModel, Community } from './models';
 import { InternalErrorTypes } from '../../utils/error-parser';
 import { setAutIdsOnDifferentNetworks } from '../../store/aut.reducer';
-import { AutIDBadgeGenerator } from '../../utils/AutIDBadge/AutIDBadgeGenerator';
 import { base64toFile, dispatchEvent } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
 import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
@@ -406,7 +405,7 @@ export const checkIfNameTaken = createAsyncThunk('membership/nametaken', async (
   const sdk = AutSDK.getInstance();
   const { contract } = sdk.autID;
   const tokenId = await contract.getAddressByUsername(requestBody.username);
-  if (tokenId.data !== ethers.constants.AddressZero) {
+  if (tokenId.data !== constants.AddressZero) {
     return rejectWithValue(InternalErrorTypes.UsernameAlreadyTaken);
   }
   return false;

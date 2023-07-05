@@ -1,5 +1,5 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { ethers } from 'ethers';
+import { JsonRpcSigner } from '@ethersproject/providers';
 import { NetworkConfig } from '../services/ProviderFactory/web3.connectors';
 
 export enum ConnectorTypes {
@@ -8,7 +8,7 @@ export enum ConnectorTypes {
 }
 
 export interface WalletProviderState {
-  signer: ethers.providers.JsonRpcSigner;
+  signer: JsonRpcSigner;
   selectedWalletType: 'metamask' | 'walletConnect';
   selectedNetwork: string;
   networksConfig: NetworkConfig[];
@@ -69,7 +69,7 @@ export const StartFromScratch = (state: any) => state.walletProvider.startFromSc
 
 export const NetworkSelectorIsOpen = (state: any) => state.walletProvider.isOpen as boolean;
 export const SelectedWalletType = (state: any) => state.walletProvider.selectedWalletType as string;
-export const NetworkSigner = (state: any) => state.walletProvider.signer as ethers.providers.JsonRpcSigner;
+export const NetworkSigner = (state: any) => state.walletProvider.signer as JsonRpcSigner;
 export const NetworksConfig = (state: any) => state.walletProvider.networksConfig as NetworkConfig[];
 export const NetworkWalletConnectors = (state: any) => state.walletProvider.wallets as any;
 export const SelectedNetwork = (state: any) => state.walletProvider.selectedNetwork as string;
