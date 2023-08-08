@@ -1,6 +1,6 @@
 import { withRouter, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useContext, useEffect, useMemo, useState } from 'react';
 import Portal from '@mui/material/Portal';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
@@ -9,28 +9,42 @@ import { AutButtonProps, FlowConfig, SwAttributes } from './types/d-aut-config';
 import { InputEventTypes, OutputEventTypes } from './types/event-types';
 import {
   autState,
+  DAOExpanderAddress,
   FlowMode,
   setAllowedRoleId,
   setCommunityExtesnionAddress,
   setFlowConfig,
+  setJustJoining,
   setUseDev,
   setUser,
   showDialog,
   user,
 } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
-import { IPFSCusomtGateway, NetworksConfig, setCustomIpfsGateway, setNetworks, setSelectedNetwork } from './store/wallet-provider';
+import {
+  IPFSCusomtGateway,
+  IsAuthorised,
+  NetworksConfig,
+  setCustomIpfsGateway,
+  setNetworks,
+  updateWalletProviderState,
+} from './store/wallet-provider';
 import { ipfsCIDToHttpUrl } from './services/storage/storage.hub';
 import AutButtonMenu from './components/AutButtonMenu/AutButtonMenu';
 import { AutMenuItemType, MenuItemActionType, AutButtonUserProfile } from './components/AutButtonMenu/AutMenuUtils';
 import { NetworkConfig } from './services/ProviderFactory/web3.connectors';
-import { useEthers } from '@usedapp/core';
+import { useAccount, useChainId, useDisconnect } from 'wagmi';
+import AutSDK, { AutID } from '@aut-labs/sdk';
+import { BiconomyContext } from './biconomy_context';
+import { useEthersSigner } from './services/ProviderFactory/ethers';
+import { JsonRpcSigner } from '@ethersproject/providers';
+import { checkIfAutIdExists, fetchCommunity, getAutId } from './services/web3/api';
 
 const AutModal = withRouter(({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
 
-  const handleClose = async (event, reason) => {
+  const handleClose = async () => {
     // if (reason && reason === 'backdropClick') return;
     dispatch(showDialog(false));
   };
@@ -57,58 +71,121 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
   const userData = useSelector(user);
   const customIpfsGateway = useSelector(IPFSCusomtGateway);
+  const isAuthorised = useSelector(IsAuthorised);
   const networks = useSelector(NetworksConfig);
-  const { account, isLoading, activateBrowserWallet } = useEthers();
+  const { address, connector, isConnected } = useAccount();
+  const daoExpanderAddress = useSelector(DAOExpanderAddress);
+  const BiconomyRef = useContext(BiconomyContext);
+  const chainId = useChainId();
+  const signer = useEthersSigner({ chainId });
+  const { disconnectAsync } = useDisconnect();
 
-  /*
-   * isLoading is used to ensure that the wallet provider (metamask or walletConnect) is ready
-   * If userData.address is different from provided address (account)
-   * then we should disconnect
-   */
-  const hasAccountChanged = useMemo(() => {
-    return !isLoading && !!userData?.address && !!account && userData?.address !== account;
-  }, [userData?.address, account, isLoading]);
+  const initializeSDK = async (network: NetworkConfig, signer: JsonRpcSigner) => {
+    const sdk = AutSDK.getInstance();
+    let autIdContractAddress = network?.contracts?.autIDAddress;
 
-  /*
-   * isLoading is used to ensure that the wallet provider (metamask or walletConnect) is ready
-   * If wallet provider is loaded and there is userData but not account
-   * it could mean two things:
-   * 1. The user last was loaded by a different provider
-   * 2. Metamask or walletConnect is not connected!
-   */
-  const userWithoutAccount = useMemo(() => {
-    return !isLoading && !account && !!userData?.address;
-  }, [account, userData?.address, isLoading]);
+    // If dao expander is provided then to ensure is the correct autId address
+    // we will fetch contract address from daoExpanderAddress contract
+    if (daoExpanderAddress) {
+      // only when daoExpanderAddress is present we can create a new user
+      // and so only then we should inject biconomy
+      const biconomy =
+        network?.biconomyApiKey &&
+        BiconomyRef &&
+        new BiconomyRef({
+          enableDebugMode: true,
+          apiKey: network.biconomyApiKey,
+          contractAddresses: [autIdContractAddress],
+        });
+      await sdk.init(
+        signer,
+        {
+          daoExpanderAddress,
+        },
+        biconomy
+      );
+      const result = await sdk.daoExpander.contract.getAutIDContractAddress();
+      autIdContractAddress = result?.data;
+      sdk.autID = sdk.initService<AutID>(AutID, autIdContractAddress);
+    } else {
+      await sdk.init(signer, {
+        autIDAddress: autIdContractAddress,
+      });
+    }
+  };
+
+  const checkForExistingAutId = async (account: string) => {
+    const hasAutId = await dispatch(checkIfAutIdExists(account));
+    if (hasAutId.meta.requestStatus !== 'rejected') {
+      await dispatch(fetchCommunity());
+      if (!hasAutId.payload) {
+        await dispatch(setJustJoining(false));
+        history.push('userdetails');
+      } else {
+        await dispatch(setJustJoining(true));
+        history.push('role');
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (connector?.ready && isConnected && signer) {
+      const start = async () => {
+        const [network] = networks.filter((d) => !d.disabled);
+        const itemsToUpdate = {
+          isAuthorised: true,
+          sdkInitialized: true,
+          isOpen: false,
+          selectedNetwork: network,
+        };
+
+        await initializeSDK(network, signer);
+        await dispatch(updateWalletProviderState(itemsToUpdate));
+
+        if (flowMode === 'dashboard') {
+          history.push('/autid');
+          await dispatch(getAutId(address));
+        }
+        if (flowMode === 'tryAut') {
+          history.push('/newuser');
+          await checkForExistingAutId(address);
+        }
+      };
+      start();
+    }
+  }, [dispatch, isConnected, connector?.ready, signer, networks, flowMode]);
 
   const handleOpen = async () => {
     // if (currentUser.isLoggedIn) {
     if (!uiState.user) {
-      if (flowMode) {
-        if (flowMode === 'dashboard') {
-          history.push('/autid');
+      if (!isAuthorised) {
+        if (flowMode) {
+          if (flowMode === 'dashboard') {
+            history.push('/autid');
+          }
+          if (flowMode === 'tryAut') {
+            history.push('/newuser');
+          }
+        } else {
+          history.push('/');
         }
-        if (flowMode === 'tryAut') {
-          history.push('/newuser');
-        }
-      } else {
-        history.push('/');
       }
 
       // if (isActive) {
       //   await connector.deactivate();
       //   // dispatch(setSigner(provider.getSigner()));
       // }
-      if (uiState?.provider?.disconnect) {
-        await uiState?.provider?.disconnect();
-      }
-      await dispatch(setSelectedNetwork(null));
-      await dispatch(resetUIState);
+      // if (uiState?.provider?.disconnect) {
+      //   await uiState?.provider?.disconnect();
+      // }
+      // await dispatch(setSelectedNetwork(null));
       dispatch(showDialog(true));
     }
   };
 
   const handleDisconnect = async () => {
     window.sessionStorage.removeItem('aut-data');
+    await disconnectAsync();
     dispatch(resetUIState);
     dispatchEvent(OutputEventTypes.Disconnected);
   };
@@ -186,7 +263,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       if (currentTime < sessionLength) {
         dispatch(setUser(autId));
         dispatchEvent(OutputEventTypes.Connected, autId);
-        activateBrowserWallet({ type: autId?.provider }); // activave provider to get address
+        // activateBrowserWallet({ type: autId?.provider }); // activave provider to get address
       } else {
         window.sessionStorage.removeItem('aut-data');
         dispatch(resetUIState);
@@ -194,12 +271,6 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       }
     }
   };
-
-  useEffect(() => {
-    if (hasAccountChanged || userWithoutAccount) {
-      handleDisconnect();
-    }
-  }, [hasAccountChanged, userWithoutAccount]);
 
   useEffect(() => {
     setMenuItems([

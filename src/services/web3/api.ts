@@ -10,7 +10,7 @@ import { setUserData } from '../../store/user-data.reducer';
 import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
 import { AutId, NetworkConfig } from '../ProviderFactory/web3.connectors';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import AutSDK, { DAOExpander, fetchMetadata } from '@aut-labs-private/sdk';
+import AutSDK, { DAOExpander, fetchMetadata } from '@aut-labs/sdk';
 import { RootState } from '../../store/store.model';
 import { OutputEventTypes } from '../../types/event-types';
 import { env } from './env';

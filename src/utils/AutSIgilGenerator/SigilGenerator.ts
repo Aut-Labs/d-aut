@@ -85,7 +85,7 @@ export const generateAutIdDAOSigil = async (address: string): Promise<SigilOutpu
   const canvasWidth = 600;
   const canvasHeight = 600;
   const canvas = createCanvas(canvasWidth, canvasHeight);
-  const ctx = canvas.getContext('2d');
+  const ctx: any = canvas.getContext('2d');
 
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';

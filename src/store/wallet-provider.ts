@@ -2,11 +2,6 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { NetworkConfig } from '../services/ProviderFactory/web3.connectors';
 
-export enum ConnectorTypes {
-  WalletConnect = 'walletConnect',
-  Metamask = 'metamask',
-}
-
 export interface WalletProviderState {
   signer: JsonRpcSigner;
   selectedWalletType: 'metamask' | 'walletConnect';

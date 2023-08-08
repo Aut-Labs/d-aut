@@ -5,17 +5,19 @@ import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
 import { FlowMode, setJustJoining } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { ConnectorTypes, setSelectedNetwork } from '../store/wallet-provider';
-import ConnectorBtn from '../components/ConnectorButton';
+import { setSelectedNetwork } from '../store/wallet-provider';
 import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
 import { LoadingProgress } from '../components/LoadingProgress';
 import { useSelector } from 'react-redux';
+import { Connector, useConnect } from 'wagmi';
+import WalletConnectorButtons from '../components/WalletConnectorButtons';
 
 const NewUser: React.FunctionComponent = (props) => {
   const flowMode = useSelector(FlowMode);
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const { connect, waitingUserConfirmation, isLoading } = useWeb3ReactConnectorHook();
+  const { connect } = useWeb3ReactConnectorHook();
+  const { isLoading } = useConnect();
 
   const checkForExistingAutId = async (account: string) => {
     const hasAutId = await dispatch(checkIfAutIdExists(account));
@@ -35,8 +37,8 @@ const NewUser: React.FunctionComponent = (props) => {
     dispatch(setSelectedNetwork(null));
   }, []);
 
-  const tryConnect = async (connectorType: string) => {
-    const account = await connect(connectorType);
+  const tryConnect = async (connector: Connector) => {
+    const account = await connect(connector);
     if (account) {
       await checkForExistingAutId(account);
     }
@@ -44,22 +46,12 @@ const NewUser: React.FunctionComponent = (props) => {
 
   return (
     <>
-      {isLoading || waitingUserConfirmation ? (
+      {isLoading ? (
         <>
-          {/* {waitingUserConfirmation && (
-            <Typography m="0" color="white" variant="subtitle1">
-              Waiting confirmation...
-            </Typography>
-          )} */}
           <LoadingProgress />
         </>
       ) : (
         <>
-          {/* {selectingNetwork ? (
-            <NetworkSelector onSelect={changeNetwork} onBack={() => setSelectingNetwork(false)} />
-          ) : (
-            
-          )} */}
           <AutPageBox>
             <AutHeader
               hideBackBtn={!!flowMode}
@@ -72,8 +64,7 @@ const NewUser: React.FunctionComponent = (props) => {
                 </>
               }
             />
-            <ConnectorBtn marginTop={66} setConnector={tryConnect} connectorType={ConnectorTypes.Metamask} />
-            <ConnectorBtn marginTop={53} setConnector={tryConnect} connectorType={ConnectorTypes.WalletConnect} />
+            <WalletConnectorButtons onConnect={tryConnect} />
           </AutPageBox>
         </>
       )}

@@ -156,9 +156,13 @@ export const autSlice = createSlice({
       .addCase(getAutId.rejected, (state, action) => {
         if (action.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
           state.status = ResultState.Idle;
+          state.user = null;
+          window.sessionStorage.removeItem('aut-data');
         } else {
           state.errorStateAction = action.payload as string;
           state.status = ResultState.Failed;
+          state.user = null;
+          window.sessionStorage.removeItem('aut-data');
         }
       })
       .addCase(mintMembership.pending, (state) => {

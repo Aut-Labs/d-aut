@@ -11,13 +11,13 @@ import { autState } from '../store/aut.reducer';
 import { FormAction, FormContent, FormWrapper } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
 import { AutCommitmentSlider } from '../theme/commitment-slider-styles';
-import { useEthers } from '@usedapp/core';
+import { useAccount } from 'wagmi';
 
 const Commitment: React.FunctionComponent = (props) => {
   const history = useHistory();
   const userInput = useSelector(userData);
   const coreState = useSelector(autState);
-  const { account } = useEthers();
+  const { address: account } = useAccount();
   const dispatch = useAppDispatch();
 
   const {
