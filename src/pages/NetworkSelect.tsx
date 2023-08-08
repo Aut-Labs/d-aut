@@ -113,13 +113,14 @@ const NetworkSelect: React.FunctionComponent = () => {
                   <AutSelectField
                     variant="standard"
                     autoFocus
-                    renderValue={(selected) => {
-                      if (!selected) {
-                        return 'Select Network';
-                      }
-                      const autId = autData.autIdsOnDifferentNetworks.find((a) => a.network === selected);
-                      return autId?.network || selected;
-                    }}
+                    // @TODO: fix this
+                    // renderValue={(selected) => {
+                    //   if (!selected) {
+                    //     return 'Select Network';
+                    //   }
+                    //   const autId = autData.autIdsOnDifferentNetworks.find((a) => a.network === selected);
+                    //   return autId?.network || selected;
+                    // }}
                     name={name}
                     color="primary"
                     value={value || ''}

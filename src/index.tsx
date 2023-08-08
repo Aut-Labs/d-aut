@@ -2,7 +2,6 @@ import { MemoryRouter as Router } from 'react-router-dom';
 import { CacheProvider, CSSObject, ThemeProvider } from '@emotion/react';
 import { create } from 'jss';
 import { StylesProvider, jssPreset } from '@mui/styles';
-import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { StyledEngineProvider } from '@mui/material';
 import Theme from './theme/theme';
@@ -11,7 +10,7 @@ import SwAuthModal, { AutButton } from './Aut';
 import { AttributeCallbackFn, SwAuthConfig } from './types/d-aut-config';
 import { AttributeNames, createShadowElement, extractAttributes, isElement } from './utils/utils';
 import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
-
+import { createRoot } from 'react-dom/client';
 import { fonts } from './assets/fonts/Fractul/fontsBase64';
 import { env } from './services/web3/env';
 import { BiconomyContext } from './biconomy_context';
@@ -123,7 +122,9 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
           );
         }
 
-        ReactDOM.render(
+        const root = createRoot(mountPoint);
+
+        root.render(
           <StyledEngineProvider injectFirst>
             <ThemeProvider theme={Theme}>
               <Provider store={store}>
@@ -136,8 +137,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
                 </Router>
               </Provider>
             </ThemeProvider>
-          </StyledEngineProvider>,
-          mountPoint
+          </StyledEngineProvider>
         );
       }
     }

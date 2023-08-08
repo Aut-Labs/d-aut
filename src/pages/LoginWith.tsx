@@ -1,22 +1,21 @@
-import React, { useEffect } from 'react';
-import { Box } from '@mui/material';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 
 const LoginWith: React.FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const autData = useSelector(autState);
 
   const handleAutIdClicked = () => {
-    history.push('autid');
+    navigate('autid');
   };
 
   const handleNewUserClicked = () => {
-    history.push('newuser');
+    navigate('newuser');
   };
 
   return (

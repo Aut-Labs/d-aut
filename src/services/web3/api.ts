@@ -1,6 +1,5 @@
 import axios from 'axios';
 import dateFormat from 'dateformat';
-import { constants } from 'ethers';
 import { ipfsCIDToHttpUrl, storeImageAsBlob, storeMetadata } from '../storage/storage.hub';
 import { BaseNFTModel, Community } from './models';
 import { InternalErrorTypes } from '../../utils/error-parser';
@@ -14,6 +13,7 @@ import AutSDK, { DAOExpander, fetchMetadata } from '@aut-labs/sdk';
 import { RootState } from '../../store/store.model';
 import { OutputEventTypes } from '../../types/event-types';
 import { env } from './env';
+import { constants } from 'ethers';
 
 export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue, getState }) => {
   const { customIpfsGateway } = (getState() as RootState).walletProvider;

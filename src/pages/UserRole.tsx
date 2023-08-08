@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { AllowedRoleId, autState, community } from '../store/aut.reducer';
+import { useNavigate } from 'react-router-dom';
+import { AllowedRoleId, community } from '../store/aut.reducer';
 import { useAppDispatch } from '../store/store.model';
 import { fetchCommunity } from '../services/web3/api';
 import { setUserData } from '../store/user-data.reducer';
@@ -12,13 +12,13 @@ import { AutHeader } from '../components/AutHeader';
 
 const UserRole: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const allowedRole = useSelector(AllowedRoleId);
   const communityData = useSelector(community);
 
   const handleRoleSelect = (role) => {
     dispatch(setUserData({ role: role.id, roleName: role.roleName }));
-    history.push('commitment');
+    navigate('commitment');
   };
 
   useEffect(() => {

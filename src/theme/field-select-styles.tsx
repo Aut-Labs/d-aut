@@ -111,8 +111,8 @@ export default (theme: Theme) =>
         }, {}),
       },
     } as ComponentsOverrides<Theme>['MuiSelect'],
-  } as {
+  }) as {
     defaultProps?: ComponentsProps['MuiSelect'];
     styleOverrides?: ComponentsOverrides<Theme>['MuiSelect'];
     variants?: ComponentsVariants['MuiSelect'];
-  });
+  };

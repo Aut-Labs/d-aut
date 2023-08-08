@@ -1,4 +1,4 @@
-import { withRouter, useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { memo, useContext, useEffect, useMemo, useState } from 'react';
 import Portal from '@mui/material/Portal';
@@ -40,7 +40,7 @@ import { useEthersSigner } from './services/ProviderFactory/ethers';
 import { JsonRpcSigner } from '@ethersproject/providers';
 import { checkIfAutIdExists, fetchCommunity, getAutId } from './services/web3/api';
 
-const AutModal = withRouter(({ container, rootContainer = null }: any) => {
+const AutModal = ({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
 
@@ -61,10 +61,10 @@ const AutModal = withRouter(({ container, rootContainer = null }: any) => {
       <MainDialog open={uiState.showDialog} handleClose={handleClose} container={container} />
     </>
   );
-});
+};
 
 export const AutButton = memo(({ config, attributes: defaultAttributes, container, setAttrCallback }: AutButtonProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
   const flowMode = useSelector(FlowMode);
@@ -120,10 +120,10 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       await dispatch(fetchCommunity());
       if (!hasAutId.payload) {
         await dispatch(setJustJoining(false));
-        history.push('userdetails');
+        navigate('userdetails');
       } else {
         await dispatch(setJustJoining(true));
-        history.push('role');
+        navigate('role');
       }
     }
   };
@@ -143,11 +143,11 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
         await dispatch(updateWalletProviderState(itemsToUpdate));
 
         if (flowMode === 'dashboard') {
-          history.push('/autid');
+          navigate('/autid');
           await dispatch(getAutId(address));
         }
         if (flowMode === 'tryAut') {
-          history.push('/newuser');
+          navigate('/newuser');
           await checkForExistingAutId(address);
         }
       };
@@ -161,13 +161,13 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       if (!isAuthorised) {
         if (flowMode) {
           if (flowMode === 'dashboard') {
-            history.push('/autid');
+            navigate('/autid');
           }
           if (flowMode === 'tryAut') {
-            history.push('/newuser');
+            navigate('/newuser');
           }
         } else {
-          history.push('/');
+          navigate('/');
         }
       }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { setUserData, userData } from '../store/user-data.reducer';
 import { useAppDispatch } from '../store/store.model';
@@ -14,7 +14,7 @@ import { AutCommitmentSlider } from '../theme/commitment-slider-styles';
 import { useAccount } from 'wagmi';
 
 const Commitment: React.FunctionComponent = (props) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const userInput = useSelector(userData);
   const coreState = useSelector(autState);
   const { address: account } = useAccount();
@@ -35,12 +35,12 @@ const Commitment: React.FunctionComponent = (props) => {
     if (coreState.justJoin) {
       const result = await dispatch(joinCommunity(account));
       if (!(result as any).error) {
-        history.push('congrats');
+        navigate('congrats');
       }
     } else {
       const result = await dispatch(mintMembership(account));
       if (!(result as any).error) {
-        history.push('congrats');
+        navigate('congrats');
       }
     }
   };

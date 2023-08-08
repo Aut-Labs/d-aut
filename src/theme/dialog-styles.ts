@@ -130,8 +130,8 @@ export default (theme: Theme) =>
       //     }
       //   }
     },
-  } as {
+  }) as {
     defaultProps?: ComponentsProps['MuiDialog'];
     styleOverrides?: ComponentsOverrides<Theme>['MuiDialog'];
     variants?: ComponentsVariants['MuiDialog'];
-  });
+  };

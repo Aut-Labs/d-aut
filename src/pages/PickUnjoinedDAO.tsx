@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, MenuItem } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState, setSelectedUnjoinedCommunityAddress } from '../store/aut.reducer';
@@ -13,9 +13,9 @@ import { useAppDispatch } from '../store/store.model';
 import { fetchCommunity } from '../services/web3/api';
 
 const PickUnjoinedDAO: React.FunctionComponent = () => {
-  const history = useHistory();
   const autData = useSelector(autState);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -27,7 +27,7 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
     console.log(data);
     await dispatch(setSelectedUnjoinedCommunityAddress(data.dao));
     await dispatch(fetchCommunity());
-    history.push('/role');
+    navigate('/role');
   };
 
   const onBackClicked = async () => {
@@ -73,13 +73,14 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
                   <AutSelectField
                     variant="standard"
                     autoFocus
-                    renderValue={(selected) => {
-                      if (!selected) {
-                        return 'Select DAO';
-                      }
-                      const dao = autData.unjoinedCommunities.find((t) => t.address === selected);
-                      return dao?.name || selected;
-                    }}
+                    // @TODO: fix this
+                    // renderValue={(selected) => {
+                    //   if (!selected) {
+                    //     return 'Select DAO';
+                    //   }
+                    //   const dao = autData.unjoinedCommunities.find((t) => t.address === selected);
+                    //   return dao?.name || selected;
+                    // }}
                     name={name}
                     color="primary"
                     value={value || ''}

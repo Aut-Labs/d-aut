@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
 import { ISDKBiconomyWrapper } from '@aut-labs/sdk/dist/models/IBiconomyWrapper';
 import { IAutButtonConfig } from '../components/AutButtonMenu/AutMenuUtils';
 import { CamelCase } from './camel-case';

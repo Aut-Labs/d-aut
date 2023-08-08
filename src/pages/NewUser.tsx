@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store/store.model';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
@@ -15,7 +15,7 @@ import WalletConnectorButtons from '../components/WalletConnectorButtons';
 const NewUser: React.FunctionComponent = (props) => {
   const flowMode = useSelector(FlowMode);
   const dispatch = useAppDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { connect } = useWeb3ReactConnectorHook();
   const { isLoading } = useConnect();
 
@@ -25,10 +25,10 @@ const NewUser: React.FunctionComponent = (props) => {
       await dispatch(fetchCommunity());
       if (!hasAutId.payload) {
         await dispatch(setJustJoining(false));
-        history.push('userdetails');
+        navigate('userdetails');
       } else {
         await dispatch(setJustJoining(true));
-        history.push('role');
+        navigate('role');
       }
     }
   };
