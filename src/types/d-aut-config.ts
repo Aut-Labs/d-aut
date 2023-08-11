@@ -10,8 +10,14 @@ export interface SwAuthConfig<CSSObject> {
   containerStyles?: CSSObject;
 }
 
+export enum FlowConfigMode {
+  Dashboard = 'dashboard',
+  TryAut = 'tryAut',
+  FreeMode = 'freeMode',
+}
+
 export interface FlowConfig {
-  mode?: 'dashboard' | 'tryAut';
+  mode?: FlowConfigMode;
   customCongratsMessage?: string;
 }
 

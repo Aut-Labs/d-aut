@@ -5,7 +5,7 @@ import { NetworkConfig } from '../services/ProviderFactory/web3.connectors';
 export interface WalletProviderState {
   signer: JsonRpcSigner;
   selectedWalletType: 'metamask' | 'walletConnect';
-  selectedNetwork: string;
+  selectedNetwork: NetworkConfig;
   networksConfig: NetworkConfig[];
   isOpen: boolean;
   wallets: any;
@@ -43,7 +43,7 @@ export const walletProviderSlice = createSlice({
       state.isOpen = action.payload;
     },
     setSelectedNetwork(state, action) {
-      state.selectedNetwork = action.payload as string;
+      state.selectedNetwork = action.payload as NetworkConfig;
     },
     setNetworks(state, action) {
       state.networksConfig = action.payload;

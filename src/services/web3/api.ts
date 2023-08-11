@@ -20,12 +20,15 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
   const sdk = AutSDK.getInstance();
   const daoExpander = sdk.daoExpander.contract;
   const metadataUri = await daoExpander.metadata.getMetadataUri();
+
   if (!metadataUri.isSuccess) {
     return rejectWithValue(InternalErrorTypes.CouldNotFindCommunity);
   }
   // console.log(resp);
   // const communityMetadata = await fetch(cidToHttpUrl(`${resp[2]}/metadata.json`));
   const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
+
+  debugger;
   if (communityMetadata.status === 504) {
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
   }
@@ -80,7 +83,7 @@ export const mintMembership = createAsyncThunk(
       role: roleName.toString(),
       dao: aut.community.name,
       hash: `#${nftIdResp.data.toString()}`,
-      network: selectedNetwork.toLowerCase(),
+      network: selectedNetwork?.network.toLowerCase(),
       expanderAddress: aut.daoExpanderAddress,
       timestamp: `${timeStamp}`,
     } as SWIDParams;
@@ -283,7 +286,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   autId.address = selectedAddress;
   await dispatch(setUserData({ username: autId.name }));
 
-  window.sessionStorage.setItem('aut-data', JSON.stringify(autId));
+  window.localStorage.setItem('aut-data', JSON.stringify(autId));
   return autId;
 });
 
@@ -309,7 +312,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
     if (autIDs.length === 1) {
       const [holderData] = autIDs;
 
-      if (holderData.network !== selectedNetwork) {
+      if (holderData.network !== selectedNetwork?.network) {
         return rejectWithValue(InternalErrorTypes.FoundAnAutIDOnADifferentNetwork);
       }
 
@@ -395,7 +398,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
       autId.network = walletProvider.selectedNetwork;
       autId.address = selectedAddress;
 
-      window.sessionStorage.setItem('aut-data', JSON.stringify(autId));
+      window.localStorage.setItem('aut-data', JSON.stringify(autId));
       return autId;
     }
   }

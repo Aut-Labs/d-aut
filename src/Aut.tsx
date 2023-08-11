@@ -5,7 +5,7 @@ import Portal from '@mui/material/Portal';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
 import { dispatchEvent, parseAttributeValue, toCammelCase } from './utils/utils';
-import { AutButtonProps, FlowConfig, SwAttributes } from './types/d-aut-config';
+import { AutButtonProps, FlowConfig, FlowConfigMode, SwAttributes } from './types/d-aut-config';
 import { InputEventTypes, OutputEventTypes } from './types/event-types';
 import {
   autState,
@@ -66,19 +66,20 @@ const AutModal = ({ container, rootContainer = null }: any) => {
 export const AutButton = memo(({ config, attributes: defaultAttributes, container, setAttrCallback }: AutButtonProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const uiState = useSelector(autState);
-  const flowMode = useSelector(FlowMode);
-  const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
-  const userData = useSelector(user);
-  const customIpfsGateway = useSelector(IPFSCusomtGateway);
-  const isAuthorised = useSelector(IsAuthorised);
-  const networks = useSelector(NetworksConfig);
-  const { address, connector, isConnected } = useAccount();
-  const daoExpanderAddress = useSelector(DAOExpanderAddress);
-  const BiconomyRef = useContext(BiconomyContext);
+  const { disconnectAsync } = useDisconnect();
   const chainId = useChainId();
   const signer = useEthersSigner({ chainId });
-  const { disconnectAsync } = useDisconnect();
+  const { connector, isConnected } = useAccount();
+
+  const customIpfsGateway = useSelector(IPFSCusomtGateway);
+  // const isAuthorised = useSelector(IsAuthorised);
+  const networks = useSelector(NetworksConfig);
+  const flowMode = useSelector(FlowMode);
+  const daoExpanderAddress = useSelector(DAOExpanderAddress);
+  const userData = useSelector(user);
+
+  const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
+  const BiconomyRef = useContext(BiconomyContext);
 
   const initializeSDK = async (network: NetworkConfig, signer: JsonRpcSigner) => {
     const sdk = AutSDK.getInstance();
@@ -114,77 +115,36 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
     }
   };
 
-  const checkForExistingAutId = async (account: string) => {
-    const hasAutId = await dispatch(checkIfAutIdExists(account));
-    if (hasAutId.meta.requestStatus !== 'rejected') {
-      await dispatch(fetchCommunity());
-      if (!hasAutId.payload) {
-        await dispatch(setJustJoining(false));
-        navigate('userdetails');
-      } else {
-        await dispatch(setJustJoining(true));
-        navigate('role');
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (connector?.ready && isConnected && signer) {
-      const start = async () => {
-        const [network] = networks.filter((d) => !d.disabled);
-        const itemsToUpdate = {
-          isAuthorised: true,
-          sdkInitialized: true,
-          isOpen: false,
-          selectedNetwork: network,
-        };
-
-        await initializeSDK(network, signer);
-        await dispatch(updateWalletProviderState(itemsToUpdate));
-
-        if (flowMode === 'dashboard') {
-          navigate('/autid');
-          await dispatch(getAutId(address));
-        }
-        if (flowMode === 'tryAut') {
-          navigate('/newuser');
-          await checkForExistingAutId(address);
-        }
-      };
-      start();
-    }
-  }, [dispatch, isConnected, connector?.ready, signer, networks, flowMode]);
+  // const checkForExistingAutId = async (account: string) => {
+  //   const hasAutId = await dispatch(checkIfAutIdExists(account));
+  //   if (hasAutId.meta.requestStatus !== 'rejected') {
+  //     await dispatch(fetchCommunity());
+  //     if (!hasAutId.payload) {
+  //       await dispatch(setJustJoining(false));
+  //       navigate('userdetails');
+  //     } else {
+  //       await dispatch(setJustJoining(true));
+  //       navigate('role');
+  //     }
+  //   }
+  // };
 
   const handleOpen = async () => {
-    // if (currentUser.isLoggedIn) {
-    if (!uiState.user) {
-      if (!isAuthorised) {
-        if (flowMode) {
-          if (flowMode === 'dashboard') {
-            navigate('/autid');
-          }
-          if (flowMode === 'tryAut') {
-            navigate('/newuser');
-          }
-        } else {
-          navigate('/');
-        }
-      }
+    if (userData) return;
 
-      // if (isActive) {
-      //   await connector.deactivate();
-      //   // dispatch(setSigner(provider.getSigner()));
-      // }
-      // if (uiState?.provider?.disconnect) {
-      //   await uiState?.provider?.disconnect();
-      // }
-      // await dispatch(setSelectedNetwork(null));
-      dispatch(showDialog(true));
+    if (flowMode === FlowConfigMode.Dashboard) {
+      navigate('/autid');
+    } else if (flowMode === FlowConfigMode.TryAut) {
+      navigate('/newuser');
+    } else {
+      navigate('/');
     }
+
+    dispatch(showDialog(true));
   };
 
   const handleDisconnect = async () => {
-    window.sessionStorage.removeItem('aut-data');
+    window.localStorage.removeItem('aut-data');
     await disconnectAsync();
     dispatch(resetUIState);
     dispatchEvent(OutputEventTypes.Disconnected);
@@ -207,8 +167,9 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
 
     if (attributes.flowConfig) {
       const flowConfig = attributes.flowConfig as FlowConfig;
-      if (flowConfig.mode !== 'dashboard' && flowConfig.mode !== 'tryAut') {
-        flowConfig.mode = null;
+
+      if (!Object.values(FlowConfigMode).includes(flowConfig.mode)) {
+        flowConfig.mode = FlowConfigMode.FreeMode;
       }
       dispatch(setFlowConfig(flowConfig));
     }
@@ -255,7 +216,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const initializeAut = async () => {
     dispatchEvent(OutputEventTypes.Init);
     // check timestamp
-    const autId = JSON.parse(sessionStorage.getItem('aut-data'));
+    const autId = JSON.parse(localStorage.getItem('aut-data'));
     if (autId) {
       const currentTime = new Date().getTime();
       // 8 Hours
@@ -265,12 +226,39 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
         dispatchEvent(OutputEventTypes.Connected, autId);
         // activateBrowserWallet({ type: autId?.provider }); // activave provider to get address
       } else {
-        window.sessionStorage.removeItem('aut-data');
+        window.localStorage.removeItem('aut-data');
         dispatch(resetUIState);
         dispatchEvent(OutputEventTypes.Disconnected);
       }
     }
   };
+
+  useEffect(() => {
+    if (connector?.ready && isConnected && signer && flowMode && networks?.length) {
+      const start = async () => {
+        const [network] = networks.filter((d) => !d.disabled);
+        const itemsToUpdate = {
+          isAuthorised: true,
+          sdkInitialized: true,
+          isOpen: false,
+          selectedNetwork: network,
+        };
+
+        await initializeSDK(network, signer);
+        await dispatch(updateWalletProviderState(itemsToUpdate));
+
+        // if (flowMode === 'dashboard') {
+        //   navigate('/autid');
+        //   await dispatch(getAutId(address));
+        // }
+        // if (flowMode === 'tryAut') {
+        //   navigate('/newuser');
+        //   await checkForExistingAutId(address);
+        // }
+      };
+      start();
+    }
+  }, [isConnected, connector?.ready, signer, networks, flowMode]);
 
   useEffect(() => {
     setMenuItems([
@@ -289,15 +277,13 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       } as SwAttributes;
       setAttributes(updatedAttributes);
     });
-    window.addEventListener(InputEventTypes.Open, handleOpen);
-    return () => window.removeEventListener(InputEventTypes.Open, handleOpen);
   }, []);
 
   useEffect(() => {
-    window.removeEventListener(InputEventTypes.Open, handleOpen);
+    // window.removeEventListener(InputEventTypes.Open, handleOpen);
     window.addEventListener(InputEventTypes.Open, handleOpen);
     return () => window.removeEventListener(InputEventTypes.Open, handleOpen);
-  }, [userData, flowMode, uiState]);
+  }, [userData, flowMode]);
 
   const userProfile: AutButtonUserProfile = useMemo(() => {
     if (!userData?.name) return;

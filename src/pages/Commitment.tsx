@@ -35,12 +35,12 @@ const Commitment: React.FunctionComponent = (props) => {
     if (coreState.justJoin) {
       const result = await dispatch(joinCommunity(account));
       if (!(result as any).error) {
-        navigate('congrats');
+        navigate('/congrats');
       }
     } else {
       const result = await dispatch(mintMembership(account));
       if (!(result as any).error) {
-        navigate('congrats');
+        navigate('/congrats');
       }
     }
   };

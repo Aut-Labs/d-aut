@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { AutButton } from '../components/AutButton';
@@ -11,11 +10,11 @@ const LoginWith: React.FunctionComponent = () => {
   const autData = useSelector(autState);
 
   const handleAutIdClicked = () => {
-    navigate('autid');
+    navigate('/autid');
   };
 
   const handleNewUserClicked = () => {
-    navigate('newuser');
+    navigate('/newuser');
   };
 
   return (

@@ -1,11 +1,18 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.42-dev",
-  "main": "build/cjs/index.js",
-  "module": "build/ems/index.js",
-  "types": "build/index.d.ts",
+  "version": "1.0.56-dev",
+  "main": "./build/index.umd.js",
+  "module": "./build/index.es.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./build/index.es.js",
+      "require": "./build/index.umd.js"
+    }
+  },
   "files": [
-    "build"
+    "build/",
+    "src/"
   ],
   "bugs": {
     "url": "https://github.com/Aut-Labs/d-aut/issues"
@@ -26,12 +33,12 @@
   ],
   "scripts": {
     "commit": "git-cz",
-    "build": "npm run clear:babel-cache && npm run build-cjs && npm run build-ems",
+    "build": "vite build && tsc",
     "deploy": "gh-pages -d build",
     "eject": "react-app-rewired eject",
     "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
-    "start": "react-app-rewired start",
+    "start": "vite",
     "test": "react-app-rewired test",
     "build-cjs": "cross-env BUILD_CJS=true react-app-rewired build",
     "build-ems": "cross-env BUILD_CJS=false react-app-rewired build",
@@ -82,7 +89,7 @@
     }
   },
   "devDependencies": {
-    "@aut-labs/sdk": "^0.0.71",
+    "@aut-labs/sdk": "^0.0.72",
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@emotion/cache": "^11.11.0",
@@ -104,6 +111,7 @@
     "@types/react-router-dom": "~5.3.3",
     "@typescript-eslint/eslint-plugin": "~6.3.0",
     "@typescript-eslint/parser": "~6.3.0",
+    "@vitejs/plugin-react": "^4.0.4",
     "axios": "^1.4.0",
     "canvas": "^2.11.2",
     "commitizen": "^4.3.0",
@@ -144,6 +152,12 @@
     "reselect": "^4.1.8",
     "typescript": "^5.1.6",
     "viem": "^1.5.3",
+    "vite": "^4.4.9",
+    "vite-plugin-checker": "^0.6.1",
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-handlebars": "^1.6.0",
+    "vite-plugin-svgr": "^3.2.0",
+    "vite-tsconfig-paths": "^4.2.0",
     "wagmi": "^1.3.9",
     "webpack": "^5.0.0",
     "xmldom": "^0.6.0"

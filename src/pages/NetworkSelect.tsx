@@ -37,7 +37,7 @@ const NetworkSelect: React.FunctionComponent = () => {
     if (foundChainId === network.chainId) {
       await dispatch(getAutId(account));
     } else {
-      await dispatch(setSelectedNetwork(network.network));
+      await dispatch(setSelectedNetwork(network));
       try {
         // @ts-ignore
         const { provider } = conn.provider;

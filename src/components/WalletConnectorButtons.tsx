@@ -17,13 +17,13 @@ const btnConfig = {
 
 export default function WalletConnectorButtons({ onConnect }: { onConnect: (c: Connector) => Promise<void> }) {
   const { connectors, isLoading } = useConnect();
-  const { connector, isReconnecting } = useAccount();
+  const { isReconnecting } = useAccount();
 
   return (
     <Stack direction="column" mt={6} gap={4}>
       {connectors.map((c) => (
         <AutButton
-          disabled={!c.ready || isReconnecting || c.id === connector?.id || isLoading}
+          disabled={!c.ready || isReconnecting || isLoading}
           key={c.id}
           onClick={() => onConnect(c)}
           color="offWhite"

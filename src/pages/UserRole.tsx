@@ -18,7 +18,7 @@ const UserRole: React.FunctionComponent = (props) => {
 
   const handleRoleSelect = (role) => {
     dispatch(setUserData({ role: role.id, roleName: role.roleName }));
-    navigate('commitment');
+    navigate('/commitment');
   };
 
   useEffect(() => {

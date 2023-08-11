@@ -11,7 +11,7 @@ import {
   mintMembership,
 } from '../services/web3/api';
 import { BaseNFTModel } from '../services/web3/models';
-import { FlowConfig } from '../types/d-aut-config';
+import { FlowConfig, FlowConfigMode } from '../types/d-aut-config';
 import { OutputEventTypes } from '../types/event-types';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { dispatchEvent } from '../utils/utils';
@@ -157,12 +157,12 @@ export const autSlice = createSlice({
         if (action.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
           state.status = ResultState.Idle;
           state.user = null;
-          window.sessionStorage.removeItem('aut-data');
+          window.localStorage.removeItem('aut-data');
         } else {
           state.errorStateAction = action.payload as string;
           state.status = ResultState.Failed;
           state.user = null;
-          window.sessionStorage.removeItem('aut-data');
+          window.localStorage.removeItem('aut-data');
         }
       })
       .addCase(mintMembership.pending, (state) => {
@@ -244,7 +244,7 @@ export const {
 
 export const DAOExpanderAddress = (state: any) => state.aut.daoExpanderAddress as string;
 
-export const FlowMode = (state: any) => state.aut.flowConfig?.mode as string;
+export const FlowMode = (state: any) => state.aut.flowConfig?.mode as FlowConfigMode;
 
 export const UsingDev = (state: any) => state.aut.useDev as boolean;
 
@@ -275,6 +275,11 @@ export const user = createSelector(
 export const errorState = createSelector(
   (state) => state.aut.errorStateAction,
   (state) => state as typeof initialState.errorStateAction
+);
+
+export const IsOpen = createSelector(
+  (state) => state.aut.showDialog as boolean,
+  (showDialog) => showDialog as typeof initialState.showDialog
 );
 // export const currentCommunity = createSelector(
 //   (state) => state.swAuth.community as Community & PartnerAgreementKey,

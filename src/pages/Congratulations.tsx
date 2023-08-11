@@ -19,7 +19,7 @@ const Congratulations: React.FunctionComponent = () => {
   const isDev = useSelector(UsingDev);
 
   const gotToShare = () => {
-    navigate('share');
+    navigate('/share');
   };
 
   return (
