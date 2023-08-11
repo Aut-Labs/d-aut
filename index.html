@@ -28,6 +28,7 @@
         background-color: pink;
       }
     </style>
+    <script type="module" src="/src/dev.index.tsx"></script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -45,13 +46,12 @@
       <d-aut
         id="aut"
         use-dev="false"
-        flow-config='{"mode": "tryAut", "customCongratsMesssage": "messages"}'
+        flow-config='{"mode": "dashboard", "customCongratsMesssage": "messages"}'
         ipfs-gateway="https://ipfs.nftstorage.link/ipfs"
-        dao-expander="0xF54159B5d1Fa33dFc9f9798dc6361c0f6FE2CcA0"
-        allowed-role-id="1"
+        dao-expander="0x0E1cC67F46F4211daAB1a40BefB4AA1CF4Bd40b4"
         menu-items='[{"name":"Profile","actionType":"external_link","link":"?network=mumbai"}]'
       ></d-aut>
     </div>
   </body>
-  <script></script>
+  
 </html>

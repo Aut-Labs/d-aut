@@ -1,6 +1,5 @@
 import axios from 'axios';
 import dateFormat from 'dateformat';
-import { constants } from 'ethers';
 import { ipfsCIDToHttpUrl, storeImageAsBlob, storeMetadata } from '../storage/storage.hub';
 import { BaseNFTModel, Community } from './models';
 import { InternalErrorTypes } from '../../utils/error-parser';
@@ -10,22 +9,26 @@ import { setUserData } from '../../store/user-data.reducer';
 import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
 import { AutId, NetworkConfig } from '../ProviderFactory/web3.connectors';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import AutSDK, { DAOExpander, fetchMetadata } from '@aut-labs-private/sdk';
+import AutSDK, { DAOExpander, fetchMetadata } from '@aut-labs/sdk';
 import { RootState } from '../../store/store.model';
 import { OutputEventTypes } from '../../types/event-types';
 import { env } from './env';
+import { constants } from 'ethers';
 
 export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue, getState }) => {
   const { customIpfsGateway } = (getState() as RootState).walletProvider;
   const sdk = AutSDK.getInstance();
   const daoExpander = sdk.daoExpander.contract;
   const metadataUri = await daoExpander.metadata.getMetadataUri();
+
   if (!metadataUri.isSuccess) {
     return rejectWithValue(InternalErrorTypes.CouldNotFindCommunity);
   }
   // console.log(resp);
   // const communityMetadata = await fetch(cidToHttpUrl(`${resp[2]}/metadata.json`));
   const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
+
+  debugger;
   if (communityMetadata.status === 504) {
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
   }
@@ -80,7 +83,7 @@ export const mintMembership = createAsyncThunk(
       role: roleName.toString(),
       dao: aut.community.name,
       hash: `#${nftIdResp.data.toString()}`,
-      network: selectedNetwork.toLowerCase(),
+      network: selectedNetwork?.network.toLowerCase(),
       expanderAddress: aut.daoExpanderAddress,
       timestamp: `${timeStamp}`,
     } as SWIDParams;
@@ -283,7 +286,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   autId.address = selectedAddress;
   await dispatch(setUserData({ username: autId.name }));
 
-  window.sessionStorage.setItem('aut-data', JSON.stringify(autId));
+  window.localStorage.setItem('aut-data', JSON.stringify(autId));
   return autId;
 });
 
@@ -309,7 +312,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
     if (autIDs.length === 1) {
       const [holderData] = autIDs;
 
-      if (holderData.network !== selectedNetwork) {
+      if (holderData.network !== selectedNetwork?.network) {
         return rejectWithValue(InternalErrorTypes.FoundAnAutIDOnADifferentNetwork);
       }
 
@@ -395,7 +398,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
       autId.network = walletProvider.selectedNetwork;
       autId.address = selectedAddress;
 
-      window.sessionStorage.setItem('aut-data', JSON.stringify(autId));
+      window.localStorage.setItem('aut-data', JSON.stringify(autId));
       return autId;
     }
   }

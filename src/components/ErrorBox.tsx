@@ -1,5 +1,5 @@
 import { Box, Link, Typography } from '@mui/material';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { errorAction, errorState, FlowMode } from '../store/aut.reducer';
 import AutLogo from './AutLogo';
@@ -11,7 +11,7 @@ export const ErrorBox = () => {
   const errorMessage = useSelector(errorState);
   const flowMode = useSelector(FlowMode);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleError = () => {
     if (errorMessage === InternalErrorTypes.AutIDAlreadyExistsForAddress || errorMessage === InternalErrorTypes.UsernameAlreadyTaken) {
@@ -19,11 +19,11 @@ export const ErrorBox = () => {
     } else {
       dispatch(errorAction(null));
       if (flowMode === 'dashboard') {
-        history.push('/autid');
+        navigate('/autid');
       } else if (flowMode === 'tryAut') {
-        history.push('/newuser');
+        navigate('/newuser');
       } else {
-        history.push('/');
+        navigate('/');
       }
     }
   };

@@ -1,20 +1,16 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import { TwitterShareButton } from 'react-share';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { userData } from '../store/user-data.reducer';
 import { UsingDev, autState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { SelectedNetwork } from '../store/wallet-provider';
 import { autUrls } from '../services/web3/env';
 
 const MintSuccess: React.FunctionComponent = () => {
-  const history = useHistory();
   const userInput = useSelector(userData);
-  const selectedNetwork = useSelector(SelectedNetwork);
   const autData = useSelector(autState);
   const isDev = useSelector(UsingDev);
 

@@ -51,13 +51,14 @@ const NetworkSelector = ({ onSelect, onBack }) => {
                   <AutSelectField
                     variant="standard"
                     autoFocus
-                    renderValue={(selected) => {
-                      if (!selected) {
-                        return 'Select Network';
-                      }
-                      const networkConfig = networkConfigs.find((c) => c.chainId === selected);
-                      return networkConfig.network || selected;
-                    }}
+                    // @TODO: fix this
+                    // renderValue={(selected) => {
+                    //   if (!selected) {
+                    //     return 'Select Network';
+                    //   }
+                    //   const networkConfig = networkConfigs.find((c) => c.chainId === selected);
+                    //   return networkConfig.network || selected;
+                    // }}
                     name={name}
                     color="primary"
                     value={value || ''}

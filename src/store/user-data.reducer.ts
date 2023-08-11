@@ -1,6 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { Interface } from 'ethers/lib/utils';
-import { createSelector } from 'reselect';
+import { createSlice } from '@reduxjs/toolkit';
 import { ActionPayload } from './action-payload';
 
 export interface UserData {

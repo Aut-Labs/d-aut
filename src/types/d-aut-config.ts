@@ -1,4 +1,5 @@
-import { ISDKBiconomyWrapper } from '@aut-labs-private/sdk/dist/models/IBiconomyWrapper';
+/* eslint-disable @typescript-eslint/no-duplicate-enum-values */
+import { ISDKBiconomyWrapper } from '@aut-labs/sdk/dist/models/IBiconomyWrapper';
 import { IAutButtonConfig } from '../components/AutButtonMenu/AutMenuUtils';
 import { CamelCase } from './camel-case';
 
@@ -9,8 +10,14 @@ export interface SwAuthConfig<CSSObject> {
   containerStyles?: CSSObject;
 }
 
+export enum FlowConfigMode {
+  Dashboard = 'dashboard',
+  TryAut = 'tryAut',
+  FreeMode = 'freeMode',
+}
+
 export interface FlowConfig {
-  mode?: 'dashboard' | 'tryAut';
+  mode?: FlowConfigMode;
   customCongratsMessage?: string;
 }
 

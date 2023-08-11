@@ -1,8 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { SmallerAutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { UsingDev, autState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
@@ -12,8 +10,6 @@ import TelegramIcon from '@mui/icons-material/Telegram';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
 import { LinkedinShareButton, TelegramShareButton, TwitterShareButton } from 'react-share';
-import AutClipboardCopy from '../components/ClipboardCopy';
-import { pxToRem } from '../utils/utils';
 import { userData } from '../store/user-data.reducer';
 import { autUrls } from '../services/web3/env';
 

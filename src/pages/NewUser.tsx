@@ -1,21 +1,23 @@
-import React, { useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store/store.model';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
-import { FlowMode, setJustJoining } from '../store/aut.reducer';
+import { FlowMode, ResultState, loadingStatus, setJustJoining } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { ConnectorTypes, setSelectedNetwork } from '../store/wallet-provider';
-import ConnectorBtn from '../components/ConnectorButton';
-import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
+import { NetworksConfig } from '../store/wallet-provider';
 import { LoadingProgress } from '../components/LoadingProgress';
 import { useSelector } from 'react-redux';
+import { Connector, useAccount, useConnect } from 'wagmi';
+import WalletConnectorButtons from '../components/WalletConnectorButtons';
 
-const NewUser: React.FunctionComponent = (props) => {
+const NewUser: React.FunctionComponent = () => {
   const flowMode = useSelector(FlowMode);
   const dispatch = useAppDispatch();
-  const history = useHistory();
-  const { connect, waitingUserConfirmation, isLoading } = useWeb3ReactConnectorHook();
+  const navigate = useNavigate();
+  const networks = useSelector(NetworksConfig);
+  const { isLoading, connectAsync } = useConnect();
+  const status = useSelector(loadingStatus);
+  const { address, isConnected, connector } = useAccount();
 
   const checkForExistingAutId = async (account: string) => {
     const hasAutId = await dispatch(checkIfAutIdExists(account));
@@ -23,43 +25,33 @@ const NewUser: React.FunctionComponent = (props) => {
       await dispatch(fetchCommunity());
       if (!hasAutId.payload) {
         await dispatch(setJustJoining(false));
-        history.push('userdetails');
+        navigate('/userdetails');
       } else {
         await dispatch(setJustJoining(true));
-        history.push('role');
+        navigate('/role');
       }
     }
   };
 
-  useEffect(() => {
-    dispatch(setSelectedNetwork(null));
-  }, []);
-
-  const tryConnect = async (connectorType: string) => {
-    const account = await connect(connectorType);
-    if (account) {
-      await checkForExistingAutId(account);
+  const tryConnect = async (c: Connector) => {
+    const connectorChange = c?.id !== connector?.id;
+    if (isConnected && address && !connectorChange) {
+      checkForExistingAutId(address);
+      return;
     }
+    const [network] = networks.filter((d) => !d.disabled);
+    await connectAsync({ connector: c, chainId: Number(network.chainId) });
+    await checkForExistingAutId(address);
   };
 
   return (
     <>
-      {isLoading || waitingUserConfirmation ? (
+      {isLoading || status === ResultState.Loading ? (
         <>
-          {/* {waitingUserConfirmation && (
-            <Typography m="0" color="white" variant="subtitle1">
-              Waiting confirmation...
-            </Typography>
-          )} */}
           <LoadingProgress />
         </>
       ) : (
         <>
-          {/* {selectingNetwork ? (
-            <NetworkSelector onSelect={changeNetwork} onBack={() => setSelectingNetwork(false)} />
-          ) : (
-            
-          )} */}
           <AutPageBox>
             <AutHeader
               hideBackBtn={!!flowMode}
@@ -72,8 +64,7 @@ const NewUser: React.FunctionComponent = (props) => {
                 </>
               }
             />
-            <ConnectorBtn marginTop={66} setConnector={tryConnect} connectorType={ConnectorTypes.Metamask} />
-            <ConnectorBtn marginTop={53} setConnector={tryConnect} connectorType={ConnectorTypes.WalletConnect} />
+            <WalletConnectorButtons onConnect={tryConnect} />
           </AutPageBox>
         </>
       )}

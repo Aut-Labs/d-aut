@@ -13,8 +13,8 @@ import { getAutId } from '../services/web3/api';
 import { NetworksConfig, SelectedNetwork, setSelectedNetwork } from '../store/wallet-provider';
 import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { InternalErrorTypes } from '../utils/error-parser';
-import AutSDK from '@aut-labs-private/sdk';
-import { useEthers } from '@usedapp/core';
+import AutSDK from '@aut-labs/sdk';
+import { useAccount } from 'wagmi';
 
 const NetworkSelect: React.FunctionComponent = () => {
   const networkConfigs = useSelector(NetworksConfig);
@@ -22,7 +22,7 @@ const NetworkSelect: React.FunctionComponent = () => {
   const autData = useSelector(autState);
   const selectedNetwork = useSelector(SelectedNetwork);
   const dispatch = useAppDispatch();
-  const { account } = useEthers();
+  const { address: account } = useAccount();
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -37,7 +37,7 @@ const NetworkSelect: React.FunctionComponent = () => {
     if (foundChainId === network.chainId) {
       await dispatch(getAutId(account));
     } else {
-      await dispatch(setSelectedNetwork(network.network));
+      await dispatch(setSelectedNetwork(network));
       try {
         // @ts-ignore
         const { provider } = conn.provider;
@@ -113,13 +113,14 @@ const NetworkSelect: React.FunctionComponent = () => {
                   <AutSelectField
                     variant="standard"
                     autoFocus
-                    renderValue={(selected) => {
-                      if (!selected) {
-                        return 'Select Network';
-                      }
-                      const autId = autData.autIdsOnDifferentNetworks.find((a) => a.network === selected);
-                      return autId?.network || selected;
-                    }}
+                    // @TODO: fix this
+                    // renderValue={(selected) => {
+                    //   if (!selected) {
+                    //     return 'Select Network';
+                    //   }
+                    //   const autId = autData.autIdsOnDifferentNetworks.find((a) => a.network === selected);
+                    //   return autId?.network || selected;
+                    // }}
                     name={name}
                     color="primary"
                     value={value || ''}

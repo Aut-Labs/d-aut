@@ -2,55 +2,43 @@ import { useAppDispatch } from '../store/store.model';
 import { getAutId } from '../services/web3/api';
 import { AutPageBox } from '../components/AutPageBox';
 import { AutHeader } from '../components/AutHeader';
-import { ConnectorTypes } from '../store/wallet-provider';
-import ConnectorBtn from '../components/ConnectorButton';
-import { useEthers } from '@usedapp/core';
-import { useWeb3ReactConnectorHook } from '../services/ProviderFactory/connector-hooks';
 import { LoadingProgress } from '../components/LoadingProgress';
-import { FlowMode } from '../store/aut.reducer';
+import { FlowMode, ResultState, loadingStatus } from '../store/aut.reducer';
 import { useSelector } from 'react-redux';
+import { Connector, useAccount, useConnect } from 'wagmi';
+import WalletConnectorButtons from '../components/WalletConnectorButtons';
+import { NetworksConfig } from '../store/wallet-provider';
 
 const LoginWithAut: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const flowMode = useSelector(FlowMode);
-  const { connect, waitingUserConfirmation, isLoading } = useWeb3ReactConnectorHook();
+  const networks = useSelector(NetworksConfig);
+  const { isLoading, connectAsync, error } = useConnect();
+  const { address, isConnected, connector } = useAccount();
+  const status = useSelector(loadingStatus);
 
-  const tryConnect = async (connectorType) => {
-    const account = await connect(connectorType);
-    if (account) {
-      await dispatch(getAutId(account));
+  const tryConnect = async (c: Connector) => {
+    const connectorChange = c?.id !== connector?.id;
+    if (isConnected && address && !connectorChange) {
+      dispatch(getAutId(address));
+      return;
     }
-
-    // if (result.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
-    //   history.push('/networks');
-    // }
-    // if (result.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
-    //   history.push('/unjoined');
-    // }
+    const [network] = networks.filter((d) => !d.disabled);
+    await connectAsync({ connector: c, chainId: Number(network.chainId) });
+    await dispatch(getAutId(address));
   };
 
   return (
     <>
-      {isLoading || waitingUserConfirmation ? (
+      {isLoading || status === ResultState.Loading ? (
         <>
-          {/* {waitingUserConfirmation && (
-            <Typography m="0" color="white" variant="subtitle1">
-              Waiting confirmation...
-            </Typography>
-          )} */}
           <LoadingProgress />
         </>
       ) : (
         <>
-          {/* {selectingNetwork ? (
-            <NetworkSelector onSelect={changeNetwork} onBack={() => setSelectingNetwork(false)} />
-          ) : (
-            
-          )} */}
           <AutPageBox>
             <AutHeader hideBackBtn={!!flowMode} logoId="new-user-logo" title="Welcome back" />
-            <ConnectorBtn marginTop={93} setConnector={tryConnect} connectorType={ConnectorTypes.Metamask} />
-            <ConnectorBtn marginTop={53} setConnector={tryConnect} connectorType={ConnectorTypes.WalletConnect} />
+            <WalletConnectorButtons onConnect={tryConnect} />
           </AutPageBox>
         </>
       )}

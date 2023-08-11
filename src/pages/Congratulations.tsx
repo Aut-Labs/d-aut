@@ -1,9 +1,8 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { TwitterShareButton } from 'react-share';
-import { AutButton, SmallerAutButton } from '../components/AutButton';
+import { useNavigate } from 'react-router-dom';
+import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState, CustomCongratsMessage, UsingDev } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
@@ -12,16 +11,15 @@ import { SelectedNetwork } from '../store/wallet-provider';
 import { autUrls } from '../services/web3/env';
 
 const Congratulations: React.FunctionComponent = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const autData = useSelector(autState);
   const customMessage = useSelector(CustomCongratsMessage);
   const isOwner = useSelector(IsOwner);
-  const selectedNetwork = useSelector(SelectedNetwork);
   const userInput = useSelector(userData);
   const isDev = useSelector(UsingDev);
 
   const gotToShare = () => {
-    history.push('share');
+    navigate('/share');
   };
 
   return (

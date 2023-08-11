@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import AutFileUpload from '../components/AutFileUpload';
 import { setUserData, userData } from '../store/user-data.reducer';
@@ -16,9 +16,9 @@ import { AutHeader } from '../components/AutHeader';
 import { AutTextField } from '../theme/field-text-styles';
 
 const UserDetails: React.FunctionComponent = (props) => {
-  const history = useHistory();
   const userInput = useSelector(userData);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const {
     handleSubmit,
     control,
@@ -32,7 +32,7 @@ const UserDetails: React.FunctionComponent = (props) => {
     const result = await dispatch(checkIfNameTaken({ username: data.username }));
     if (result.payload !== InternalErrorTypes.UsernameAlreadyTaken) {
       await dispatch(setUserData(data));
-      history.push('/role');
+      navigate('/role');
     }
   };
 

@@ -2,7 +2,6 @@ import { MemoryRouter as Router } from 'react-router-dom';
 import { CacheProvider, CSSObject, ThemeProvider } from '@emotion/react';
 import { create } from 'jss';
 import { StylesProvider, jssPreset } from '@mui/styles';
-import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { StyledEngineProvider } from '@mui/material';
 import Theme from './theme/theme';
@@ -11,10 +10,26 @@ import SwAuthModal, { AutButton } from './Aut';
 import { AttributeCallbackFn, SwAuthConfig } from './types/d-aut-config';
 import { AttributeNames, createShadowElement, extractAttributes, isElement } from './utils/utils';
 import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
-
+import { createRoot } from 'react-dom/client';
 import { fonts } from './assets/fonts/Fractul/fontsBase64';
 import { env } from './services/web3/env';
 import { BiconomyContext } from './biconomy_context';
+
+function safeDecorator(fn) {
+  // eslint-disable-next-line func-names
+  return function (...args) {
+    try {
+      return fn.apply(this, args);
+    } catch (error) {
+      if (error instanceof DOMException && error.message.includes('has already been used with this registry')) {
+        return false;
+      }
+      throw error;
+    }
+  };
+}
+
+customElements.define = safeDecorator(customElements.define);
 
 export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
   const TAG_NAME = 'd-aut';
@@ -29,117 +44,116 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
     head.appendChild(style);
   }
 
-  // we don't to initialized again when saving changes on hot-reloading
-  if (customElements.get(TAG_NAME)) {
-    return;
-  }
-  customElements.define(
-    TAG_NAME,
-    class extends HTMLElement {
-      public childAttrCalback: AttributeCallbackFn;
+  if (!customElements.get(TAG_NAME)) {
+    customElements.define(
+      TAG_NAME,
+      class extends HTMLElement {
+        public childAttrCalback: AttributeCallbackFn;
 
-      static get observedAttributes() {
-        // Add all tracked attributes to this array
-        return [
-          AttributeNames.hideButton,
-          AttributeNames.daoExpander,
-          AttributeNames.menuItems,
-          AttributeNames.network,
-          AttributeNames.flowConfig,
-          AttributeNames.allowedRoleId,
-        ];
-      }
-
-      attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-        if (this.childAttrCalback) this.childAttrCalback(name, oldValue, newValue);
-      }
-
-      setAttributeChangeCallback = (callBack: AttributeCallbackFn) => {
-        if (callBack) this.childAttrCalback = callBack;
-      };
-
-      connectedCallback() {
-        const jss = create(jssPreset());
-        const attributes = extractAttributes(this);
-
-        if (attributes.useDev) {
-          env.REACT_APP_API_URL = env.REACT_APP_API_URL_DEV;
+        static get observedAttributes() {
+          // Add all tracked attributes to this array
+          return [
+            AttributeNames.hideButton,
+            AttributeNames.daoExpander,
+            AttributeNames.menuItems,
+            AttributeNames.network,
+            AttributeNames.flowConfig,
+            AttributeNames.allowedRoleId,
+          ];
         }
 
-        let content: JSX.Element = null;
-        let mountPoint: HTMLElement = null;
+        attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+          if (this.childAttrCalback) this.childAttrCalback(name, oldValue, newValue);
+        }
 
-        if (authConfig?.container) {
-          if (!isElement(authConfig.container)) {
-            throw new Error('Container is not of type HTMLElement');
+        setAttributeChangeCallback = (callBack: AttributeCallbackFn) => {
+          if (callBack) this.childAttrCalback = callBack;
+        };
+
+        connectedCallback() {
+          const jss = create(jssPreset());
+          const attributes = extractAttributes(this);
+
+          if (attributes.useDev) {
+            env.REACT_APP_API_URL = env.REACT_APP_API_URL_DEV;
           }
-          Object.assign(authConfig.container.style, {
-            position: 'absolute',
-            left: '0',
-            right: '0',
-            top: '0',
-            bottom: '0',
-            overflow: 'hidden',
-            ...(authConfig.containerStyles || {}),
-          });
-          const mConfig = createShadowElement({ container: authConfig.container, className: 'aut-modal' });
 
-          // mConfig.shadowRoot.insertB(style);
-          const bConfig = createShadowElement({ container: this, className: 'aut-button' });
+          let content: any = null;
+          let mountPoint: HTMLElement = null;
 
-          // bConfig.shadowRoot.appendChild(style);
-          mountPoint = mConfig.mountPoint;
-          content = (
-            <>
-              <CacheProvider value={bConfig.cache}>
-                <AutButton
-                  config={authConfig && authConfig.config}
-                  container={bConfig.root}
-                  attributes={attributes}
-                  setAttrCallback={this.setAttributeChangeCallback}
-                />
-              </CacheProvider>
-              <CacheProvider value={mConfig.cache}>
-                <SwAuthModal rootContainer={authConfig.container} container={mConfig.root} />
-              </CacheProvider>
-            </>
-          );
-        } else {
-          const config = createShadowElement({ container: this, className: 'aut' });
-          // config.shadowRoot.appendChild(style);
-          mountPoint = config.mountPoint;
-          content = (
-            <>
-              <CacheProvider value={config.cache}>
-                <AutButton
-                  config={authConfig && authConfig.config}
-                  container={config.root}
-                  attributes={attributes}
-                  setAttrCallback={this.setAttributeChangeCallback}
-                />
-                <SwAuthModal container={config.root} />
-              </CacheProvider>
-            </>
+          if (authConfig?.container) {
+            if (!isElement(authConfig.container)) {
+              throw new Error('Container is not of type HTMLElement');
+            }
+            Object.assign(authConfig.container.style, {
+              position: 'absolute',
+              left: '0',
+              right: '0',
+              top: '0',
+              bottom: '0',
+              overflow: 'hidden',
+              ...(authConfig.containerStyles || {}),
+            });
+            const mConfig = createShadowElement({ container: authConfig.container, className: 'aut-modal' });
+
+            // mConfig.shadowRoot.insertB(style);
+            const bConfig = createShadowElement({ container: this, className: 'aut-button' });
+
+            // bConfig.shadowRoot.appendChild(style);
+            mountPoint = mConfig.mountPoint;
+            content = (
+              <>
+                <CacheProvider value={bConfig.cache}>
+                  <AutButton
+                    config={authConfig && authConfig.config}
+                    container={bConfig.root}
+                    attributes={attributes}
+                    setAttrCallback={this.setAttributeChangeCallback}
+                  />
+                </CacheProvider>
+                <CacheProvider value={mConfig.cache}>
+                  <SwAuthModal rootContainer={authConfig.container} container={mConfig.root} />
+                </CacheProvider>
+              </>
+            );
+          } else {
+            const config = createShadowElement({ container: this, className: 'aut' });
+            // config.shadowRoot.appendChild(style);
+            mountPoint = config.mountPoint;
+            content = (
+              <>
+                <CacheProvider value={config.cache}>
+                  <AutButton
+                    config={authConfig && authConfig.config}
+                    container={config.root}
+                    attributes={attributes}
+                    setAttrCallback={this.setAttributeChangeCallback}
+                  />
+                  <SwAuthModal container={config.root} />
+                </CacheProvider>
+              </>
+            );
+          }
+
+          const root = createRoot(mountPoint);
+
+          root.render(
+            <StyledEngineProvider injectFirst>
+              <ThemeProvider theme={Theme}>
+                <Provider store={store}>
+                  <Router initialEntries={['/']}>
+                    <Web3AutProvider>
+                      <BiconomyContext.Provider value={authConfig.biconomy}>
+                        <StylesProvider jss={jss}>{content}</StylesProvider>
+                      </BiconomyContext.Provider>
+                    </Web3AutProvider>
+                  </Router>
+                </Provider>
+              </ThemeProvider>
+            </StyledEngineProvider>
           );
         }
-
-        ReactDOM.render(
-          <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={Theme}>
-              <Provider store={store}>
-                <Router initialEntries={['/']}>
-                  <Web3AutProvider>
-                    <BiconomyContext.Provider value={authConfig.biconomy}>
-                      <StylesProvider jss={jss}>{content}</StylesProvider>
-                    </BiconomyContext.Provider>
-                  </Web3AutProvider>
-                </Router>
-              </Provider>
-            </ThemeProvider>
-          </StyledEngineProvider>,
-          mountPoint
-        );
       }
-    }
-  );
+    );
+  }
 }

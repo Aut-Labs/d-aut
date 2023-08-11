@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Box } from '@mui/system';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ReactComponent as BackIcon } from '../assets/back-icon.svg';
 import { ReactComponent as CrossIcon } from '../assets/cross.svg';
 import { useAppDispatch } from '../store/store.model';
@@ -41,14 +41,14 @@ StyledButton.defaultProps = {
 };
 
 export const AutNavigationButtons = ({ hideBack = false, hideClose = false, backAction = null }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const handleClick = async () => {
     if (backAction) {
       await backAction();
     }
-    history.goBack();
+    navigate(-1);
   };
 
   const handleClose = () => {

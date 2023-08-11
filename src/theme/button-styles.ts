@@ -262,61 +262,64 @@ export default (theme: Theme) =>
           },
         },
       },
-      ...Object.keys(buttonStyles).reduce((prev, curr) => {
-        const { width, fontSize, paddingBottom, paddingLeft, paddingRight, paddingTop, ...restStyles } = buttonStyles[curr];
-        const currStyle = restStyles;
-        Object.keys(fontSize).forEach((key: Breakpoint) => {
-          currStyle[theme.breakpoints.up(key)] = {
-            fontSize: fontSize[key],
-          };
-        });
-        Object.keys(paddingBottom).forEach((key: Breakpoint) => {
-          currStyle[theme.breakpoints.up(key)] = {
-            ...currStyle[theme.breakpoints.up(key)],
-            paddingBottom: paddingBottom[key],
-          };
-        });
-        Object.keys(paddingLeft).forEach((key: Breakpoint) => {
-          currStyle[theme.breakpoints.up(key)] = {
-            ...currStyle[theme.breakpoints.up(key)],
-            paddingLeft: paddingLeft[key],
-          };
-        });
-        Object.keys(paddingRight).forEach((key: Breakpoint) => {
-          currStyle[theme.breakpoints.up(key)] = {
-            ...currStyle[theme.breakpoints.up(key)],
-            paddingRight: paddingRight[key],
-          };
-        });
+      ...Object.keys(buttonStyles).reduce(
+        (prev, curr) => {
+          const { width, fontSize, paddingBottom, paddingLeft, paddingRight, paddingTop, ...restStyles } = buttonStyles[curr];
+          const currStyle = restStyles;
+          Object.keys(fontSize).forEach((key: Breakpoint) => {
+            currStyle[theme.breakpoints.up(key)] = {
+              fontSize: fontSize[key],
+            };
+          });
+          Object.keys(paddingBottom).forEach((key: Breakpoint) => {
+            currStyle[theme.breakpoints.up(key)] = {
+              ...currStyle[theme.breakpoints.up(key)],
+              paddingBottom: paddingBottom[key],
+            };
+          });
+          Object.keys(paddingLeft).forEach((key: Breakpoint) => {
+            currStyle[theme.breakpoints.up(key)] = {
+              ...currStyle[theme.breakpoints.up(key)],
+              paddingLeft: paddingLeft[key],
+            };
+          });
+          Object.keys(paddingRight).forEach((key: Breakpoint) => {
+            currStyle[theme.breakpoints.up(key)] = {
+              ...currStyle[theme.breakpoints.up(key)],
+              paddingRight: paddingRight[key],
+            };
+          });
 
-        Object.keys(paddingTop).forEach((key: Breakpoint) => {
-          currStyle[theme.breakpoints.up(key)] = {
-            ...currStyle[theme.breakpoints.up(key)],
-            paddingTop: paddingTop[key],
-          };
-        });
+          Object.keys(paddingTop).forEach((key: Breakpoint) => {
+            currStyle[theme.breakpoints.up(key)] = {
+              ...currStyle[theme.breakpoints.up(key)],
+              paddingTop: paddingTop[key],
+            };
+          });
 
-        Object.keys(width).forEach((key: Breakpoint) => {
-          currStyle[theme.breakpoints.up(key)] = {
-            ...currStyle[theme.breakpoints.up(key)],
-            width: width[key],
-          };
-        });
+          Object.keys(width).forEach((key: Breakpoint) => {
+            currStyle[theme.breakpoints.up(key)] = {
+              ...currStyle[theme.breakpoints.up(key)],
+              width: width[key],
+            };
+          });
 
-        prev = [
-          ...prev,
-          {
-            props: {
-              size: curr as any,
+          prev = [
+            ...prev,
+            {
+              props: {
+                size: curr as any,
+              },
+              style: currStyle,
             },
-            style: currStyle,
-          },
-        ];
-        return prev;
-      }, [] as ComponentsVariants['MuiButton']),
+          ];
+          return prev;
+        },
+        [] as ComponentsVariants['MuiButton']
+      ),
     ],
-  } as {
+  }) as {
     defaultProps?: ComponentsProps['MuiButton'];
     styleOverrides?: ComponentsOverrides<Theme>['MuiButton'];
     variants?: ComponentsVariants['MuiButton'];
-  });
+  };

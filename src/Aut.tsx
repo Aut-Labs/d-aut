@@ -1,36 +1,50 @@
-import { withRouter, useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useContext, useEffect, useMemo, useState } from 'react';
 import Portal from '@mui/material/Portal';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
 import { dispatchEvent, parseAttributeValue, toCammelCase } from './utils/utils';
-import { AutButtonProps, FlowConfig, SwAttributes } from './types/d-aut-config';
+import { AutButtonProps, FlowConfig, FlowConfigMode, SwAttributes } from './types/d-aut-config';
 import { InputEventTypes, OutputEventTypes } from './types/event-types';
 import {
   autState,
+  DAOExpanderAddress,
   FlowMode,
   setAllowedRoleId,
   setCommunityExtesnionAddress,
   setFlowConfig,
+  setJustJoining,
   setUseDev,
   setUser,
   showDialog,
   user,
 } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
-import { IPFSCusomtGateway, NetworksConfig, setCustomIpfsGateway, setNetworks, setSelectedNetwork } from './store/wallet-provider';
+import {
+  IPFSCusomtGateway,
+  IsAuthorised,
+  NetworksConfig,
+  setCustomIpfsGateway,
+  setNetworks,
+  updateWalletProviderState,
+} from './store/wallet-provider';
 import { ipfsCIDToHttpUrl } from './services/storage/storage.hub';
 import AutButtonMenu from './components/AutButtonMenu/AutButtonMenu';
 import { AutMenuItemType, MenuItemActionType, AutButtonUserProfile } from './components/AutButtonMenu/AutMenuUtils';
 import { NetworkConfig } from './services/ProviderFactory/web3.connectors';
-import { useEthers } from '@usedapp/core';
+import { useAccount, useChainId, useDisconnect } from 'wagmi';
+import AutSDK, { AutID } from '@aut-labs/sdk';
+import { BiconomyContext } from './biconomy_context';
+import { useEthersSigner } from './services/ProviderFactory/ethers';
+import { JsonRpcSigner } from '@ethersproject/providers';
+import { checkIfAutIdExists, fetchCommunity, getAutId } from './services/web3/api';
 
-const AutModal = withRouter(({ container, rootContainer = null }: any) => {
+const AutModal = ({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
   const uiState = useSelector(autState);
 
-  const handleClose = async (event, reason) => {
+  const handleClose = async () => {
     // if (reason && reason === 'backdropClick') return;
     dispatch(showDialog(false));
   };
@@ -47,68 +61,91 @@ const AutModal = withRouter(({ container, rootContainer = null }: any) => {
       <MainDialog open={uiState.showDialog} handleClose={handleClose} container={container} />
     </>
   );
-});
+};
 
 export const AutButton = memo(({ config, attributes: defaultAttributes, container, setAttrCallback }: AutButtonProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const uiState = useSelector(autState);
-  const flowMode = useSelector(FlowMode);
-  const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
-  const userData = useSelector(user);
+  const { disconnectAsync } = useDisconnect();
+  const chainId = useChainId();
+  const signer = useEthersSigner({ chainId });
+  const { connector, isConnected } = useAccount();
+
   const customIpfsGateway = useSelector(IPFSCusomtGateway);
+  // const isAuthorised = useSelector(IsAuthorised);
   const networks = useSelector(NetworksConfig);
-  const { account, isLoading, activateBrowserWallet } = useEthers();
+  const flowMode = useSelector(FlowMode);
+  const daoExpanderAddress = useSelector(DAOExpanderAddress);
+  const userData = useSelector(user);
 
-  /*
-   * isLoading is used to ensure that the wallet provider (metamask or walletConnect) is ready
-   * If userData.address is different from provided address (account)
-   * then we should disconnect
-   */
-  const hasAccountChanged = useMemo(() => {
-    return !isLoading && !!userData?.address && !!account && userData?.address !== account;
-  }, [userData?.address, account, isLoading]);
+  const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
+  const BiconomyRef = useContext(BiconomyContext);
 
-  /*
-   * isLoading is used to ensure that the wallet provider (metamask or walletConnect) is ready
-   * If wallet provider is loaded and there is userData but not account
-   * it could mean two things:
-   * 1. The user last was loaded by a different provider
-   * 2. Metamask or walletConnect is not connected!
-   */
-  const userWithoutAccount = useMemo(() => {
-    return !isLoading && !account && !!userData?.address;
-  }, [account, userData?.address, isLoading]);
+  const initializeSDK = async (network: NetworkConfig, signer: JsonRpcSigner) => {
+    const sdk = AutSDK.getInstance();
+    let autIdContractAddress = network?.contracts?.autIDAddress;
 
-  const handleOpen = async () => {
-    // if (currentUser.isLoggedIn) {
-    if (!uiState.user) {
-      if (flowMode) {
-        if (flowMode === 'dashboard') {
-          history.push('/autid');
-        }
-        if (flowMode === 'tryAut') {
-          history.push('/newuser');
-        }
-      } else {
-        history.push('/');
-      }
-
-      // if (isActive) {
-      //   await connector.deactivate();
-      //   // dispatch(setSigner(provider.getSigner()));
-      // }
-      if (uiState?.provider?.disconnect) {
-        await uiState?.provider?.disconnect();
-      }
-      await dispatch(setSelectedNetwork(null));
-      await dispatch(resetUIState);
-      dispatch(showDialog(true));
+    // If dao expander is provided then to ensure is the correct autId address
+    // we will fetch contract address from daoExpanderAddress contract
+    if (daoExpanderAddress) {
+      // only when daoExpanderAddress is present we can create a new user
+      // and so only then we should inject biconomy
+      const biconomy =
+        network?.biconomyApiKey &&
+        BiconomyRef &&
+        new BiconomyRef({
+          enableDebugMode: true,
+          apiKey: network.biconomyApiKey,
+          contractAddresses: [autIdContractAddress],
+        });
+      await sdk.init(
+        signer,
+        {
+          daoExpanderAddress,
+        },
+        biconomy
+      );
+      const result = await sdk.daoExpander.contract.getAutIDContractAddress();
+      autIdContractAddress = result?.data;
+      sdk.autID = sdk.initService<AutID>(AutID, autIdContractAddress);
+    } else {
+      await sdk.init(signer, {
+        autIDAddress: autIdContractAddress,
+      });
     }
   };
 
+  // const checkForExistingAutId = async (account: string) => {
+  //   const hasAutId = await dispatch(checkIfAutIdExists(account));
+  //   if (hasAutId.meta.requestStatus !== 'rejected') {
+  //     await dispatch(fetchCommunity());
+  //     if (!hasAutId.payload) {
+  //       await dispatch(setJustJoining(false));
+  //       navigate('userdetails');
+  //     } else {
+  //       await dispatch(setJustJoining(true));
+  //       navigate('role');
+  //     }
+  //   }
+  // };
+
+  const handleOpen = async () => {
+    if (userData) return;
+
+    if (flowMode === FlowConfigMode.Dashboard) {
+      navigate('/autid');
+    } else if (flowMode === FlowConfigMode.TryAut) {
+      navigate('/newuser');
+    } else {
+      navigate('/');
+    }
+
+    dispatch(showDialog(true));
+  };
+
   const handleDisconnect = async () => {
-    window.sessionStorage.removeItem('aut-data');
+    window.localStorage.removeItem('aut-data');
+    await disconnectAsync();
     dispatch(resetUIState);
     dispatchEvent(OutputEventTypes.Disconnected);
   };
@@ -130,8 +167,9 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
 
     if (attributes.flowConfig) {
       const flowConfig = attributes.flowConfig as FlowConfig;
-      if (flowConfig.mode !== 'dashboard' && flowConfig.mode !== 'tryAut') {
-        flowConfig.mode = null;
+
+      if (!Object.values(FlowConfigMode).includes(flowConfig.mode)) {
+        flowConfig.mode = FlowConfigMode.FreeMode;
       }
       dispatch(setFlowConfig(flowConfig));
     }
@@ -178,7 +216,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const initializeAut = async () => {
     dispatchEvent(OutputEventTypes.Init);
     // check timestamp
-    const autId = JSON.parse(sessionStorage.getItem('aut-data'));
+    const autId = JSON.parse(localStorage.getItem('aut-data'));
     if (autId) {
       const currentTime = new Date().getTime();
       // 8 Hours
@@ -186,9 +224,9 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       if (currentTime < sessionLength) {
         dispatch(setUser(autId));
         dispatchEvent(OutputEventTypes.Connected, autId);
-        activateBrowserWallet({ type: autId?.provider }); // activave provider to get address
+        // activateBrowserWallet({ type: autId?.provider }); // activave provider to get address
       } else {
-        window.sessionStorage.removeItem('aut-data');
+        window.localStorage.removeItem('aut-data');
         dispatch(resetUIState);
         dispatchEvent(OutputEventTypes.Disconnected);
       }
@@ -196,10 +234,31 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   };
 
   useEffect(() => {
-    if (hasAccountChanged || userWithoutAccount) {
-      handleDisconnect();
+    if (connector?.ready && isConnected && signer && flowMode && networks?.length) {
+      const start = async () => {
+        const [network] = networks.filter((d) => !d.disabled);
+        const itemsToUpdate = {
+          isAuthorised: true,
+          sdkInitialized: true,
+          isOpen: false,
+          selectedNetwork: network,
+        };
+
+        await initializeSDK(network, signer);
+        await dispatch(updateWalletProviderState(itemsToUpdate));
+
+        // if (flowMode === 'dashboard') {
+        //   navigate('/autid');
+        //   await dispatch(getAutId(address));
+        // }
+        // if (flowMode === 'tryAut') {
+        //   navigate('/newuser');
+        //   await checkForExistingAutId(address);
+        // }
+      };
+      start();
     }
-  }, [hasAccountChanged, userWithoutAccount]);
+  }, [isConnected, connector?.ready, signer, networks, flowMode]);
 
   useEffect(() => {
     setMenuItems([
@@ -218,15 +277,13 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       } as SwAttributes;
       setAttributes(updatedAttributes);
     });
-    window.addEventListener(InputEventTypes.Open, handleOpen);
-    return () => window.removeEventListener(InputEventTypes.Open, handleOpen);
   }, []);
 
   useEffect(() => {
-    window.removeEventListener(InputEventTypes.Open, handleOpen);
+    // window.removeEventListener(InputEventTypes.Open, handleOpen);
     window.addEventListener(InputEventTypes.Open, handleOpen);
     return () => window.removeEventListener(InputEventTypes.Open, handleOpen);
-  }, [userData, flowMode, uiState]);
+  }, [userData, flowMode]);
 
   const userProfile: AutButtonUserProfile = useMemo(() => {
     if (!userData?.name) return;
