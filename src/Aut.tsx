@@ -69,7 +69,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const { disconnectAsync } = useDisconnect();
   const chainId = useChainId();
   const signer = useEthersSigner({ chainId });
-  const { connector, isConnected } = useAccount();
+  const { address, connector, isConnected } = useAccount();
 
   const customIpfsGateway = useSelector(IPFSCusomtGateway);
   // const isAuthorised = useSelector(IsAuthorised);
@@ -115,19 +115,19 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
     }
   };
 
-  // const checkForExistingAutId = async (account: string) => {
-  //   const hasAutId = await dispatch(checkIfAutIdExists(account));
-  //   if (hasAutId.meta.requestStatus !== 'rejected') {
-  //     await dispatch(fetchCommunity());
-  //     if (!hasAutId.payload) {
-  //       await dispatch(setJustJoining(false));
-  //       navigate('userdetails');
-  //     } else {
-  //       await dispatch(setJustJoining(true));
-  //       navigate('role');
-  //     }
-  //   }
-  // };
+  const checkForExistingAutId = async (account: string) => {
+    const hasAutId = await dispatch(checkIfAutIdExists(account));
+    if (hasAutId.meta.requestStatus !== 'rejected') {
+      await dispatch(fetchCommunity());
+      if (!hasAutId.payload) {
+        await dispatch(setJustJoining(false));
+        navigate('userdetails');
+      } else {
+        await dispatch(setJustJoining(true));
+        navigate('role');
+      }
+    }
+  };
 
   const handleOpen = async () => {
     if (userData) return;
@@ -247,11 +247,11 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
         await initializeSDK(network, signer);
         await dispatch(updateWalletProviderState(itemsToUpdate));
 
-        // if (flowMode === 'dashboard') {
+        // if (flowMode === FlowConfigMode.Dashboard) {
         //   navigate('/autid');
         //   await dispatch(getAutId(address));
         // }
-        // if (flowMode === 'tryAut') {
+        // if (flowMode === FlowConfigMode.TryAut) {
         //   navigate('/newuser');
         //   await checkForExistingAutId(address);
         // }

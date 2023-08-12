@@ -157,8 +157,6 @@ export const ParseErrorMessage = (error: any) => {
     error = JSON.parse(JSON.stringify(error));
   }
 
-  debugger;
-
   if (error?.code === 'CALL_EXCEPTION') {
     if (error?.reason) {
       return error?.reason?.toString();

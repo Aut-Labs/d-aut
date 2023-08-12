@@ -4,11 +4,12 @@ import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
 import { FlowMode, ResultState, loadingStatus, setJustJoining } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { NetworksConfig } from '../store/wallet-provider';
+import { IsAuthorised, NetworksConfig } from '../store/wallet-provider';
 import { LoadingProgress } from '../components/LoadingProgress';
 import { useSelector } from 'react-redux';
 import { Connector, useAccount, useConnect } from 'wagmi';
 import WalletConnectorButtons from '../components/WalletConnectorButtons';
+import { useEffect, useState } from 'react';
 
 const NewUser: React.FunctionComponent = () => {
   const flowMode = useSelector(FlowMode);
@@ -16,8 +17,10 @@ const NewUser: React.FunctionComponent = () => {
   const navigate = useNavigate();
   const networks = useSelector(NetworksConfig);
   const { isLoading, connectAsync } = useConnect();
+  const isAuthorised = useSelector(IsAuthorised);
   const status = useSelector(loadingStatus);
   const { address, isConnected, connector } = useAccount();
+  const [shouldCheckForAutID, setCheckAutID] = useState(false);
 
   const checkForExistingAutId = async (account: string) => {
     const hasAutId = await dispatch(checkIfAutIdExists(account));
@@ -39,14 +42,24 @@ const NewUser: React.FunctionComponent = () => {
       checkForExistingAutId(address);
       return;
     }
+    setCheckAutID(true);
     const [network] = networks.filter((d) => !d.disabled);
     await connectAsync({ connector: c, chainId: Number(network.chainId) });
-    await checkForExistingAutId(address);
   };
+
+  useEffect(() => {
+    if (isAuthorised && shouldCheckForAutID) {
+      const load = async () => {
+        await checkForExistingAutId(address);
+        setCheckAutID(false);
+      };
+      load();
+    }
+  }, [isAuthorised, shouldCheckForAutID]);
 
   return (
     <>
-      {isLoading || status === ResultState.Loading ? (
+      {isLoading || status === ResultState.Loading || shouldCheckForAutID ? (
         <>
           <LoadingProgress />
         </>

@@ -28,7 +28,6 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
   // const communityMetadata = await fetch(cidToHttpUrl(`${resp[2]}/metadata.json`));
   const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
 
-  debugger;
   if (communityMetadata.status === 504) {
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
   }

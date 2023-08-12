@@ -7,15 +7,18 @@ import { FlowMode, ResultState, loadingStatus } from '../store/aut.reducer';
 import { useSelector } from 'react-redux';
 import { Connector, useAccount, useConnect } from 'wagmi';
 import WalletConnectorButtons from '../components/WalletConnectorButtons';
-import { NetworksConfig } from '../store/wallet-provider';
+import { IsAuthorised, NetworksConfig } from '../store/wallet-provider';
+import { useEffect, useState } from 'react';
 
 const LoginWithAut: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const flowMode = useSelector(FlowMode);
   const networks = useSelector(NetworksConfig);
-  const { isLoading, connectAsync, error } = useConnect();
+  const isAuthorised = useSelector(IsAuthorised);
+  const { isLoading, connectAsync } = useConnect();
   const { address, isConnected, connector } = useAccount();
   const status = useSelector(loadingStatus);
+  const [shouldLoadAutID, setLoadAutID] = useState(false);
 
   const tryConnect = async (c: Connector) => {
     const connectorChange = c?.id !== connector?.id;
@@ -23,14 +26,24 @@ const LoginWithAut: React.FunctionComponent = () => {
       dispatch(getAutId(address));
       return;
     }
+    setLoadAutID(true);
     const [network] = networks.filter((d) => !d.disabled);
     await connectAsync({ connector: c, chainId: Number(network.chainId) });
-    await dispatch(getAutId(address));
   };
+
+  useEffect(() => {
+    if (isAuthorised && shouldLoadAutID) {
+      const load = async () => {
+        await dispatch(getAutId(address));
+        setLoadAutID(false);
+      };
+      load();
+    }
+  }, [isAuthorised, shouldLoadAutID]);
 
   return (
     <>
-      {isLoading || status === ResultState.Loading ? (
+      {isLoading || status === ResultState.Loading || shouldLoadAutID ? (
         <>
           <LoadingProgress />
         </>
