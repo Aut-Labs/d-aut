@@ -37,8 +37,8 @@ import { useAccount, useChainId, useDisconnect } from 'wagmi';
 import AutSDK, { AutID } from '@aut-labs/sdk';
 import { BiconomyContext } from './biconomy_context';
 import { useEthersSigner } from './services/ProviderFactory/ethers';
-import { JsonRpcSigner } from '@ethersproject/providers';
 import { checkIfAutIdExists, fetchCommunity, getAutId } from './services/web3/api';
+import { MultiSigner } from '@aut-labs/sdk/dist/models/models';
 
 const AutModal = ({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
@@ -81,7 +81,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
   const BiconomyRef = useContext(BiconomyContext);
 
-  const initializeSDK = async (network: NetworkConfig, signer: JsonRpcSigner) => {
+  const initializeSDK = async (network: NetworkConfig, multiSigner: MultiSigner) => {
     const sdk = AutSDK.getInstance();
     let autIdContractAddress = network?.contracts?.autIDAddress;
 
@@ -99,17 +99,17 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
           contractAddresses: [autIdContractAddress],
         });
       await sdk.init(
-        signer,
+        multiSigner,
         {
           daoExpanderAddress,
-        },
-        biconomy
+        }
+        // biconomy
       );
       const result = await sdk.daoExpander.contract.getAutIDContractAddress();
       autIdContractAddress = result?.data;
       sdk.autID = sdk.initService<AutID>(AutID, autIdContractAddress);
     } else {
-      await sdk.init(signer, {
+      await sdk.init(multiSigner, {
         autIDAddress: autIdContractAddress,
       });
     }
