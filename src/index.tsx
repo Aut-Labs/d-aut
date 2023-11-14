@@ -54,7 +54,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
           // Add all tracked attributes to this array
           return [
             AttributeNames.hideButton,
-            AttributeNames.daoExpander,
+            AttributeNames.novaAddress,
             AttributeNames.menuItems,
             AttributeNames.network,
             AttributeNames.flowConfig,

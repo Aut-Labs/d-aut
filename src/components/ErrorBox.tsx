@@ -59,7 +59,7 @@ export const ErrorBox = () => {
               <Link sx={{ color: 'white' }} target="_blank" href={env.REACT_APP_NOVA_SHOWCASE_ADDRESS}>
                 Nova showcase
               </Link>{' '}
-              to browse DAOs.
+              to browse Novas.
             </Typography>
           </>
         )}

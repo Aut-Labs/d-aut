@@ -24,12 +24,12 @@ const LoginWith: React.FunctionComponent = () => {
         color="white"
         size="normal"
         variant="outlined"
-        sx={{ textTransform: 'none', mt: autData.daoExpanderAddress ? '93px' : '133px' }}
+        sx={{ textTransform: 'none', mt: autData.novaAddress ? '93px' : '133px' }}
         onClick={handleAutIdClicked}
       >
         CONNECT WITH ĀutID
       </AutButton>
-      {autData.daoExpanderAddress && (
+      {autData.novaAddress && (
         <AutButton color="white" size="normal" variant="outlined" sx={{ mt: '53px' }} onClick={handleNewUserClicked}>
           NEW USER
         </AutButton>

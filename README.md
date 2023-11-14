@@ -4,16 +4,16 @@
 
 This Web Component is Āut Labs' decentralized, **role-based** authentication system.  
 It lets your users create an account, or login to your platform, in a fully decentralized way, while giving them a familiar (web2-like) experience.  
-Each user will add their nickname and avatar, and pick a Role in your DAO - after doing that, they will join your DAO, and claim their universal ID.
+Each user will add their nickname and avatar, and pick a Role in your Nova - after doing that, they will join your Nova, and claim their universal ID.
 
 ## Web Component Developer notes
 
-When a user successfully connects with dĀut their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'. Don't forget to add the attribute: dao-expander
+When a user successfully connects with dĀut their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'. Don't forget to add the attribute: nova-address
 
-## Pre-requisite: obtain your DAO Expander Address
+## Pre-requisite: obtain your Nova Address
 
 This Web Component is cross-platform, and can be integrated on any Web framework.  
-In order to use it, though, you **will need to have a DAO Expander Address** - you can get deploy your DAO expander contract, and receive your DAO expander key directly on our [Integrate App](https://docs.aut.id/v2/product-suite/aut-exp.).
+In order to use it, though, you **will need to have a Nova Address** - you can get deploy your Nova contract, and receive your Nova key directly on our [Integrate App](https://docs.aut.id/v2/product-suite/aut-exp.).
 
 ## Web Component installation
 
@@ -37,7 +37,7 @@ In order to use it, though, you **will need to have a DAO Expander Address** - y
    Init();
    ```
 
-4. Add the custom HTML tag and populate the dao-expander property
+4. Add the custom HTML tag and populate the nova-address property
 
 ```tsx
 import './App.css';
@@ -51,7 +51,7 @@ function App() {
 
   return (
     <div>
-        <d-aut  dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+        <d-aut  nova-address="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
     </div>
   );
 }
@@ -85,7 +85,7 @@ export default App;
    import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
    ```
 
-5. Add the custom HTML tag and populate the dao-expander property
+5. Add the custom HTML tag and populate the nova-address property
 
 app.component.ts:
 
@@ -127,7 +127,7 @@ export class AppModule {}
 app.component.ts:
 
 ```html
-<d-aut dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+<d-aut nova-address="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
 ```
 
 ### Example Vue
@@ -150,7 +150,7 @@ app.component.ts:
    Init();
    ```
 
-4. Add the custom HTML tag and populate the dao-expander property
+4. Add the custom HTML tag and populate the nova-address property
 
 App.vue:
 
@@ -162,7 +162,7 @@ App.vue:
 
 <template>
   <div class="wrapper">
-    <d-aut dao-expander="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+    <d-aut nova-address="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
   </div>
 </template>
 
@@ -179,8 +179,8 @@ App.vue:
 'rpcUrls' = 'string',
 'ipfsGateway' = 'string',
 
-1. `dao-expander`
-   The address you are given after [Integrating](https://playground.aut.id/) your DAO
+1. `nova-address`
+   The address you are given after [Integrating](https://expander.aut.id/) your Nova
 2. `chain-id`
    Chain id for the desired network defaults to 80001
 3. `network-name`

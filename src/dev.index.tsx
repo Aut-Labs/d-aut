@@ -27,7 +27,7 @@ setTimeout(() => {
   });
   // setInterval(() => {
   //   const el: HTMLElement = document.getElementById('aut');
-  //   // const hide = el.getAttribute('dao-expander');
+  //   // const hide = el.getAttribute('nova-address');
   //   const network = JSON.stringify({
   //     name: 'Mumbai (Polygon)',
   //     chainId: 80001,

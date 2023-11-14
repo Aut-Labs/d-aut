@@ -7,9 +7,9 @@ import { setAutIdsOnDifferentNetworks } from '../../store/aut.reducer';
 import { base64toFile, dispatchEvent } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
 import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
-import { AutId, NetworkConfig } from '../ProviderFactory/web3.connectors';
+import { AutId } from '../ProviderFactory/web3.connectors';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import AutSDK, { DAOExpander, fetchMetadata } from '@aut-labs/sdk';
+import AutSDK, { Nova, fetchMetadata } from '@aut-labs/sdk';
 import { RootState } from '../../store/store.model';
 import { OutputEventTypes } from '../../types/event-types';
 import { env } from './env';
@@ -18,8 +18,8 @@ import { constants } from 'ethers';
 export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue, getState }) => {
   const { customIpfsGateway } = (getState() as RootState).walletProvider;
   const sdk = AutSDK.getInstance();
-  const daoExpander = sdk.daoExpander.contract;
-  const metadataUri = await daoExpander.metadata.getMetadataUri();
+  const nova = sdk.nova.contract;
+  const metadataUri = await nova.metadata.getMetadataUri();
 
   if (!metadataUri.isSuccess) {
     return rejectWithValue(InternalErrorTypes.CouldNotFindCommunity);
@@ -83,7 +83,7 @@ export const mintMembership = createAsyncThunk(
       dao: aut.community.name,
       hash: `#${nftIdResp.data.toString()}`,
       network: selectedNetwork?.network.toLowerCase(),
-      expanderAddress: aut.daoExpanderAddress,
+      novaAddress: aut.novaAddress,
       timestamp: `${timeStamp}`,
     } as SWIDParams;
 
@@ -115,15 +115,15 @@ export const mintMembership = createAsyncThunk(
       },
     };
     const cid = await storeMetadata(metadataJson);
-    const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
+    const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.novaAddress;
     const response = await contract.mint(username, cid, role, commitment, requiredAddress);
     if (!response?.isSuccess) {
       return rejectWithValue(response?.errorMessage);
     }
 
-    const expander = sdk.initService<DAOExpander>(DAOExpander, aut.daoExpanderAddress);
+    const nova = sdk.initService<Nova>(Nova, aut.novaAddress);
 
-    const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
+    const isAdmin = await nova.contract.admins.isAdmin(selectedAddress);
 
     await dispatch(setUserData({ isOwner: isAdmin.data }));
 
@@ -141,7 +141,7 @@ export const joinCommunity = createAsyncThunk(
     const sdk = AutSDK.getInstance();
     const { contract } = sdk.autID;
     const { customIpfsGateway } = walletProvider;
-    const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.daoExpanderAddress;
+    const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.novaAddress;
     const result = await contract.joinDAO(userData.role, userData.commitment, requiredAddress);
     if (result.isSuccess) {
       const tokenId = await contract.getTokenIdByOwner(selectedAddress);
@@ -152,9 +152,9 @@ export const joinCommunity = createAsyncThunk(
       }
       const autId = await response.json();
 
-      const expander = sdk.initService<DAOExpander>(DAOExpander, aut.daoExpanderAddress);
+      const nova = sdk.initService<Nova>(Nova, aut.novaAddress);
 
-      const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
+      const isAdmin = await nova.contract.admins.isAdmin(selectedAddress);
 
       await dispatch(setUserData({ username: autId.name, isOwner: isAdmin.data }));
 
@@ -167,7 +167,6 @@ export const joinCommunity = createAsyncThunk(
 export const getAutId = createAsyncThunk('membership/get', async (selectedAddress: string, { dispatch, getState, rejectWithValue }) => {
   const { aut, walletProvider } = getState() as RootState;
   const flowMode = aut.flowConfig?.mode;
-  const daoAddress = aut.daoExpanderAddress;
   const { customIpfsGateway } = walletProvider;
   const sdk = AutSDK.getInstance();
   const { contract } = sdk.autID;
@@ -186,7 +185,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   const holderCommunities = await contract.getHolderDAOs(selectedAddress);
   // CHECK FOR UNJOINED COMMUNITIES IF WE'RE NOT IN AUT ID
   // const unjoinedCommunities = [];
-  // if (aut.daoExpanderAddress) {
+  // if (aut.novaAddress) {
   //   const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
   //   const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
   //   // console.log('holderCommunities', holderCommunities);
@@ -242,9 +241,9 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
                 true
             ]
          */
-      const expander = sdk.initService<DAOExpander>(DAOExpander, communityAddress);
-      const metadataUri = await expander.contract.metadata.getMetadataUri();
-      const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
+      const nova = sdk.initService<Nova>(Nova, communityAddress);
+      const metadataUri = await nova.contract.metadata.getMetadataUri();
+      const isAdmin = await nova.contract.admins.isAdmin(selectedAddress);
       const metadata = await fetchMetadata<BaseNFTModel<Community>>(metadataUri.data, customIpfsGateway);
 
       const a = new BaseNFTModel({
@@ -270,8 +269,8 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
     });
     if (activeCommunities.length !== 0) {
       const firstCommunityAddress = activeCommunities[0].properties?.address;
-      const expander = sdk.initService<DAOExpander>(DAOExpander, firstCommunityAddress);
-      const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
+      const nova = sdk.initService<Nova>(Nova, firstCommunityAddress);
+      const isAdmin = await nova.contract.admins.isAdmin(selectedAddress);
       if (!isAdmin?.data) {
         return rejectWithValue(InternalErrorTypes.OnlyOperatorsCanAccessTheDashboard);
       }
@@ -327,7 +326,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
       // const holderCommunities = await contract.getHolderDAOs(selectedAddress);
       // CHECK FOR UNJOINED COMMUNITIES IF WE'RE NOT IN AUT ID
       // const unjoinedCommunities = [];
-      // if (aut.daoExpanderAddress) {
+      // if (aut.novaAddress) {
       //   const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
       //   const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
       //   // console.log('holderCommunities', holderCommunities);
@@ -367,10 +366,10 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
 
           const { role, commitment, isActive } = response.data;
 
-          const expander = sdk.initService<DAOExpander>(DAOExpander, communityAddress);
-          const metadataUri = await expander.contract.metadata.getMetadataUri();
+          const nova = sdk.initService<Nova>(Nova, communityAddress);
+          const metadataUri = await nova.contract.metadata.getMetadataUri();
 
-          const isAdmin = await expander.contract.admins.isAdmin(selectedAddress);
+          const isAdmin = await nova.contract.admins.isAdmin(selectedAddress);
 
           const metadata = await fetchMetadata<BaseNFTModel<AutId>>(metadataUri.data, customIpfsGateway);
 
@@ -437,14 +436,10 @@ export const checkIfAutIdExists = createAsyncThunk('membership/exists', async (s
   }
   if (holderCommunities.data) {
     for (const community of holderCommunities.data as unknown as string[]) {
-      if (community === aut.daoExpanderAddress) {
+      if (community === aut.novaAddress) {
         return rejectWithValue(InternalErrorTypes.AutIDAlreadyInThisCommunity);
       }
     }
   }
   return hasAutId;
 });
-
-export const getAppConfig = (): Promise<NetworkConfig[]> => {
-  return axios.get(`https://api.skillwallet.id/api/autid/config/network/testing`).then((r) => r.data);
-};

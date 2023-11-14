@@ -1,6 +1,6 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.60-dev",
+  "version": "1.0.61-dev",
   "main": "./build/index.umd.js",
   "module": "./build/index.es.js",
   "types": "./build/index.d.ts",
@@ -89,7 +89,7 @@
     }
   },
   "devDependencies": {
-    "@aut-labs/sdk": "^0.0.95-dev",
+    "@aut-labs/sdk": "^0.0.102-dev",
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@emotion/cache": "^11.11.0",
@@ -178,5 +178,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "@aut-labs/abi-types": "^0.0.60-dev"
   }
 }

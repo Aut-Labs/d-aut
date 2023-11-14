@@ -3,7 +3,7 @@ import { Box, MenuItem } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
-import { autState, DAOExpanderAddress, ResultState, setStatus, updateErrorState } from '../store/aut.reducer';
+import { autState, NovaAddress, ResultState, setStatus, updateErrorState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { Controller, useForm } from 'react-hook-form';
 import { FormAction, FormWrapper, FormContent } from '../components/FormHelpers';
@@ -18,7 +18,7 @@ import { useAccount } from 'wagmi';
 
 const NetworkSelect: React.FunctionComponent = () => {
   const networkConfigs = useSelector(NetworksConfig);
-  const daoExpanderAddress = useSelector(DAOExpanderAddress);
+  const novaAddress = useSelector(NovaAddress);
   const autData = useSelector(autState);
   const selectedNetwork = useSelector(SelectedNetwork);
   const dispatch = useAppDispatch();
@@ -45,14 +45,14 @@ const NetworkSelect: React.FunctionComponent = () => {
         const sdk = AutSDK.getInstance();
         const signer = provider.getSigner();
         await sdk.init(signer, {
-          daoExpanderAddress: daoExpanderAddress as string,
+          novaAddress: novaAddress as string,
         });
 
-        const result = await sdk.daoExpander.contract.getAutIDContractAddress();
+        const result = await sdk.nova.contract.getAutIDContractAddress();
         console.log(result);
 
         await sdk.init(signer, {
-          daoExpanderAddress,
+          novaAddress,
           autIDAddress: result.data,
         });
 

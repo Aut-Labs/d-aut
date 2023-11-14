@@ -9,7 +9,7 @@ import { AutButtonProps, FlowConfig, FlowConfigMode, SwAttributes } from './type
 import { InputEventTypes, OutputEventTypes } from './types/event-types';
 import {
   autState,
-  DAOExpanderAddress,
+  NovaAddress,
   FlowMode,
   setAllowedRoleId,
   setCommunityExtesnionAddress,
@@ -75,7 +75,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   // const isAuthorised = useSelector(IsAuthorised);
   const networks = useSelector(NetworksConfig);
   const flowMode = useSelector(FlowMode);
-  const daoExpanderAddress = useSelector(DAOExpanderAddress);
+  const novaAddress = useSelector(NovaAddress);
   const userData = useSelector(user);
 
   const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
@@ -85,10 +85,10 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
     const sdk = AutSDK.getInstance();
     let autIdContractAddress = network?.contracts?.autIDAddress;
 
-    // If dao expander is provided then to ensure is the correct autId address
-    // we will fetch contract address from daoExpanderAddress contract
-    if (daoExpanderAddress) {
-      // only when daoExpanderAddress is present we can create a new user
+    // If nova address is provided then to ensure is the correct autId address
+    // we will fetch contract address from novaAddress contract
+    if (novaAddress) {
+      // only when novaAddress is present we can create a new user
       // and so only then we should inject biconomy
       const biconomy =
         network?.biconomyApiKey &&
@@ -101,11 +101,11 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       await sdk.init(
         multiSigner,
         {
-          daoExpanderAddress,
+          novaAddress,
         }
         // biconomy
       );
-      const result = await sdk.daoExpander.contract.getAutIDContractAddress();
+      const result = await sdk.nova.contract.getAutIDContractAddress();
       autIdContractAddress = result?.data;
       sdk.autID = sdk.initService<AutID>(AutID, autIdContractAddress);
     } else {
@@ -151,9 +151,9 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   };
 
   const setAttributes = (attributes: SwAttributes) => {
-    if (attributes.daoExpander) {
-      // console.log(attributes.daoExpander);
-      dispatch(setCommunityExtesnionAddress(attributes.daoExpander as string));
+    if (attributes.novaAddress) {
+      // console.log(attributes.novaAddress);
+      dispatch(setCommunityExtesnionAddress(attributes.novaAddress as string));
     } else {
       // console.log('nocommunity extension');
     }

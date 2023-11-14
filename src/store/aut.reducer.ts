@@ -43,7 +43,7 @@ export interface AutState {
   community?: Community;
   unjoinedCommunities?: Community[];
   selectedUnjoinedCommunityAddress?: string;
-  daoExpanderAddress?: string;
+  novaAddress?: string;
   showDialog: boolean;
   status: ResultState;
   errorStateAction: string;
@@ -64,7 +64,7 @@ export const initialState: AutState = {
   community: null,
   unjoinedCommunities: [],
   selectedUnjoinedCommunityAddress: null,
-  daoExpanderAddress: null,
+  novaAddress: null,
   showDialog: false,
   status: ResultState.Idle,
   errorStateAction: null,
@@ -89,7 +89,7 @@ export const autSlice = createSlice({
       state.selectedAddress = action.payload;
     },
     setCommunityExtesnionAddress: (state, action: ActionPayload<string>) => {
-      state.daoExpanderAddress = action.payload;
+      state.novaAddress = action.payload;
     },
     setFlowConfig: (state, action: ActionPayload<FlowConfig>) => {
       state.flowConfig = action.payload;
@@ -242,7 +242,7 @@ export const {
   setUseDev,
 } = autSlice.actions;
 
-export const DAOExpanderAddress = (state: any) => state.aut.daoExpanderAddress as string;
+export const NovaAddress = (state: any) => state.aut.novaAddress as string;
 
 export const FlowMode = (state: any) => state.aut.flowConfig?.mode as FlowConfigMode;
 
