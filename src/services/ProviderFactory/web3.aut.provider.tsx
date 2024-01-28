@@ -97,7 +97,11 @@ export default function Web3AutProvider({ children }) {
       const [network] = res.filter((d) => !d.disabled);
       setConfig(generateNetworkConfig(network));
       const sdk = new AutSDK({
-        nftStorageApiKey: env.REACT_APP_NFT_STORAGE_KEY,
+        ipfs: {
+          apiKey: env.REACT_APP_IPFS_API_KEY,
+          secretApiKey: env.REACT_APP_IPFS_API_SECRET,
+          gatewayUrl: env.REACT_APP_IPFS_GATEWAY_URL,
+        },
       });
     });
   }, []);

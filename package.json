@@ -1,6 +1,6 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.102-dev",
+  "version": "1.0.106-dev",
   "main": "./build/index.umd.js",
   "module": "./build/index.es.js",
   "types": "./build/index.d.ts",
@@ -89,7 +89,9 @@
     }
   },
   "devDependencies": {
-    "@aut-labs/sdk": "^0.0.102-dev",
+    "@aut-labs/abi-types": "^0.0.69-dev",
+    "@aut-labs/sdk": "^0.0.141-dev",
+    "@apollo/client": "^3.8.10",
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@emotion/cache": "^11.11.0",
@@ -133,7 +135,6 @@
     "ethers-typescript-typings": "0.0.4",
     "husky": "^8.0.3",
     "jss": "^10.10.0",
-    "nft.storage": "^7.1.1",
     "prettier": "~3.0.1",
     "react": "~18.2.0",
     "react-app-rewire-alias": "~1.1.5",
@@ -158,6 +159,7 @@
     "vite-plugin-handlebars": "^1.6.0",
     "vite-plugin-svgr": "^3.2.0",
     "vite-tsconfig-paths": "^4.2.0",
+    "graphql": "^16.8.1",
     "wagmi": "^1.3.9",
     "webpack": "^5.0.0",
     "xmldom": "^0.6.0"
@@ -179,7 +181,5 @@
       "last 1 safari version"
     ]
   },
-  "dependencies": {
-    "@aut-labs/abi-types": "^0.0.60-dev"
-  }
+  "dependencies": {}
 }

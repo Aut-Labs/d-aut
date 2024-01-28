@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { memo, useContext, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import Portal from '@mui/material/Portal';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
+import { AutID as AutIDModel } from './interfaces/autid.model';
 import { dispatchEvent, parseAttributeValue, toCammelCase } from './utils/utils';
 import { AutButtonProps, FlowConfig, FlowConfigMode, SwAttributes } from './types/d-aut-config';
 import { InputEventTypes, OutputEventTypes } from './types/event-types';
@@ -21,23 +22,15 @@ import {
   user,
 } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
-import {
-  IPFSCusomtGateway,
-  IsAuthorised,
-  NetworksConfig,
-  setCustomIpfsGateway,
-  setNetworks,
-  updateWalletProviderState,
-} from './store/wallet-provider';
+import { IPFSCusomtGateway, NetworksConfig, setCustomIpfsGateway, setNetworks, updateWalletProviderState } from './store/wallet-provider';
 import { ipfsCIDToHttpUrl } from './services/storage/storage.hub';
 import AutButtonMenu from './components/AutButtonMenu/AutButtonMenu';
 import { AutMenuItemType, MenuItemActionType, AutButtonUserProfile } from './components/AutButtonMenu/AutMenuUtils';
 import { NetworkConfig } from './services/ProviderFactory/web3.connectors';
 import { useAccount, useChainId, useDisconnect } from 'wagmi';
 import AutSDK, { AutID } from '@aut-labs/sdk';
-import { BiconomyContext } from './biconomy_context';
 import { useEthersSigner } from './services/ProviderFactory/ethers';
-import { checkIfAutIdExists, fetchCommunity, getAutId } from './services/web3/api';
+import { checkIfAutIdExists, fetchCommunity } from './services/web3/api';
 import { MultiSigner } from '@aut-labs/sdk/dist/models/models';
 
 const AutModal = ({ container, rootContainer = null }: any) => {
@@ -79,7 +72,6 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const userData = useSelector(user);
 
   const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
-  const BiconomyRef = useContext(BiconomyContext);
 
   const initializeSDK = async (network: NetworkConfig, multiSigner: MultiSigner) => {
     const sdk = AutSDK.getInstance();
@@ -88,25 +80,10 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
     // If nova address is provided then to ensure is the correct autId address
     // we will fetch contract address from novaAddress contract
     if (novaAddress) {
-      // only when novaAddress is present we can create a new user
-      // and so only then we should inject biconomy
-      const biconomy =
-        network?.biconomyApiKey &&
-        BiconomyRef &&
-        new BiconomyRef({
-          enableDebugMode: true,
-          apiKey: network.biconomyApiKey,
-          contractAddresses: [autIdContractAddress],
-        });
-      await sdk.init(
-        multiSigner,
-        {
-          novaAddress,
-        }
-        // biconomy
-      );
-      const result = await sdk.nova.contract.getAutIDContractAddress();
-      autIdContractAddress = result?.data;
+      await sdk.init(multiSigner, {
+        novaAddress,
+      });
+      autIdContractAddress = await sdk.nova.contract.functions.autID();
       sdk.autID = sdk.initService<AutID>(AutID, autIdContractAddress);
     } else {
       await sdk.init(multiSigner, {
@@ -216,11 +193,12 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const initializeAut = async () => {
     dispatchEvent(OutputEventTypes.Init);
     // check timestamp
-    const autId = JSON.parse(localStorage.getItem('aut-data'));
-    if (autId) {
+    const _autId = JSON.parse(localStorage.getItem('aut-data'));
+    if (_autId) {
+      const autId = new AutIDModel(_autId);
       const currentTime = new Date().getTime();
       // 8 Hours
-      const sessionLength = new Date(8 * 60 * 60 * 1000 + autId.loginTimestamp).getTime();
+      const sessionLength = new Date(8 * 60 * 60 * 1000 + autId.properties.loginTimestamp).getTime();
       if (currentTime < sessionLength) {
         dispatch(setUser(autId));
         dispatchEvent(OutputEventTypes.Connected, autId);
@@ -288,11 +266,11 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const userProfile: AutButtonUserProfile = useMemo(() => {
     if (!userData?.name) return;
     const [community] = userData?.properties?.communities || [];
-    const isAdmin = community?.properties?.isAdmin;
+    const isAdmin = community?.properties?.userData?.isAdmin;
     return {
       role: isAdmin ? 'Admin' : 'Member',
       name: userData.name,
-      avatar: ipfsCIDToHttpUrl(userData.properties.avatar, customIpfsGateway),
+      avatar: ipfsCIDToHttpUrl(userData.properties.thumbnailAvatar, customIpfsGateway),
     };
   }, [userData, customIpfsGateway]);
 

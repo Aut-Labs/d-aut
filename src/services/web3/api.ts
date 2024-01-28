@@ -1,7 +1,6 @@
 import axios from 'axios';
 import dateFormat from 'dateformat';
-import { ipfsCIDToHttpUrl, storeImageAsBlob, storeMetadata } from '../storage/storage.hub';
-import { BaseNFTModel, Community } from './models';
+import { ipfsCIDToHttpUrl } from '../storage/storage.hub';
 import { InternalErrorTypes } from '../../utils/error-parser';
 import { setAutIdsOnDifferentNetworks } from '../../store/aut.reducer';
 import { base64toFile, dispatchEvent } from '../../utils/utils';
@@ -9,24 +8,42 @@ import { setUserData } from '../../store/user-data.reducer';
 import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
 import { AutId } from '../ProviderFactory/web3.connectors';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import AutSDK, { Nova, fetchMetadata } from '@aut-labs/sdk';
+import AutSDK, { Nova, fetchMetadata, queryParamsAsString } from '@aut-labs/sdk';
 import { RootState } from '../../store/store.model';
 import { OutputEventTypes } from '../../types/event-types';
 import { env } from './env';
-import { constants } from 'ethers';
+import { apolloClient } from '../../store/graphql';
+import { gql } from '@apollo/client';
+import { AutID } from '../../interfaces/autid.model';
+import { BaseNFTModel } from '@aut-labs/sdk/dist/models/baseNFTModel';
+import { Community } from '../../interfaces/community.model';
 
 export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue, getState }) => {
   const { customIpfsGateway } = (getState() as RootState).walletProvider;
   const sdk = AutSDK.getInstance();
-  const nova = sdk.nova.contract;
-  const metadataUri = await nova.metadata.getMetadataUri();
 
-  if (!metadataUri.isSuccess) {
-    return rejectWithValue(InternalErrorTypes.CouldNotFindCommunity);
-  }
-  // console.log(resp);
-  // const communityMetadata = await fetch(cidToHttpUrl(`${resp[2]}/metadata.json`));
-  const communityMetadata = await fetch(ipfsCIDToHttpUrl(metadataUri.data, customIpfsGateway));
+  const queryArgsString = queryParamsAsString({
+    skip: 0,
+    take: 1,
+    filters: [{ prop: 'id', comparison: 'equals', value: sdk.nova.contract.contract.address.toLowerCase() }],
+  });
+  const query = gql`
+    query GetNovaDAO {
+      novaDAO(${queryArgsString}) {
+        id
+        address
+        market
+        minCommitment
+        metadataUri
+      }
+    }
+  `;
+  const response = await apolloClient.query<any>({
+    query,
+  });
+
+  const nova = response.data.novaDAO;
+  const communityMetadata = await fetch(ipfsCIDToHttpUrl(nova.metadataUri, customIpfsGateway));
 
   if (communityMetadata.status === 504) {
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
@@ -40,7 +57,7 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
     name: communityJson.name,
     description: communityJson.description,
     roles: communityJson.properties.rolesSets[0].roles,
-    minCommitment: communityJson.properties.commitment,
+    minCommitment: Number(nova.minCommitment),
     // commitment: details[2].toString(),
   };
 });
@@ -76,12 +93,13 @@ export const mintMembership = createAsyncThunk(
     const sdk = AutSDK.getInstance();
     const { contract } = sdk.autID;
 
-    const nftIdResp = await contract.getNextTokenID();
+    // const nftIdResp = await contract.getNextTokenID();
     const config = {
       name: username,
       role: roleName.toString(),
       dao: aut.community.name,
-      hash: `#${nftIdResp.data.toString()}`,
+      // hash: `#${nftIdResp.data.toString()}`,
+      hash: '1', // @TODO: don't forget to change this.
       network: selectedNetwork?.network.toLowerCase(),
       novaAddress: aut.novaAddress,
       timestamp: `${timeStamp}`,
@@ -102,7 +120,8 @@ export const mintMembership = createAsyncThunk(
     // const { toFile } = await AutIDBadgeGenerator(config);
     const badgeFile = await dataUrlToFile(result.data.badge, 'AutID.png');
     const avatarFile = base64toFile(picture, 'avatar');
-    const avatarCid = await storeImageAsBlob(avatarFile as File);
+
+    const { original, thumbnail } = await sdk.client.sendFileToIPFSWithThumbnail(avatarFile as File);
 
     const metadataJson = {
       name: username,
@@ -110,13 +129,14 @@ export const mintMembership = createAsyncThunk(
        therefore, they are universal. They are individual NFT IDs.`,
       image: badgeFile,
       properties: {
-        avatar: avatarCid,
+        avatar: original,
+        thumbnailAvatar: thumbnail,
         timestamp: timeStamp,
       },
     };
-    const cid = await storeMetadata(metadataJson);
+    const cid = await sdk.client.sendJSONToIPFS(metadataJson as any);
     const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.novaAddress;
-    const response = await contract.mint(username, cid, role, commitment, requiredAddress);
+    const response = await contract.mintAndJoin(username, cid, role, commitment, requiredAddress);
     if (!response?.isSuccess) {
       return rejectWithValue(response?.errorMessage);
     }
@@ -144,13 +164,28 @@ export const joinCommunity = createAsyncThunk(
     const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.novaAddress;
     const result = await contract.joinDAO(userData.role, userData.commitment, requiredAddress);
     if (result.isSuccess) {
-      const tokenId = await contract.getTokenIdByOwner(selectedAddress);
-      const tokenURI = await contract.getTokenUri(tokenId.data);
-      const response = await fetch(ipfsCIDToHttpUrl(tokenURI.data, customIpfsGateway));
-      if (response.status === 504) {
+      const queryArgsString = queryParamsAsString({
+        skip: 0,
+        take: 1,
+        filters: [{ prop: 'id', comparison: 'equals', value: selectedAddress.toLowerCase() }],
+      });
+      const query = gql`
+        query GetAutID {
+          autID(${queryArgsString}) {
+            id
+            username
+          }
+        }
+      `;
+      const response = await apolloClient.query<any>({
+        query,
+      });
+
+      const metadataResponse = await fetch(ipfsCIDToHttpUrl(response.data.autID.metadataUri, customIpfsGateway));
+      if (metadataResponse.status === 504) {
         return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
       }
-      const autId = await response.json();
+      const autId = await metadataResponse.json();
 
       const nova = sdk.initService<Nova>(Nova, aut.novaAddress);
 
@@ -165,132 +200,80 @@ export const joinCommunity = createAsyncThunk(
 );
 
 export const getAutId = createAsyncThunk('membership/get', async (selectedAddress: string, { dispatch, getState, rejectWithValue }) => {
-  const { aut, walletProvider } = getState() as RootState;
-  const flowMode = aut.flowConfig?.mode;
+  const { walletProvider } = getState() as RootState;
   const { customIpfsGateway } = walletProvider;
   const sdk = AutSDK.getInstance();
-  const { contract } = sdk.autID;
-  const balanceOf = await contract.balanceOf(selectedAddress);
-  if (Number(balanceOf.data) === 0) {
-    return rejectWithValue(InternalErrorTypes.AutIDNotFound);
-  }
-  const tokenId = await contract.getTokenIdByOwner(selectedAddress);
-  const tokenURI = await contract.getTokenUri(tokenId.data);
-  const metadata = await fetchMetadata<any>(tokenURI.data, customIpfsGateway);
-  if (!metadata) {
+
+  const query = gql`
+    query GetAutID {
+      autID(id: "${selectedAddress.toLowerCase()}") {
+        id
+        username
+        tokenID
+        novaAddress
+        role
+        commitment
+        metadataUri
+      }
+    }
+  `;
+  const response = await apolloClient.query<any>({
+    query,
+  });
+
+  const { autID } = response.data;
+
+  const autIdMetadata = await fetchMetadata<BaseNFTModel<any>>(autID.metadataUri, customIpfsGateway);
+  if (!autIdMetadata) {
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
   }
 
-  const autId = metadata;
-  const holderCommunities = await contract.getHolderDAOs(selectedAddress);
-  // CHECK FOR UNJOINED COMMUNITIES IF WE'RE NOT IN AUT ID
-  // const unjoinedCommunities = [];
-  // if (aut.novaAddress) {
-  //   const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
-  //   const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
-  //   // console.log('holderCommunities', holderCommunities);
-  //   // console.log(communitiesByDeployer);
-  //   for (const address of communitiesByDeployer) {
-  //     if (!(holderCommunities as unknown as string[]).includes(address)) {
-  //       const communityExtensionContract = await Web3DAOExpanderProvider(address);
+  const nova = sdk.initService<Nova>(Nova, autID.novaAddress);
+  const isAdmin = await nova.contract.admins.isAdmin(selectedAddress);
+  const novaMetadataUri = await nova.contract.functions.metadataUri();
+  const novaMetadata = await fetchMetadata<BaseNFTModel<Community>>(novaMetadataUri, customIpfsGateway);
 
-  //       const resp = await communityExtensionContract.getDAOData();
-  //       const communityMetadata = await fetch(ipfsCIDToHttpUrl(resp[2]));
-  //       if (communityMetadata.status === 504) {
-  //         throw new Error(InternalErrorTypes.GatewayTimedOut);
-  //       }
-  //       const communityJson = await communityMetadata.json();
-  //       unjoinedCommunities.push({
-  //         address,
-  //         name: communityJson.name,
-  //         description: communityJson.description,
-  //         roles: communityJson.properties.rolesSets[0].roles,
-  //         minCommitment: communityJson.properties.commitment,
-  //       });
-  //       // console.log(address);
-  //     }
-  //   }
-  // }
+  const { avatar, thumbnailAvatar, timestamp } = autIdMetadata.properties;
 
-  // if (unjoinedCommunities.length > 0) {
-  //   await thunkAPI.dispatch(setUnjoinedCommunities(unjoinedCommunities));
-  //   await thunkAPI.dispatch(setJustJoining(true));
-  //   // await thunkAPI.dispatch(setCommunityExtesnionAddress(address));
-  //   throw new Error(InternalErrorTypes.UserHasUnjoinedCommunities);
-  // }
-  const communities = await Promise.all(
-    (holderCommunities.data as any).map(async (communityAddress) => {
-      // * communityExtension: string
-      // * role: number
-      // * commitment: number
-      // * isActive: boolean
-      // */
-      const result = await contract.getCommunityMemberData(selectedAddress, communityAddress);
-      const { role, commitment, isActive } = result.data;
-      /**
-         * [
-                "0xFc53e464D257F0614132D20293154eaE5CE25734",
-                {
-                    "type": "BigNumber",
-                    "hex": "0x03"
-                },
-                {
-                    "type": "BigNumber",
-                    "hex": "0x08"
-                },
-                true
-            ]
-         */
-      const nova = sdk.initService<Nova>(Nova, communityAddress);
-      const metadataUri = await nova.contract.metadata.getMetadataUri();
-      const isAdmin = await nova.contract.admins.isAdmin(selectedAddress);
-      const metadata = await fetchMetadata<BaseNFTModel<Community>>(metadataUri.data, customIpfsGateway);
+  const userNova = new Community({
+    ...novaMetadata,
+    properties: {
+      ...novaMetadata.properties,
+      userData: {
+        role: autID.role.toString(),
+        commitment: autID.commitment.toString(),
+        isActive: true,
+        address: autID.novaAddress,
+        isAdmin: isAdmin.data,
+      },
+    },
+  } as unknown as Community);
+  const newAutId = new AutID({
+    name: autIdMetadata.name,
+    image: autIdMetadata.image,
+    description: autIdMetadata.description,
+    properties: {
+      avatar,
+      thumbnailAvatar,
+      timestamp,
+      socials: [],
+      address: selectedAddress,
+      tokenId: autID.tokenID,
+      loginTimestamp: new Date().getTime(),
+      network: walletProvider.selectedNetwork,
+      communities: [userNova],
+    },
+  });
 
-      const a = new BaseNFTModel({
-        ...metadata,
-        properties: {
-          isAdmin: isAdmin.data,
-          address: communityAddress,
-          ...metadata?.properties,
-          userData: {
-            role: role.toString(),
-            commitment: commitment.toString(),
-            isActive,
-          },
-        },
-      });
-      return a;
-    })
-  );
-
-  if (flowMode === 'dashboard') {
-    const activeCommunities = communities.filter((c) => {
-      return c.properties?.userData?.isActive;
-    });
-    if (activeCommunities.length !== 0) {
-      const firstCommunityAddress = activeCommunities[0].properties?.address;
-      const nova = sdk.initService<Nova>(Nova, firstCommunityAddress);
-      const isAdmin = await nova.contract.admins.isAdmin(selectedAddress);
-      if (!isAdmin?.data) {
-        return rejectWithValue(InternalErrorTypes.OnlyOperatorsCanAccessTheDashboard);
-      }
-    }
-  }
-
-  autId.properties.communities = communities;
-  autId.loginTimestamp = new Date().getTime();
-  autId.provider = walletProvider.selectedWalletType;
-  autId.network = walletProvider.selectedNetwork;
-  autId.address = selectedAddress;
-  await dispatch(setUserData({ username: autId.name }));
-
-  window.localStorage.setItem('aut-data', JSON.stringify(autId));
-  return autId;
+  await dispatch(setUserData({ username: newAutId.name }));
+  window.localStorage.setItem('aut-data', JSON.stringify(newAutId));
+  return newAutId;
 });
 
 export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
   'membership/scan',
   async (selectedAddress: string, { rejectWithValue, getState, dispatch }) => {
+    // @TODO: fix this to use AutId
     const { aut, walletProvider } = getState() as RootState;
     const { selectedNetwork, customIpfsGateway } = walletProvider;
     let autIDs: AutId[] = [];
@@ -403,10 +386,23 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
 );
 
 export const checkIfNameTaken = createAsyncThunk('membership/nametaken', async (requestBody: { username: string }, { rejectWithValue }) => {
-  const sdk = AutSDK.getInstance();
-  const { contract } = sdk.autID;
-  const tokenId = await contract.getAddressByUsername(requestBody.username);
-  if (tokenId.data !== constants.AddressZero) {
+  const queryArgsString = queryParamsAsString({
+    skip: 0,
+    take: 1,
+    filters: [{ prop: 'username', comparison: 'equals', value: requestBody.username }],
+  });
+  const query = gql`
+    query GetAutIDs {
+      autIDs(${queryArgsString}) {
+        username
+      }
+    }
+  `;
+  const response = await apolloClient.query({
+    query,
+  });
+  const exists = response?.data?.autIDs?.length > 0;
+  if (exists) {
     return rejectWithValue(InternalErrorTypes.UsernameAlreadyTaken);
   }
   return false;
@@ -417,29 +413,32 @@ export const checkIfAutIdExists = createAsyncThunk('membership/exists', async (s
   const sdk = AutSDK.getInstance();
   const { contract } = sdk.autID;
   const balanceOf = await contract.balanceOf(selectedAddress);
-  let hasAutId;
-  if (balanceOf.data > 0) {
-    hasAutId = true;
-  } else {
-    return false;
-    // hasAutId = false;
-  }
-  let holderCommunities = null;
-  try {
-    holderCommunities = await contract.getHolderDAOs(selectedAddress);
-  } catch (e) {
-    // if (e?.data?.message?.toString().includes(`AutID: Doesn't have a SW.`)) {
-    // console.log(e);
-    // } else {
-    //   throw e;
-    // }
-  }
-  if (holderCommunities.data) {
-    for (const community of holderCommunities.data as unknown as string[]) {
-      if (community === aut.novaAddress) {
-        return rejectWithValue(InternalErrorTypes.AutIDAlreadyInThisCommunity);
-      }
-    }
-  }
-  return hasAutId;
+
+  return balanceOf.data > 0;
+
+  // let hasAutId;
+  // if (balanceOf.data > 0) {
+  //   hasAutId = true;
+  // } else {
+  //   return false;
+  //   // hasAutId = false;
+  // }
+  // let holderCommunities = null;
+  // try {
+  //   holderCommunities = await contract.getHolderDAOs(selectedAddress);
+  // } catch (e) {
+  //   // if (e?.data?.message?.toString().includes(`AutID: Doesn't have a SW.`)) {
+  //   // console.log(e);
+  //   // } else {
+  //   //   throw e;
+  //   // }
+  // }
+  // if (holderCommunities.data) {
+  //   for (const community of holderCommunities.data as unknown as string[]) {
+  //     if (community === aut.novaAddress) {
+  //       return rejectWithValue(InternalErrorTypes.AutIDAlreadyInThisCommunity);
+  //     }
+  //   }
+  // }
+  // return hasAutId;
 });

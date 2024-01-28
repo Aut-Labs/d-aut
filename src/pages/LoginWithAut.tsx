@@ -32,14 +32,14 @@ const LoginWithAut: React.FunctionComponent = () => {
   };
 
   useEffect(() => {
-    if (isAuthorised && shouldLoadAutID) {
+    if (isAuthorised && address && shouldLoadAutID) {
       const load = async () => {
         await dispatch(getAutId(address));
         setLoadAutID(false);
       };
       load();
     }
-  }, [isAuthorised, shouldLoadAutID]);
+  }, [isAuthorised, shouldLoadAutID, address]);
 
   return (
     <>

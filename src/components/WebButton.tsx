@@ -161,8 +161,7 @@ export const WebButton = ({ container, disconnectClick, profileClick, onClick }:
                     maxWidth: '100%',
                   }}
                   alt="User image."
-                  // Make this not the badge
-                  src={ipfsCIDToHttpUrl(userData.properties.avatar, customIpfsGateway)}
+                  src={ipfsCIDToHttpUrl(userData.properties.thumbnailAvatar, customIpfsGateway)}
                 />
               </Box>
             </Box>

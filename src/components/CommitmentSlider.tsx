@@ -3,7 +3,7 @@ import { FieldErrors } from 'react-hook-form';
 import { pxToRem } from '../utils/utils';
 import { FormHelperText } from './Fields';
 
-const CommitmentMessages = (value: number) => {
+export const CommitmentMessages = (value: number) => {
   switch (+value) {
     case 1:
     case 2:

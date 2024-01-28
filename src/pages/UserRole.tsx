@@ -54,8 +54,7 @@ const UserRole: React.FunctionComponent = (props) => {
               <AutButton
                 size="normal"
                 variant="outlined"
-                // eslint-disable-next-line eqeqeq
-                disabled={allowedRole && !(role.id == allowedRole)}
+                disabled={allowedRole && !(+role.id === +allowedRole)}
                 sx={{
                   mt: '30px',
                 }}

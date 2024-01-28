@@ -16,6 +16,7 @@ import { OutputEventTypes } from '../types/event-types';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { dispatchEvent } from '../utils/utils';
 import { ActionPayload } from './action-payload';
+import { AutID } from '../interfaces/autid.model';
 
 export interface Community {
   name: string;
@@ -27,7 +28,7 @@ export interface Community {
 }
 
 export interface Role {
-  id: string;
+  id: number;
   roleName: string;
 }
 
@@ -48,7 +49,7 @@ export interface AutState {
   status: ResultState;
   errorStateAction: string;
   transactionState: string;
-  user: BaseNFTModel<any> & { address: string };
+  user: AutID;
   userBadge: string;
   justJoin: boolean;
   provider: any;
@@ -248,7 +249,7 @@ export const FlowMode = (state: any) => state.aut.flowConfig?.mode as FlowConfig
 
 export const UsingDev = (state: any) => state.aut.useDev as boolean;
 
-export const AllowedRoleId = (state: any) => state.aut.allowedRoleId as string;
+export const AllowedRoleId = (state: any) => state.aut.allowedRoleId as number;
 
 export const CustomCongratsMessage = (state: any) => state.aut.flowConfig?.customCongratsMessage as string;
 

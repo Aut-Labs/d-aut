@@ -4,6 +4,7 @@ import { create } from 'jss';
 import { StylesProvider, jssPreset } from '@mui/styles';
 import { Provider } from 'react-redux';
 import { StyledEngineProvider } from '@mui/material';
+import { ApolloProvider } from '@apollo/client';
 import Theme from './theme/theme';
 import store from './store/store';
 import SwAuthModal, { AutButton } from './Aut';
@@ -13,7 +14,7 @@ import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
 import { createRoot } from 'react-dom/client';
 import { fonts } from './assets/fonts/Fractul/fontsBase64';
 import { env } from './services/web3/env';
-import { BiconomyContext } from './biconomy_context';
+import { apolloClient } from './store/graphql';
 
 function safeDecorator(fn) {
   // eslint-disable-next-line func-names
@@ -139,17 +140,17 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
           root.render(
             <StyledEngineProvider injectFirst>
-              <ThemeProvider theme={Theme}>
-                <Provider store={store}>
-                  <Router initialEntries={['/']}>
-                    <Web3AutProvider>
-                      <BiconomyContext.Provider value={authConfig.biconomy}>
+              <ApolloProvider client={apolloClient}>
+                <ThemeProvider theme={Theme}>
+                  <Provider store={store}>
+                    <Router initialEntries={['/']}>
+                      <Web3AutProvider>
                         <StylesProvider jss={jss}>{content}</StylesProvider>
-                      </BiconomyContext.Provider>
-                    </Web3AutProvider>
-                  </Router>
-                </Provider>
-              </ThemeProvider>
+                      </Web3AutProvider>
+                    </Router>
+                  </Provider>
+                </ThemeProvider>
+              </ApolloProvider>
             </StyledEngineProvider>
           );
         }
