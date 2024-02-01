@@ -22,14 +22,10 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
   const { customIpfsGateway } = (getState() as RootState).walletProvider;
   const sdk = AutSDK.getInstance();
 
-  const queryArgsString = queryParamsAsString({
-    skip: 0,
-    take: 1,
-    filters: [{ prop: 'id', comparison: 'equals', value: sdk.nova.contract.contract.address.toLowerCase() }],
-  });
+  const novaAddress = sdk.nova.contract.contract.address.toLowerCase();
   const query = gql`
     query GetNovaDAO {
-      novaDAO(${queryArgsString}) {
+      novaDAO(id: "${novaAddress}") {
         id
         address
         market
@@ -95,7 +91,7 @@ export const mintMembership = createAsyncThunk(
 
     // const nftIdResp = await contract.getNextTokenID();
     const config = {
-      name: username,
+      name: username.toLowerCase(),
       role: roleName.toString(),
       dao: aut.community.name,
       // hash: `#${nftIdResp.data.toString()}`,
@@ -136,7 +132,7 @@ export const mintMembership = createAsyncThunk(
     };
     const cid = await sdk.client.sendJSONToIPFS(metadataJson as any);
     const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.novaAddress;
-    const response = await contract.mintAndJoin(username, cid, role, commitment, requiredAddress);
+    const response = await contract.mintAndJoin(username.toLowerCase(), cid, role, commitment, requiredAddress);
     if (!response?.isSuccess) {
       return rejectWithValue(response?.errorMessage);
     }
@@ -164,14 +160,9 @@ export const joinCommunity = createAsyncThunk(
     const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.novaAddress;
     const result = await contract.joinDAO(userData.role, userData.commitment, requiredAddress);
     if (result.isSuccess) {
-      const queryArgsString = queryParamsAsString({
-        skip: 0,
-        take: 1,
-        filters: [{ prop: 'id', comparison: 'equals', value: selectedAddress.toLowerCase() }],
-      });
       const query = gql`
         query GetAutID {
-          autID(${queryArgsString}) {
+          autID(id: "${selectedAddress.toLowerCase()}") {
             id
             username
           }
@@ -231,6 +222,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   const nova = sdk.initService<Nova>(Nova, autID.novaAddress);
   const isAdmin = await nova.contract.admins.isAdmin(selectedAddress);
   const novaMetadataUri = await nova.contract.functions.metadataUri();
+  const novaMarket = await nova.contract.functions.market();
   const novaMetadata = await fetchMetadata<BaseNFTModel<Community>>(novaMetadataUri, customIpfsGateway);
 
   const { avatar, thumbnailAvatar, timestamp } = autIdMetadata.properties;
@@ -239,11 +231,12 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
     ...novaMetadata,
     properties: {
       ...novaMetadata.properties,
+      address: autID.novaAddress,
+      market: novaMarket,
       userData: {
         role: autID.role.toString(),
         commitment: autID.commitment.toString(),
         isActive: true,
-        address: autID.novaAddress,
         isAdmin: isAdmin.data,
       },
     },
@@ -256,6 +249,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
       avatar,
       thumbnailAvatar,
       timestamp,
+      role: autID.role,
       socials: [],
       address: selectedAddress,
       tokenId: autID.tokenID,
@@ -389,7 +383,7 @@ export const checkIfNameTaken = createAsyncThunk('membership/nametaken', async (
   const queryArgsString = queryParamsAsString({
     skip: 0,
     take: 1,
-    filters: [{ prop: 'username', comparison: 'equals', value: requestBody.username }],
+    filters: [{ prop: 'username', comparison: 'equals', value: requestBody.username.toLowerCase() }],
   });
   const query = gql`
     query GetAutIDs {

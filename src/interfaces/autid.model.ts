@@ -43,6 +43,8 @@ export class AutIDProperties {
 
   loginTimestamp: number;
 
+  role: number;
+
   address: string;
 
   tokenId: string;
@@ -72,6 +74,7 @@ export class AutIDProperties {
       this.holderData = data.holderData;
       this.thumbnailAvatar = data.thumbnailAvatar;
       this.loginTimestamp = data.loginTimestamp;
+      this.role = data.role;
     }
   }
 }
