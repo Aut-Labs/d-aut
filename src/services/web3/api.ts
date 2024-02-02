@@ -39,6 +39,11 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
   });
 
   const nova = response.data.novaDAO;
+
+  if (!nova) {
+    return rejectWithValue(InternalErrorTypes.CouldNotFindCommunity);
+  }
+
   const communityMetadata = await fetch(ipfsCIDToHttpUrl(nova.metadataUri, customIpfsGateway));
 
   if (communityMetadata.status === 504) {
