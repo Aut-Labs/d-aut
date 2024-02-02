@@ -3,6 +3,7 @@ import { AutButton } from './AutButton';
 import { Stack, SvgIcon } from '@mui/material';
 import { ReactComponent as Metamask } from '../assets/metamask.svg';
 import { ReactComponent as WalletConnect } from '../assets/wallet-connect.svg';
+import { useMemo } from 'react';
 
 const btnConfig = {
   metaMask: {
@@ -16,14 +17,21 @@ const btnConfig = {
 };
 
 export default function WalletConnectorButtons({ onConnect }: { onConnect: (c: Connector) => Promise<void> }) {
-  const { connectors, isLoading } = useConnect();
+  const { connectors, isPending: isLoading } = useConnect();
   const { isReconnecting } = useAccount();
+
+  const filteredConnectors = useMemo(() => {
+    if (connectors?.length) {
+      return connectors.filter((c) => !!btnConfig[c.id]);
+    }
+    return [];
+  }, [connectors]);
 
   return (
     <Stack direction="column" mt={6} gap={4}>
-      {connectors.map((c) => (
+      {filteredConnectors.map((c) => (
         <AutButton
-          disabled={!c.ready || isReconnecting || isLoading}
+          disabled={isReconnecting || isLoading}
           key={c.id}
           onClick={() => onConnect(c)}
           color="offWhite"

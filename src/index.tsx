@@ -140,17 +140,17 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
           root.render(
             <StyledEngineProvider injectFirst>
-              <ApolloProvider client={apolloClient}>
-                <ThemeProvider theme={Theme}>
-                  <Provider store={store}>
-                    <Router initialEntries={['/']}>
+              <ThemeProvider theme={Theme}>
+                <Provider store={store}>
+                  <Router initialEntries={['/']}>
+                    <ApolloProvider client={apolloClient}>
                       <Web3AutProvider>
                         <StylesProvider jss={jss}>{content}</StylesProvider>
                       </Web3AutProvider>
-                    </Router>
-                  </Provider>
-                </ThemeProvider>
-              </ApolloProvider>
+                    </ApolloProvider>
+                  </Router>
+                </Provider>
+              </ThemeProvider>
             </StyledEngineProvider>
           );
         }

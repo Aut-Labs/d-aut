@@ -1,6 +1,6 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { JsonRpcSigner } from '@ethersproject/providers';
 import { NetworkConfig } from '../services/ProviderFactory/web3.connectors';
+import { JsonRpcSigner } from 'ethers';
 
 export interface WalletProviderState {
   signer: JsonRpcSigner;

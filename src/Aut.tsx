@@ -27,7 +27,7 @@ import { ipfsCIDToHttpUrl } from './services/storage/storage.hub';
 import AutButtonMenu from './components/AutButtonMenu/AutButtonMenu';
 import { AutMenuItemType, MenuItemActionType, AutButtonUserProfile } from './components/AutButtonMenu/AutMenuUtils';
 import { NetworkConfig } from './services/ProviderFactory/web3.connectors';
-import { useAccount, useChainId, useDisconnect } from 'wagmi';
+import { useAccount, useDisconnect } from 'wagmi';
 import AutSDK, { AutID } from '@aut-labs/sdk';
 import { useEthersSigner } from './services/ProviderFactory/ethers';
 import { checkIfAutIdExists, fetchCommunity } from './services/web3/api';
@@ -60,8 +60,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { disconnectAsync } = useDisconnect();
-  const chainId = useChainId();
-  const signer = useEthersSigner({ chainId });
+  const multiSigner = useEthersSigner();
   const { address, connector, isConnected } = useAccount();
 
   const customIpfsGateway = useSelector(IPFSCusomtGateway);
@@ -212,7 +211,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   };
 
   useEffect(() => {
-    if (connector?.ready && isConnected && signer && flowMode && networks?.length) {
+    if (isConnected && multiSigner && flowMode && networks?.length) {
       const start = async () => {
         const [network] = networks.filter((d) => !d.disabled);
         const itemsToUpdate = {
@@ -222,7 +221,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
           selectedNetwork: network,
         };
 
-        await initializeSDK(network, signer);
+        await initializeSDK(network, await multiSigner);
         await dispatch(updateWalletProviderState(itemsToUpdate));
 
         // if (flowMode === FlowConfigMode.Dashboard) {
@@ -236,7 +235,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       };
       start();
     }
-  }, [isConnected, connector?.ready, signer, networks, flowMode]);
+  }, [isConnected, multiSigner, networks, flowMode]);
 
   useEffect(() => {
     setMenuItems([

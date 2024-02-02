@@ -4,7 +4,7 @@ import { ethers } from 'ethers';
 
 export const AUTH_TOKEN_KEY = 'user-access-token';
 
-export const authoriseWithWeb3 = async (signer: ethers.providers.JsonRpcSigner): Promise<boolean> => {
+export const authoriseWithWeb3 = async (signer: ethers.JsonRpcSigner): Promise<boolean> => {
   try {
     const account = await signer.getAddress();
     const responseNonce = await axios.get(`${env.REACT_APP_API_URL}/autID/user/nonce/${account}`);

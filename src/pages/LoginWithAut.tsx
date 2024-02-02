@@ -15,7 +15,7 @@ const LoginWithAut: React.FunctionComponent = () => {
   const flowMode = useSelector(FlowMode);
   const networks = useSelector(NetworksConfig);
   const isAuthorised = useSelector(IsAuthorised);
-  const { isLoading, connectAsync } = useConnect();
+  const { isPending: isLoading, connectAsync } = useConnect();
   const { address, isConnected, connector } = useAccount();
   const status = useSelector(loadingStatus);
   const [shouldLoadAutID, setLoadAutID] = useState(false);
@@ -28,7 +28,7 @@ const LoginWithAut: React.FunctionComponent = () => {
     }
     setLoadAutID(true);
     const [network] = networks.filter((d) => !d.disabled);
-    await connectAsync({ connector: c, chainId: Number(network.chainId) });
+    await connectAsync({ connector: c });
   };
 
   useEffect(() => {

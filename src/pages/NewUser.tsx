@@ -16,7 +16,7 @@ const NewUser: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const networks = useSelector(NetworksConfig);
-  const { isLoading, connectAsync } = useConnect();
+  const { isPending: isLoading, connectAsync } = useConnect();
   const isAuthorised = useSelector(IsAuthorised);
   const status = useSelector(loadingStatus);
   const { address, isConnected, connector } = useAccount();
@@ -44,7 +44,7 @@ const NewUser: React.FunctionComponent = () => {
     }
     setCheckAutID(true);
     const [network] = networks.filter((d) => !d.disabled);
-    await connectAsync({ connector: c, chainId: Number(network.chainId) });
+    await connectAsync({ connector: c });
   };
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.109-dev",
+  "version": "1.0.110-dev",
   "main": "./build/index.umd.js",
   "module": "./build/index.es.js",
   "types": "./build/index.d.ts",
@@ -89,9 +89,9 @@
     }
   },
   "devDependencies": {
-    "@aut-labs/abi-types": "^0.0.69-dev",
-    "@aut-labs/sdk": "^0.0.141-dev",
     "@apollo/client": "^3.8.10",
+    "@aut-labs/abi-types": "^0.0.72-dev",
+    "@aut-labs/sdk": "^0.0.145-dev",
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@emotion/cache": "^11.11.0",
@@ -131,8 +131,9 @@
     "eslint-plugin-react": "~7.33.1",
     "eslint-plugin-react-hooks": "~4.6.0",
     "eslint-webpack-plugin": "~4.0.1",
-    "ethers": "^5.7.2",
+    "ethers": "^6.10.0",
     "ethers-typescript-typings": "0.0.4",
+    "graphql": "^16.8.1",
     "husky": "^8.0.3",
     "jss": "^10.10.0",
     "prettier": "~3.0.1",
@@ -152,15 +153,14 @@
     "redux-logger": "~3.0.6",
     "reselect": "^4.1.8",
     "typescript": "^5.1.6",
-    "viem": "^1.5.3",
+    "viem": "^2.7.1",
     "vite": "^4.4.9",
     "vite-plugin-checker": "^0.6.1",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-handlebars": "^1.6.0",
     "vite-plugin-svgr": "^3.2.0",
     "vite-tsconfig-paths": "^4.2.0",
-    "graphql": "^16.8.1",
-    "wagmi": "^1.3.9",
+    "wagmi": "^2.5.5",
     "webpack": "^5.0.0",
     "xmldom": "^0.6.0"
   },
@@ -181,5 +181,7 @@
       "last 1 safari version"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "@tanstack/react-query": "^5.18.1"
+  }
 }

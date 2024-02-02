@@ -22,10 +22,10 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
   const { customIpfsGateway } = (getState() as RootState).walletProvider;
   const sdk = AutSDK.getInstance();
 
-  const novaAddress = sdk.nova.contract.contract.address.toLowerCase();
+  const novaAddress = await sdk.nova.contract.contract.getAddress();
   const query = gql`
     query GetNovaDAO {
-      novaDAO(id: "${novaAddress}") {
+      novaDAO(id: "${novaAddress.toLowerCase()}") {
         id
         address
         market
@@ -195,6 +195,8 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   const { customIpfsGateway } = walletProvider;
   const sdk = AutSDK.getInstance();
 
+  debugger;
+
   const query = gql`
     query GetAutID {
       autID(id: "${selectedAddress.toLowerCase()}") {
@@ -213,6 +215,10 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   });
 
   const { autID } = response.data;
+
+  if (!autID) {
+    return rejectWithValue(InternalErrorTypes.AutIDNotFound);
+  }
 
   const autIdMetadata = await fetchMetadata<BaseNFTModel<any>>(autID.metadataUri, customIpfsGateway);
   if (!autIdMetadata) {
