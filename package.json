@@ -1,6 +1,6 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.112-dev",
+  "version": "1.0.114-dev",
   "main": "./build/index.umd.js",
   "module": "./build/index.es.js",
   "types": "./build/index.d.ts",
@@ -91,7 +91,7 @@
   "devDependencies": {
     "@apollo/client": "^3.8.10",
     "@aut-labs/abi-types": "^0.0.74-dev",
-    "@aut-labs/sdk": "^0.0.147-dev",
+    "@aut-labs/sdk": "^0.0.149-dev",
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
     "@emotion/cache": "^11.11.0",

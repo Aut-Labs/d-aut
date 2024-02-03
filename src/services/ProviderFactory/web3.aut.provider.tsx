@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import AutSDK from '@aut-labs/sdk';
 import { useAppDispatch } from '../../store/store.model';
 import { env } from '../web3/env';
@@ -8,7 +8,6 @@ import axios from 'axios';
 import { injected, walletConnect } from 'wagmi/connectors';
 import { WagmiProvider, createConfig, http } from 'wagmi';
 import { polygonMumbai, polygon } from 'wagmi/chains';
-import { ApolloProvider } from '@apollo/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 declare module 'wagmi' {

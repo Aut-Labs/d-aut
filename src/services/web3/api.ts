@@ -94,13 +94,12 @@ export const mintMembership = createAsyncThunk(
     const sdk = AutSDK.getInstance();
     const { contract } = sdk.autID;
 
-    // const nftIdResp = await contract.getNextTokenID();
+    const nftIdResp = await contract.getNextTokenID();
     const config = {
       name: username.toLowerCase(),
       role: roleName.toString(),
       dao: aut.community.name,
-      // hash: `#${nftIdResp.data.toString()}`,
-      hash: '1', // @TODO: don't forget to change this.
+      hash: `#${nftIdResp.data.toString()}`,
       network: selectedNetwork?.network.toLowerCase(),
       novaAddress: aut.novaAddress,
       timestamp: `${timeStamp}`,
