@@ -117,17 +117,17 @@ export const mintMembership = createAsyncThunk(
       headers: { 'Content-Type': 'multipart/form-data' },
     });
 
-    // const { toFile } = await AutIDBadgeGenerator(config);
     const badgeFile = await dataUrlToFile(result.data.badge, 'AutID.png');
     const avatarFile = base64toFile(picture, 'avatar');
 
+    const badgeImage = await sdk.client.sendFileToIPFS(badgeFile as File);
     const { original, thumbnail } = await sdk.client.sendFileToIPFSWithThumbnail(avatarFile as File);
 
     const metadataJson = {
       name: username,
       description: `ĀutID are a new standard for self-sovereign Identities that do not depend from the provider,
        therefore, they are universal. They are individual NFT IDs.`,
-      image: badgeFile,
+      image: badgeImage,
       properties: {
         avatar: original,
         thumbnailAvatar: thumbnail,

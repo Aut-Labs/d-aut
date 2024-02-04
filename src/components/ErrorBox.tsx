@@ -6,6 +6,7 @@ import AutLogo from './AutLogo';
 import { AutButton } from './AutButton';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { env } from '../services/web3/env';
+import { FlowConfigMode } from '../types/d-aut-config';
 
 export const ErrorBox = () => {
   const errorMessage = useSelector(errorState);
@@ -18,9 +19,9 @@ export const ErrorBox = () => {
       dispatch(errorAction(null));
     } else {
       dispatch(errorAction(null));
-      if (flowMode === 'dashboard') {
+      if (flowMode === FlowConfigMode.SignIn) {
         navigate('/autid');
-      } else if (flowMode === 'tryAut') {
+      } else if (flowMode === FlowConfigMode.SignUp) {
         navigate('/newuser');
       } else {
         navigate('/');

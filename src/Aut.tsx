@@ -108,9 +108,9 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const handleOpen = async () => {
     if (userData) return;
 
-    if (flowMode === FlowConfigMode.Dashboard) {
+    if (flowMode === FlowConfigMode.SignIn) {
       navigate('/autid');
-    } else if (flowMode === FlowConfigMode.TryAut) {
+    } else if (flowMode === FlowConfigMode.SignUp) {
       navigate('/newuser');
     } else {
       navigate('/');
@@ -224,11 +224,11 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
         await initializeSDK(network, await multiSigner);
         await dispatch(updateWalletProviderState(itemsToUpdate));
 
-        // if (flowMode === FlowConfigMode.Dashboard) {
+        // if (flowMode === FlowConfigMode.SignIn) {
         //   navigate('/autid');
         //   await dispatch(getAutId(address));
         // }
-        // if (flowMode === FlowConfigMode.TryAut) {
+        // if (flowMode === FlowConfigMode.SignUp) {
         //   navigate('/newuser');
         //   await checkForExistingAutId(address);
         // }

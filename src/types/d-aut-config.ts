@@ -9,8 +9,8 @@ export interface SwAuthConfig<CSSObject> {
 }
 
 export enum FlowConfigMode {
-  Dashboard = 'dashboard',
-  TryAut = 'tryAut',
+  SignIn = 'signin',
+  SignUp = 'signup',
   FreeMode = 'freeMode',
 }
 
