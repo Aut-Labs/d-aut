@@ -8,13 +8,14 @@ import { ApolloProvider } from '@apollo/client';
 import Theme from './theme/theme';
 import store from './store/store';
 import SwAuthModal, { AutButton } from './Aut';
-import { AttributeCallbackFn, SwAuthConfig } from './types/d-aut-config';
+import { AttributeCallbackFn, Connector, EthersConnector, S, SwAuthConfig } from './types/d-aut-config';
 import { AttributeNames, createShadowElement, extractAttributes, isElement } from './utils/utils';
-import Web3AutProvider from './services/ProviderFactory/web3.aut.provider';
 import { createRoot } from 'react-dom/client';
 import { fonts } from './assets/fonts/Fractul/fontsBase64';
 import { env } from './services/web3/env';
 import { apolloClient } from './store/graphql';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { NetworkConfig } from './types/network';
 
 function safeDecorator(fn) {
   // eslint-disable-next-line func-names
@@ -29,6 +30,51 @@ function safeDecorator(fn) {
     }
   };
 }
+
+const AutConnectorContext = createContext<EthersConnector>({
+  connectors: [],
+  networks: [],
+  setStateChangeCallback: (callback: (s: S) => void) => null,
+  connect: async () => null,
+  disconnect: async () => null,
+  state: {
+    isConnected: false,
+    isConnecting: false,
+    status: 'disconnected',
+    chainId: null,
+    address: null,
+    error: null,
+  } as S,
+});
+
+export const useAutConnectorContext = () => useContext(AutConnectorContext);
+
+export const AutConnectorProvider = ({ connector, children }) => {
+  const [state, setState] = useState<S | null>(null);
+
+  const handleStateChange = (newState: S) => {
+    console.log('State Changed', newState);
+    setState(newState);
+  };
+
+  useEffect(() => {
+    connector.setStateChangeCallback(handleStateChange);
+  }, []);
+
+  const value = useMemo(() => {
+    return {
+      ...connector,
+      connect: async (c: Connector, network?: NetworkConfig) => {
+        const newState = await connector.connect(c, network);
+        setState(newState);
+        return newState;
+      },
+      state,
+    };
+  }, [connector, state]);
+
+  return <AutConnectorContext.Provider value={value}>{children}</AutConnectorContext.Provider>;
+};
 
 customElements.define = safeDecorator(customElements.define);
 
@@ -144,9 +190,9 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
                 <ThemeProvider theme={Theme}>
                   <Provider store={store}>
                     <Router initialEntries={['/']}>
-                      <Web3AutProvider>
+                      <AutConnectorProvider connector={authConfig.connector}>
                         <StylesProvider jss={jss}>{content}</StylesProvider>
-                      </Web3AutProvider>
+                      </AutConnectorProvider>
                     </Router>
                   </Provider>
                 </ThemeProvider>

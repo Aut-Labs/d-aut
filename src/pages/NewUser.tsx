@@ -2,25 +2,22 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store/store.model';
 import { AutPageBox } from '../components/AutPageBox';
 import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
-import { FlowMode, ResultState, loadingStatus, setJustJoining } from '../store/aut.reducer';
+import { FlowMode, ResultState, loadingStatus, setJustJoining, updateAutState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
-import { IsAuthorised, NetworksConfig } from '../store/wallet-provider';
 import { LoadingProgress } from '../components/LoadingProgress';
 import { useSelector } from 'react-redux';
-import { Connector, useAccount, useConnect } from 'wagmi';
 import WalletConnectorButtons from '../components/WalletConnectorButtons';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useAutConnectorContext } from '..';
+import { Connector } from '../types/d-aut-config';
 
 const NewUser: React.FunctionComponent = () => {
   const flowMode = useSelector(FlowMode);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const networks = useSelector(NetworksConfig);
-  const { isPending: isLoading, connectAsync } = useConnect();
-  const isAuthorised = useSelector(IsAuthorised);
   const status = useSelector(loadingStatus);
-  const { address, isConnected, connector } = useAccount();
   const [shouldCheckForAutID, setCheckAutID] = useState(false);
+  const { connect } = useAutConnectorContext();
 
   const checkForExistingAutId = async (account: string) => {
     const hasAutId = await dispatch(checkIfAutIdExists(account));
@@ -37,29 +34,26 @@ const NewUser: React.FunctionComponent = () => {
   };
 
   const tryConnect = async (c: Connector) => {
-    const connectorChange = c?.id !== connector?.id;
-    if (isConnected && address && !connectorChange) {
-      checkForExistingAutId(address);
+    setCheckAutID(true);
+    const state = await connect(c);
+    if (state.error) {
+      dispatch(
+        updateAutState({
+          errorStateAction: state.error as string,
+          status: ResultState.Failed,
+          user: null,
+        })
+      );
+      setCheckAutID(false);
       return;
     }
-    setCheckAutID(true);
-    const [network] = networks.filter((d) => !d.disabled);
-    await connectAsync({ connector: c });
+    checkForExistingAutId(state.address);
+    setCheckAutID(false);
   };
-
-  useEffect(() => {
-    if (isAuthorised && shouldCheckForAutID) {
-      const load = async () => {
-        await checkForExistingAutId(address);
-        setCheckAutID(false);
-      };
-      load();
-    }
-  }, [isAuthorised, shouldCheckForAutID]);
 
   return (
     <>
-      {isLoading || status === ResultState.Loading || shouldCheckForAutID ? (
+      {status === ResultState.Loading || shouldCheckForAutID ? (
         <>
           <LoadingProgress />
         </>

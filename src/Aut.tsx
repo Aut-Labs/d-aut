@@ -22,16 +22,16 @@ import {
   user,
 } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
-import { IPFSCusomtGateway, NetworksConfig, setCustomIpfsGateway, setNetworks, updateWalletProviderState } from './store/wallet-provider';
+import { IPFSCusomtGateway, setCustomIpfsGateway, setNetworks, updateWalletProviderState } from './store/wallet-provider';
 import { ipfsCIDToHttpUrl } from './services/storage/storage.hub';
 import AutButtonMenu from './components/AutButtonMenu/AutButtonMenu';
 import { AutMenuItemType, MenuItemActionType, AutButtonUserProfile } from './components/AutButtonMenu/AutMenuUtils';
-import { NetworkConfig } from './services/ProviderFactory/web3.connectors';
-import { useAccount, useDisconnect } from 'wagmi';
 import AutSDK, { AutID } from '@aut-labs/sdk';
-import { useEthersSigner } from './services/ProviderFactory/ethers';
 import { checkIfAutIdExists, fetchCommunity } from './services/web3/api';
 import { MultiSigner } from '@aut-labs/sdk/dist/models/models';
+import { useAutConnectorContext } from '.';
+import { env } from './services/web3/env';
+import { NetworkConfig } from './types/network';
 
 const AutModal = ({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
@@ -59,13 +59,10 @@ const AutModal = ({ container, rootContainer = null }: any) => {
 export const AutButton = memo(({ config, attributes: defaultAttributes, container, setAttrCallback }: AutButtonProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { disconnectAsync } = useDisconnect();
-  const multiSigner = useEthersSigner();
-  const { address, connector, isConnected } = useAccount();
+  const { disconnect, state, networks } = useAutConnectorContext();
 
   const customIpfsGateway = useSelector(IPFSCusomtGateway);
   // const isAuthorised = useSelector(IsAuthorised);
-  const networks = useSelector(NetworksConfig);
   const flowMode = useSelector(FlowMode);
   const novaAddress = useSelector(NovaAddress);
   const userData = useSelector(user);
@@ -121,7 +118,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
 
   const handleDisconnect = async () => {
     window.localStorage.removeItem('aut-data');
-    await disconnectAsync();
+    disconnect();
     dispatch(resetUIState);
     dispatchEvent(OutputEventTypes.Disconnected);
   };
@@ -211,31 +208,34 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   };
 
   useEffect(() => {
-    if (isConnected && multiSigner && flowMode && networks?.length) {
-      const start = async () => {
-        const [network] = networks.filter((d) => !d.disabled);
-        const itemsToUpdate = {
-          isAuthorised: true,
-          sdkInitialized: true,
-          isOpen: false,
-          selectedNetwork: network,
-        };
+    dispatch(setNetworks(networks));
+    const sdk = new AutSDK({
+      ipfs: {
+        apiKey: env.REACT_APP_IPFS_API_KEY,
+        secretApiKey: env.REACT_APP_IPFS_API_SECRET,
+        gatewayUrl: env.REACT_APP_IPFS_GATEWAY_URL,
+      },
+    });
+  }, []);
 
-        await initializeSDK(network, await multiSigner);
-        await dispatch(updateWalletProviderState(itemsToUpdate));
-
-        // if (flowMode === FlowConfigMode.SignIn) {
-        //   navigate('/autid');
-        //   await dispatch(getAutId(address));
-        // }
-        // if (flowMode === FlowConfigMode.SignUp) {
-        //   navigate('/newuser');
-        //   await checkForExistingAutId(address);
-        // }
+  useEffect(() => {
+    const start = async () => {
+      const network = networks.find((d) => d.chainId === state.chainId);
+      const itemsToUpdate = {
+        isAuthorised: true,
+        sdkInitialized: true,
+        isOpen: false,
+        selectedNetwork: network,
       };
+
+      await initializeSDK(network, state.multiSigner);
+      await dispatch(updateWalletProviderState(itemsToUpdate));
+    };
+
+    if (state?.isConnected) {
       start();
     }
-  }, [isConnected, multiSigner, networks, flowMode]);
+  }, [state?.isConnected, state?.status, state?.chainId]);
 
   useEffect(() => {
     setMenuItems([

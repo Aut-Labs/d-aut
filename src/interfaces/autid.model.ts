@@ -1,7 +1,7 @@
 import { HolderData } from '@aut-labs/sdk';
 import { BaseNFTModel } from '@aut-labs/sdk/dist/models/baseNFTModel';
 import { Community } from './community.model';
-import { NetworkConfig } from '../services/ProviderFactory/web3.connectors';
+import { NetworkConfig } from '../types/network';
 
 export interface AutSocial {
   type: string;

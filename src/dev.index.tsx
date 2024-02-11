@@ -23,6 +23,14 @@ setTimeout(() => {
     },
   };
   Init({
+    connector: {
+      setStateChangeCallback: null,
+      state: null,
+      connectors: [],
+      networks: [],
+      connect: async () => null,
+      disconnect: async () => null,
+    },
     config,
   });
   // setInterval(() => {

@@ -3,47 +3,42 @@ import { getAutId } from '../services/web3/api';
 import { AutPageBox } from '../components/AutPageBox';
 import { AutHeader } from '../components/AutHeader';
 import { LoadingProgress } from '../components/LoadingProgress';
-import { FlowMode, ResultState, loadingStatus } from '../store/aut.reducer';
+import { FlowMode, ResultState, loadingStatus, updateAutState } from '../store/aut.reducer';
 import { useSelector } from 'react-redux';
-import { Connector, useAccount, useConnect } from 'wagmi';
 import WalletConnectorButtons from '../components/WalletConnectorButtons';
-import { IsAuthorised, NetworksConfig } from '../store/wallet-provider';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useAutConnectorContext } from '..';
+import { Connector } from '../types/d-aut-config';
 
 const LoginWithAut: React.FunctionComponent = () => {
   const dispatch = useAppDispatch();
   const flowMode = useSelector(FlowMode);
-  const networks = useSelector(NetworksConfig);
-  const isAuthorised = useSelector(IsAuthorised);
-  const { isPending: isLoading, connectAsync } = useConnect();
-  const { address, isConnected, connector } = useAccount();
   const status = useSelector(loadingStatus);
   const [shouldLoadAutID, setLoadAutID] = useState(false);
+  const { connect } = useAutConnectorContext();
 
   const tryConnect = async (c: Connector) => {
-    const connectorChange = c?.id !== connector?.id;
-    if (isConnected && address && !connectorChange) {
-      dispatch(getAutId(address));
+    setLoadAutID(true);
+    const state = await connect(c);
+
+    if (state.error) {
+      dispatch(
+        updateAutState({
+          errorStateAction: state.error as string,
+          status: ResultState.Failed,
+          user: null,
+        })
+      );
+      setLoadAutID(false);
       return;
     }
-    setLoadAutID(true);
-    const [network] = networks.filter((d) => !d.disabled);
-    await connectAsync({ connector: c });
+    await dispatch(getAutId(state.address));
+    setLoadAutID(false);
   };
-
-  useEffect(() => {
-    if (isAuthorised && address && shouldLoadAutID) {
-      const load = async () => {
-        await dispatch(getAutId(address));
-        setLoadAutID(false);
-      };
-      load();
-    }
-  }, [isAuthorised, shouldLoadAutID, address]);
 
   return (
     <>
-      {isLoading || status === ResultState.Loading || shouldLoadAutID ? (
+      {status === ResultState.Loading || shouldLoadAutID ? (
         <>
           <LoadingProgress />
         </>

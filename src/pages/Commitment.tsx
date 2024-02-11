@@ -4,21 +4,21 @@ import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { setUserData, userData } from '../store/user-data.reducer';
 import { useAppDispatch } from '../store/store.model';
-import { joinCommunity, mintMembership } from '../services/web3/api';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { autState } from '../store/aut.reducer';
 import { FormAction, FormContent, FormWrapper } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
 import { AutCommitmentSlider } from '../theme/commitment-slider-styles';
-import { useAccount } from 'wagmi';
+import { useAutConnectorContext } from '..';
+import { joinCommunity, mintMembership } from '../services/web3/api';
 
 const Commitment: React.FunctionComponent = (props) => {
   const navigate = useNavigate();
   const userInput = useSelector(userData);
   const coreState = useSelector(autState);
-  const { address: account } = useAccount();
   const dispatch = useAppDispatch();
+  const { state } = useAutConnectorContext();
 
   const {
     handleSubmit,
@@ -31,14 +31,13 @@ const Commitment: React.FunctionComponent = (props) => {
   });
 
   const onSubmit = async (data: any) => {
-    // console.log(data);
     if (coreState.justJoin) {
-      const result = await dispatch(joinCommunity(account));
+      const result = await dispatch(joinCommunity(state.address));
       if (!(result as any).error) {
         navigate('/congrats');
       }
     } else {
-      const result = await dispatch(mintMembership(account));
+      const result = await dispatch(mintMembership(state.address));
       if (!(result as any).error) {
         navigate('/congrats');
       }

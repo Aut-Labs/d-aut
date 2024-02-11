@@ -6,7 +6,6 @@ import { setAutIdsOnDifferentNetworks } from '../../store/aut.reducer';
 import { base64toFile, dispatchEvent } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
 import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
-import { AutId } from '../ProviderFactory/web3.connectors';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AutSDK, { Nova, fetchMetadata, queryParamsAsString } from '@aut-labs/sdk';
 import { RootState } from '../../store/store.model';
@@ -17,6 +16,7 @@ import { gql } from '@apollo/client';
 import { AutID } from '../../interfaces/autid.model';
 import { BaseNFTModel } from '@aut-labs/sdk/dist/models/baseNFTModel';
 import { Community } from '../../interfaces/community.model';
+import { AutId } from '../../types/network';
 
 export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue, getState }) => {
   const { customIpfsGateway } = (getState() as RootState).walletProvider;
@@ -199,8 +199,6 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
   const { customIpfsGateway } = walletProvider;
   const sdk = AutSDK.getInstance();
 
-  debugger;
-
   const query = gql`
     query GetAutID {
       autID(id: "${selectedAddress.toLowerCase()}") {
@@ -218,7 +216,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
     query,
   });
 
-  const { autID } = response.data;
+  const autID = response?.data?.autID;
 
   if (!autID) {
     return rejectWithValue(InternalErrorTypes.AutIDNotFound);

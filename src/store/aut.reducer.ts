@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
-import { AutId } from '../services/ProviderFactory/web3.connectors';
 import {
   checkAvailableNetworksAndGetAutId,
   checkIfAutIdExists,
@@ -10,13 +9,13 @@ import {
   joinCommunity,
   mintMembership,
 } from '../services/web3/api';
-import { BaseNFTModel } from '../services/web3/models';
 import { FlowConfig, FlowConfigMode } from '../types/d-aut-config';
 import { OutputEventTypes } from '../types/event-types';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { dispatchEvent } from '../utils/utils';
 import { ActionPayload } from './action-payload';
 import { AutID } from '../interfaces/autid.model';
+import { AutId } from '../types/network';
 
 export interface Community {
   name: string;
@@ -86,6 +85,11 @@ export const autSlice = createSlice({
   name: 'aut',
   initialState,
   reducers: {
+    updateAutState(state, action: ActionPayload<Partial<AutState>>) {
+      Object.keys(action.payload).forEach((key) => {
+        state[key] = action.payload[key];
+      });
+    },
     setSelectedAddress: (state, action: ActionPayload<any>) => {
       state.selectedAddress = action.payload;
     },
@@ -241,6 +245,7 @@ export const {
   setAllowedRoleId,
   setFlowConfig,
   setUseDev,
+  updateAutState,
 } = autSlice.actions;
 
 export const NovaAddress = (state: any) => state.aut.novaAddress as string;

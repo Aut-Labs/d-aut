@@ -11,10 +11,9 @@ import { AutSelectField, FormHelperText } from '../components/Fields';
 import { useAppDispatch } from '../store/store.model';
 import { getAutId } from '../services/web3/api';
 import { NetworksConfig, SelectedNetwork, setSelectedNetwork } from '../store/wallet-provider';
-import { EnableAndChangeNetwork } from '../services/ProviderFactory/web3.network';
 import { InternalErrorTypes } from '../utils/error-parser';
 import AutSDK from '@aut-labs/sdk';
-import { useAccount } from 'wagmi';
+import { useAutConnectorContext } from '..';
 
 const NetworkSelect: React.FunctionComponent = () => {
   const networkConfigs = useSelector(NetworksConfig);
@@ -22,7 +21,7 @@ const NetworkSelect: React.FunctionComponent = () => {
   const autData = useSelector(autState);
   const selectedNetwork = useSelector(SelectedNetwork);
   const dispatch = useAppDispatch();
-  const { address: account } = useAccount();
+  const { state } = useAutConnectorContext();
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
@@ -35,13 +34,13 @@ const NetworkSelect: React.FunctionComponent = () => {
     // @ts-ignore
     const foundChainId = Number(connector?.provider?.chainId);
     if (foundChainId === network.chainId) {
-      await dispatch(getAutId(account));
+      await dispatch(getAutId(state.address));
     } else {
       await dispatch(setSelectedNetwork(network));
       try {
         // @ts-ignore
         const { provider } = conn.provider;
-        await EnableAndChangeNetwork(provider, network);
+        // await EnableAndChangeNetwork(provider, network);
         const sdk = AutSDK.getInstance();
         const signer = provider.getSigner();
         await sdk.init(signer, {
@@ -56,7 +55,7 @@ const NetworkSelect: React.FunctionComponent = () => {
           autIDAddress: result.data,
         });
 
-        await dispatch(getAutId(account));
+        await dispatch(getAutId(state.address));
       } catch (e) {
         await dispatch(setSelectedNetwork(null));
         await dispatch(setStatus(ResultState.Failed));
