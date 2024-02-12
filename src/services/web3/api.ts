@@ -377,7 +377,6 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
 
       autId.properties.communities = communities;
       autId.loginTimestamp = new Date().getTime();
-      autId.provider = walletProvider.selectedWalletType;
       autId.network = walletProvider.selectedNetwork;
       autId.address = selectedAddress;
 

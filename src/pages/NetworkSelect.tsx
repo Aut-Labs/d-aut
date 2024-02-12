@@ -10,7 +10,7 @@ import { FormAction, FormWrapper, FormContent } from '../components/FormHelpers'
 import { AutSelectField, FormHelperText } from '../components/Fields';
 import { useAppDispatch } from '../store/store.model';
 import { getAutId } from '../services/web3/api';
-import { NetworksConfig, SelectedNetwork, setSelectedNetwork } from '../store/wallet-provider';
+import { NetworksConfig, SelectedNetwork } from '../store/wallet-provider';
 import { InternalErrorTypes } from '../utils/error-parser';
 import AutSDK from '@aut-labs/sdk';
 import { useAutConnectorContext } from '..';
@@ -36,7 +36,7 @@ const NetworkSelect: React.FunctionComponent = () => {
     if (foundChainId === network.chainId) {
       await dispatch(getAutId(state.address));
     } else {
-      await dispatch(setSelectedNetwork(network));
+      // await dispatch(setSelectedNetwork(network));
       try {
         // @ts-ignore
         const { provider } = conn.provider;
@@ -57,7 +57,7 @@ const NetworkSelect: React.FunctionComponent = () => {
 
         await dispatch(getAutId(state.address));
       } catch (e) {
-        await dispatch(setSelectedNetwork(null));
+        // await dispatch(setSelectedNetwork(null));
         await dispatch(setStatus(ResultState.Failed));
         dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
       }
@@ -70,7 +70,7 @@ const NetworkSelect: React.FunctionComponent = () => {
   };
 
   const onBackClicked = async () => {
-    await dispatch(setSelectedNetwork(null));
+    // await dispatch(setSelectedNetwork(null));
   };
 
   return (
@@ -102,11 +102,11 @@ const NetworkSelect: React.FunctionComponent = () => {
             <Controller
               name="network"
               control={control}
-              rules={{
-                validate: {
-                  selected: (v: string) => !!v,
-                },
-              }}
+              // rules={{
+              //   validate: {
+              //     selected: (v: string) => !!v,
+              //   },
+              // }}
               render={({ field: { name, value, onChange } }) => {
                 return (
                   <AutSelectField

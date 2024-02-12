@@ -62,7 +62,6 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const { disconnect, state, networks } = useAutConnectorContext();
 
   const customIpfsGateway = useSelector(IPFSCusomtGateway);
-  // const isAuthorised = useSelector(IsAuthorised);
   const flowMode = useSelector(FlowMode);
   const novaAddress = useSelector(NovaAddress);
   const userData = useSelector(user);
@@ -220,11 +219,11 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
 
   useEffect(() => {
     const start = async () => {
-      const network = networks.find((d) => d.chainId === state.chainId);
+      let network = networks.find((d) => d.chainId === state.chainId);
+      if (!network) {
+        [network] = networks.filter((d) => !d.disabled);
+      }
       const itemsToUpdate = {
-        isAuthorised: true,
-        sdkInitialized: true,
-        isOpen: false,
         selectedNetwork: network,
       };
 
@@ -232,10 +231,10 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       await dispatch(updateWalletProviderState(itemsToUpdate));
     };
 
-    if (state?.isConnected) {
+    if (state?.multiSignerId) {
       start();
     }
-  }, [state?.isConnected, state?.status, state?.chainId]);
+  }, [state?.multiSignerId]);
 
   useEffect(() => {
     setMenuItems([

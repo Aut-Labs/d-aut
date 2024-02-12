@@ -12,6 +12,7 @@ export type S = {
   chainId: number;
   status: 'connected' | 'connecting' | 'disconnected' | 'reconnecting';
   multiSigner: MultiSigner;
+  multiSignerId: string;
 };
 
 export type Connector = {

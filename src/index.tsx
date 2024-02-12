@@ -38,6 +38,8 @@ const AutConnectorContext = createContext<EthersConnector>({
   connect: async () => null,
   disconnect: async () => null,
   state: {
+    multiSigner: null,
+    multiSignerId: null,
     isConnected: false,
     isConnecting: false,
     status: 'disconnected',
@@ -50,7 +52,7 @@ const AutConnectorContext = createContext<EthersConnector>({
 export const useAutConnectorContext = () => useContext(AutConnectorContext);
 
 export const AutConnectorProvider = ({ connector, children }) => {
-  const [state, setState] = useState<S | null>(null);
+  const [state, setState] = useState<S | null>(connector.state);
 
   const handleStateChange = (newState: S) => {
     console.log('State Changed', newState);
