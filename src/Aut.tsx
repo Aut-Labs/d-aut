@@ -106,7 +106,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
     if (flowMode === FlowConfigMode.SignIn) {
       navigate('/autid');
     } else if (flowMode === FlowConfigMode.SignUp) {
-      navigate('/newuser');
+      navigate('/userdetails');
     } else {
       navigate('/');
     }

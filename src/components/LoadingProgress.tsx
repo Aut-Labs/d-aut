@@ -26,7 +26,7 @@ export const LoadingProgress = () => {
           justifyContent: 'center',
         }}
       >
-        <Player autoplay loop src={animationData} style={{ height: '300px', width: '300px' }} />
+        <Player autoplay loop src={animationData} style={{ height: '150px', width: '150px' }} />
       </Box>
     </Box>
   );

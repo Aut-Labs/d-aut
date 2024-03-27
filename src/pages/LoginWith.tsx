@@ -24,13 +24,36 @@ const LoginWith: React.FunctionComponent = () => {
         color="white"
         size="normal"
         variant="outlined"
-        sx={{ textTransform: 'none', mt: autData.novaAddress ? '93px' : '133px' }}
+        sx={{
+          textTransform: 'none',
+          mt: 4,
+          minWidth: {
+            xs: '260px',
+            md: '280px',
+            lg: '300px',
+            xxl: '440px',
+          },
+        }}
         onClick={handleAutIdClicked}
       >
         CONNECT WITH ĀutID
       </AutButton>
       {autData.novaAddress && (
-        <AutButton color="white" size="normal" variant="outlined" sx={{ mt: '53px' }} onClick={handleNewUserClicked}>
+        <AutButton
+          color="white"
+          size="normal"
+          variant="outlined"
+          sx={{
+            mt: 4,
+            minWidth: {
+              xs: '260px',
+              md: '280px',
+              lg: '300px',
+              xxl: '440px',
+            },
+          }}
+          onClick={handleNewUserClicked}
+        >
           NEW USER
         </AutButton>
       )}
