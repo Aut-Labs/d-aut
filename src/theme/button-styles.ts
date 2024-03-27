@@ -2,13 +2,13 @@ import { Breakpoint, ComponentsOverrides, ComponentsProps, ComponentsVariants, T
 
 export const buttonStyles = {
   normal: {
-    // width: {
-    //   xs: '300px',
-    //   sm: '350px',
-    //   md: '350px',
-    //   xxl: '350px',
-    // },
-    // height: '75px',
+    width: {
+      xs: '300px',
+      sm: '350px',
+      md: '350px',
+      xxl: '350px',
+    },
+    height: '75px',
     fontFamily: 'FractulAltLight',
     letterSpacing: '0.01em',
     fontSize: {
@@ -297,12 +297,12 @@ export default (theme: Theme) =>
             };
           });
 
-          // Object.keys(width).forEach((key: Breakpoint) => {
-          //   currStyle[theme.breakpoints.up(key)] = {
-          //     ...currStyle[theme.breakpoints.up(key)],
-          //     width: width[key],
-          //   };
-          // });
+          Object.keys(width).forEach((key: Breakpoint) => {
+            currStyle[theme.breakpoints.up(key)] = {
+              ...currStyle[theme.breakpoints.up(key)],
+              width: width[key],
+            };
+          });
 
           prev = [
             ...prev,
