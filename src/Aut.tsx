@@ -70,16 +70,15 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
 
   const initializeSDK = async (network: NetworkConfig, multiSigner: MultiSigner) => {
     const sdk = AutSDK.getInstance();
-    let autIdContractAddress = network?.contracts?.autIDAddress;
+    const autIdContractAddress = network?.contracts?.autIDAddress;
 
     // If nova address is provided then to ensure is the correct autId address
     // we will fetch contract address from novaAddress contract
     if (novaAddress) {
       await sdk.init(multiSigner, {
         novaAddress,
+        autIDAddress: autIdContractAddress,
       });
-      autIdContractAddress = await sdk.nova.contract.functions.autID();
-      sdk.autID = sdk.initService<AutID>(AutID, autIdContractAddress);
     } else {
       await sdk.init(multiSigner, {
         autIDAddress: autIdContractAddress,
@@ -234,7 +233,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
     if (state?.multiSignerId) {
       start();
     }
-  }, [state?.multiSignerId]);
+  }, [state?.multiSignerId, novaAddress]);
 
   useEffect(() => {
     setMenuItems([

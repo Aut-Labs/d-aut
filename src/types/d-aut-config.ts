@@ -32,11 +32,20 @@ export interface EthersConnector {
   disconnect: () => Promise<void>;
 }
 
+export interface EnvConfig {
+  REACT_APP_API_URL: string;
+  REACT_APP_GRAPH_API_URL: string;
+  REACT_APP_IPFS_API_KEY: string;
+  REACT_APP_IPFS_API_SECRET: string;
+  REACT_APP_IPFS_GATEWAY_URL: string;
+}
+
 export interface SwAuthConfig<CSSObject> {
   container?: HTMLElement;
   config: IAutButtonConfig;
   containerStyles?: CSSObject;
   connector?: EthersConnector;
+  envConfig: EnvConfig;
 }
 
 export enum FlowConfigMode {

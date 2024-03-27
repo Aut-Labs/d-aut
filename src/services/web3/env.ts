@@ -1,14 +1,6 @@
-export const env = {
-  // REACT_APP_API_URL: 'http://localhost:4005/api',
-  REACT_APP_NOVA_SHOWCASE_ADDRESS: 'https://showcase.aut.id',
-  REACT_APP_API_URL: 'https://api.aut.id/api',
-  REACT_APP_GRAPH_API_URL: 'https://api.studio.thegraph.com/query/63763/aut-mumbai/version/latest',
-  REACT_APP_API_URL_DEV: 'https://dev-api.aut.id/api',
-  REACT_APP_API_URL_LOCAL: 'http://localhost:4005/api',
-  REACT_APP_IPFS_API_KEY: '8a0ac0f19f3a824831b9',
-  REACT_APP_IPFS_API_SECRET: 'ab123887b809b052a6f6b9122d12707f132ba65f2d0cdd3e6e4f653ac2755c87',
-  REACT_APP_IPFS_GATEWAY_URL: 'https://aut.mypinata.cloud/ipfs/',
-};
+import { EnvConfig } from '../../types/d-aut-config';
+
+export const env: Partial<EnvConfig> = {};
 
 interface ApiUrls {
   tryAut: string;

@@ -11,7 +11,7 @@ import AutSDK, { Nova, fetchMetadata, queryParamsAsString } from '@aut-labs/sdk'
 import { RootState } from '../../store/store.model';
 import { OutputEventTypes } from '../../types/event-types';
 import { env } from './env';
-import { apolloClient } from '../../store/graphql';
+import { getGraphClient } from '../../store/graphql';
 import { gql } from '@apollo/client';
 import { AutID } from '../../interfaces/autid.model';
 import { BaseNFTModel } from '@aut-labs/sdk/dist/models/baseNFTModel';
@@ -34,6 +34,7 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
       }
     }
   `;
+  const apolloClient = getGraphClient();
   const response = await apolloClient.query<any>({
     query,
   });
@@ -172,6 +173,7 @@ export const joinCommunity = createAsyncThunk(
           }
         }
       `;
+      const apolloClient = getGraphClient();
       const response = await apolloClient.query<any>({
         query,
       });
@@ -212,6 +214,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
       }
     }
   `;
+  const apolloClient = getGraphClient();
   const response = await apolloClient.query<any>({
     query,
   });
@@ -399,6 +402,7 @@ export const checkIfNameTaken = createAsyncThunk('membership/nametaken', async (
       }
     }
   `;
+  const apolloClient = getGraphClient();
   const response = await apolloClient.query({
     query,
   });

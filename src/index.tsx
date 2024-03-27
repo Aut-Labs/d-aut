@@ -13,7 +13,6 @@ import { AttributeNames, createShadowElement, extractAttributes, isElement } fro
 import { createRoot } from 'react-dom/client';
 import { fonts } from './assets/fonts/Fractul/fontsBase64';
 import { env } from './services/web3/env';
-import { apolloClient } from './store/graphql';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { NetworkConfig } from './types/network';
 
@@ -83,6 +82,13 @@ customElements.define = safeDecorator(customElements.define);
 export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
   const TAG_NAME = 'd-aut';
 
+  if (!authConfig) {
+    throw new Error('Auth Config is required');
+  }
+  Object.assign(env, authConfig.envConfig);
+
+  console.log('Env', env);
+
   const style = document.createElement('style');
   style.textContent = fonts;
 
@@ -122,10 +128,6 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
         connectedCallback() {
           const jss = create(jssPreset());
           const attributes = extractAttributes(this);
-
-          if (attributes.useDev) {
-            env.REACT_APP_API_URL = env.REACT_APP_API_URL_DEV;
-          }
 
           let content: any = null;
           let mountPoint: HTMLElement = null;
@@ -188,17 +190,15 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
 
           root.render(
             <StyledEngineProvider injectFirst>
-              <ApolloProvider client={apolloClient}>
-                <ThemeProvider theme={Theme}>
-                  <Provider store={store}>
-                    <Router initialEntries={['/']}>
-                      <AutConnectorProvider connector={authConfig.connector}>
-                        <StylesProvider jss={jss}>{content}</StylesProvider>
-                      </AutConnectorProvider>
-                    </Router>
-                  </Provider>
-                </ThemeProvider>
-              </ApolloProvider>
+              <ThemeProvider theme={Theme}>
+                <Provider store={store}>
+                  <Router initialEntries={['/']}>
+                    <AutConnectorProvider connector={authConfig.connector}>
+                      <StylesProvider jss={jss}>{content}</StylesProvider>
+                    </AutConnectorProvider>
+                  </Router>
+                </Provider>
+              </ThemeProvider>
             </StyledEngineProvider>
           );
         }

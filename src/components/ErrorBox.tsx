@@ -57,9 +57,9 @@ export const ErrorBox = () => {
           <>
             <Typography sx={{ mt: '25px', textAlign: 'center' }} variant="subtitle1">
               Go to the{' '}
-              <Link sx={{ color: 'white' }} target="_blank" href={env.REACT_APP_NOVA_SHOWCASE_ADDRESS}>
+              {/* <Link sx={{ color: 'white' }} target="_blank" href={env.REACT_APP_NOVA_SHOWCASE_ADDRESS}>
                 Nova showcase
-              </Link>{' '}
+              </Link>{' '} */}
               to browse Novas.
             </Typography>
           </>

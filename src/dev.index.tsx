@@ -24,14 +24,66 @@ setTimeout(() => {
   };
   Init({
     connector: {
-      setStateChangeCallback: null,
-      state: null,
-      connectors: [],
-      networks: [],
       connect: async () => null,
       disconnect: async () => null,
+      setStateChangeCallback: () => null,
+      connectors: [
+        {
+          id: 'web3auth',
+          name: 'Web3Auth',
+          type: 'Web3Auth',
+          emitter: {
+            uid: '84370ff0d34',
+          },
+          uid: '84370ff0d34',
+        },
+        {
+          id: 'metaMask',
+          name: 'MetaMask',
+          type: 'injected',
+          emitter: {
+            uid: '4370ff0d344',
+          },
+          uid: '4370ff0d344',
+        },
+        {
+          id: 'walletConnect',
+          name: 'WalletConnect',
+          type: 'walletConnect',
+          requestedChainsStorageKey: 'walletConnect.requestedChains',
+          emitter: {
+            uid: '370ff0d3444',
+          },
+          uid: '370ff0d3444',
+        },
+        {
+          id: 'coinbaseWalletSDK',
+          name: 'Coinbase Wallet',
+          type: 'coinbaseWallet',
+          emitter: {
+            uid: '70ff0d34443',
+          },
+          uid: '70ff0d34443',
+        },
+      ] as any,
+      networks: [],
+      state: {
+        multiSignerId: null,
+        multiSigner: null,
+        isConnected: false,
+        isConnecting: false,
+        status: 'disconnected',
+        address: null,
+      } as any,
     },
     config,
+    envConfig: {
+      REACT_APP_API_URL: '',
+      REACT_APP_GRAPH_API_URL: '',
+      REACT_APP_IPFS_API_KEY: '',
+      REACT_APP_IPFS_API_SECRET: '',
+      REACT_APP_IPFS_GATEWAY_URL: '',
+    },
   });
   // setInterval(() => {
   //   const el: HTMLElement = document.getElementById('aut');

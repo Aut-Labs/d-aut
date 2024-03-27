@@ -6,7 +6,7 @@ import { dialogBackground } from '../assets/base64assets';
 
 const DialogContent = styled(Box)(({ theme }) => ({
   width: '570px',
-  height: '550px',
+  minHeight: '550px',
   display: 'flex',
   background: `${dialogBackground}`,
   backgroundPosition: 'center',

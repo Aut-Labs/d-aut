@@ -34,6 +34,8 @@ const LoginWithAut: React.FunctionComponent = () => {
     }
     await dispatch(getAutId(state.address));
     setLoadAutID(false);
+
+    return state;
   };
 
   return (

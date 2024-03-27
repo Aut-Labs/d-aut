@@ -1,24 +1,21 @@
-import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client';
-import { RetryLink } from '@apollo/client/link/retry';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { env } from '../services/web3/env';
 
-const retryLink = new RetryLink({
-  delay: {
-    initial: 300,
-    max: 2000,
-  },
-  attempts: {
-    max: 3,
-  },
-});
+let _apolloClient: ApolloClient<any>;
 
-const httpLink = new HttpLink({
-  uri: env.REACT_APP_GRAPH_API_URL,
-});
+const getApolloClient = (url: string) => {
+  if (!url) {
+    throw new Error('No url provided for the Apollo Client');
+  }
 
-const link = ApolloLink.from([retryLink, httpLink]);
-export const apolloClient = new ApolloClient({
-  uri: env.REACT_APP_GRAPH_API_URL,
-  cache: new InMemoryCache(),
-  link,
-});
+  if (!_apolloClient) {
+    _apolloClient = new ApolloClient({
+      uri: url,
+      cache: new InMemoryCache(),
+    });
+  }
+
+  return _apolloClient;
+};
+
+export const getGraphClient = (): ApolloClient<any> => getApolloClient(env.REACT_APP_GRAPH_API_URL);

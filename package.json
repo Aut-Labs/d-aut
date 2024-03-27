@@ -1,6 +1,6 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.125-dev",
+  "version": "1.0.133-dev",
   "main": "./build/index.umd.js",
   "module": "./build/index.es.js",
   "types": "./build/index.d.ts",
