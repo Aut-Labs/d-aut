@@ -4,7 +4,6 @@ import { create } from 'jss';
 import { StylesProvider, jssPreset } from '@mui/styles';
 import { Provider } from 'react-redux';
 import { StyledEngineProvider } from '@mui/material';
-import { ApolloProvider } from '@apollo/client';
 import Theme from './theme/theme';
 import store from './store/store';
 import SwAuthModal, { AutButton } from './Aut';

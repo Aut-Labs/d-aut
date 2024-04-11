@@ -92,7 +92,15 @@ const Commitment: React.FunctionComponent = (props) => {
           />
         </FormContent>
         <FormAction>
-          <AutButton size="normal" variant="outlined" type="submit" disabled={!isValid}>
+          <AutButton
+            size="normal"
+            sx={{
+              whiteSpace: 'nowrap',
+            }}
+            variant="outlined"
+            type="submit"
+            disabled={!isValid}
+          >
             JOIN THE COMMUNITY
           </AutButton>
         </FormAction>

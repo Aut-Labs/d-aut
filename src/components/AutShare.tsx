@@ -101,6 +101,7 @@ const AutShare = (props: SimpleDialogProps) => {
                 sx={{
                   width: pxToRem(250),
                   height: pxToRem(50),
+                  whiteSpace: 'nowrap',
                   mt: pxToRem(20),
                   '&.MuiButton-root': {
                     borderRadius: 0,

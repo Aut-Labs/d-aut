@@ -65,19 +65,30 @@ const Congratulations: React.FunctionComponent = () => {
         sx={{
           width: '90%',
           display: 'flex',
+          gridGap: '16px',
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-around',
-          mt: 'auto',
-          mb: '60px',
+          mt: '48px',
+          mb: '48px',
         }}
       >
-        <AutButton size="half" variant="outlined" onClick={gotToShare}>
+        <AutButton
+          sx={{
+            whiteSpace: 'nowrap',
+          }}
+          size="normal"
+          variant="outlined"
+          onClick={gotToShare}
+        >
           SHARE
         </AutButton>
         <AutButton
-          size="half"
+          size="normal"
           variant="outlined"
+          sx={{
+            whiteSpace: 'nowrap',
+          }}
           onClick={() => {
             window.open(`${autUrls(isDev).myAut}${userInput?.username}`, '_blank');
           }}

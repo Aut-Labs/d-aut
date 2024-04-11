@@ -25,6 +25,7 @@ const LoginWith: React.FunctionComponent = () => {
         size="normal"
         variant="outlined"
         sx={{
+          whiteSpace: 'nowrap',
           textTransform: 'none',
           mt: 4,
           minWidth: {
