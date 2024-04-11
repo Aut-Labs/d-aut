@@ -46,7 +46,11 @@ const UserRole: React.FunctionComponent = (props) => {
         backAction={deactivateConnector}
         subtitle={<>Pick what you’re the best at, & be rewarded for it!</>}
       />
-      <FormWrapper>
+      <FormWrapper
+        sx={{
+          mb: '48px',
+        }}
+      >
         {communityData &&
           communityData.roles &&
           communityData.roles.map((role, n) => {

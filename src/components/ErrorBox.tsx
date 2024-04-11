@@ -53,17 +53,17 @@ export const ErrorBox = () => {
         <Typography sx={{ color: '#B10000', mt: '25px', textAlign: 'center' }} variant="subtitle1">
           {errorMessage}
         </Typography>
-        {errorMessage === InternalErrorTypes.AutIDNotFound && (
+        {/* {errorMessage === InternalErrorTypes.AutIDNotFound && (
           <>
-            <Typography sx={{ mt: '25px', textAlign: 'center' }} variant="subtitle1">
+            <Typography sx={{ mt: '25px', textAlign: 'center' }} variant="subtitle2">
               Go to the{' '}
-              {/* <Link sx={{ color: 'white' }} target="_blank" href={env.REACT_APP_NOVA_SHOWCASE_ADDRESS}>
+              <Link sx={{ color: 'white' }} target="_blank" href={env.REACT_APP_NOVA_SHOWCASE_ADDRESS}>
                 Nova showcase
-              </Link>{' '} */}
+              </Link>{' '}
               to browse Novas.
             </Typography>
           </>
-        )}
+        )} */}
       </Box>
       <AutButton variant="outlined" size="normal" sx={{ my: '30px' }} onClick={handleError}>
         RETURN

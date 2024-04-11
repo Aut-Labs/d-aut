@@ -2,13 +2,19 @@ import { Breakpoint, ComponentsOverrides, ComponentsProps, ComponentsVariants, T
 
 export const buttonStyles = {
   normal: {
-    width: {
-      xs: '300px',
-      sm: '350px',
-      md: '350px',
-      xxl: '350px',
+    minWidth: {
+      xs: '260px',
+      md: '280px',
+      lg: '300px',
+      xxl: '440px',
     },
-    height: '75px',
+    // width: {
+    //   xs: '300px',
+    //   sm: '350px',
+    //   md: '350px',
+    //   xxl: '350px',
+    // },
+    // height: '75px',
     fontFamily: 'FractulAltLight',
     letterSpacing: '0.01em',
     fontSize: {
@@ -264,7 +270,7 @@ export default (theme: Theme) =>
       },
       ...Object.keys(buttonStyles).reduce(
         (prev, curr) => {
-          const { width, fontSize, paddingBottom, paddingLeft, paddingRight, paddingTop, ...restStyles } = buttonStyles[curr];
+          const { width, fontSize, paddingBottom, paddingLeft, paddingRight, paddingTop, minWidth, ...restStyles } = buttonStyles[curr];
           const currStyle = restStyles;
           Object.keys(fontSize).forEach((key: Breakpoint) => {
             currStyle[theme.breakpoints.up(key)] = {
@@ -297,12 +303,23 @@ export default (theme: Theme) =>
             };
           });
 
-          Object.keys(width).forEach((key: Breakpoint) => {
-            currStyle[theme.breakpoints.up(key)] = {
-              ...currStyle[theme.breakpoints.up(key)],
-              width: width[key],
-            };
-          });
+          if (minWidth) {
+            Object.keys(minWidth).forEach((key: Breakpoint) => {
+              currStyle[theme.breakpoints.up(key)] = {
+                ...currStyle[theme.breakpoints.up(key)],
+                width: minWidth[key],
+              };
+            });
+          }
+
+          if (width) {
+            Object.keys(width).forEach((key: Breakpoint) => {
+              currStyle[theme.breakpoints.up(key)] = {
+                ...currStyle[theme.breakpoints.up(key)],
+                width: width[key],
+              };
+            });
+          }
 
           prev = [
             ...prev,
