@@ -5,7 +5,6 @@ import { InternalErrorTypes } from '../../utils/error-parser';
 import { setAutIdsOnDifferentNetworks } from '../../store/aut.reducer';
 import { base64toFile, dispatchEvent } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
-import { SWIDParams } from '../../utils/AutIDBadge/Badge.model';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import AutSDK, { Nova, fetchMetadata, queryParamsAsString } from '@aut-labs/sdk';
 import { RootState } from '../../store/store.model';
@@ -20,7 +19,7 @@ import { AutId } from '../../types/network';
 
 export const fetchCommunity = createAsyncThunk('community/get', async (arg, { rejectWithValue, getState }) => {
   const { customIpfsGateway } = (getState() as RootState).walletProvider;
-  const sdk = AutSDK.getInstance();
+  const sdk = await AutSDK.getInstance();
 
   const novaAddress = await sdk.nova.contract.contract.getAddress();
   const query = gql`
@@ -51,8 +50,6 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
     return rejectWithValue(InternalErrorTypes.GatewayTimedOut);
   }
   const communityJson = await communityMetadata.json();
-  // console.log(communityJson);
-  // console.log(communityJson.properties.rolesSets[0].roles);
   return {
     // address: communityAddress,
     // image: ipfsCIDToHttpUrl(communityJson.image, false),
@@ -87,17 +84,14 @@ export const mintMembership = createAsyncThunk(
   'membership/mint',
   async (selectedAddress: string, { getState, dispatch, rejectWithValue }) => {
     const { userData, walletProvider, aut } = getState() as RootState;
-    // console.log(userData);
     const { username, picture, role, roleName, commitment } = userData;
     const { selectedNetwork, customIpfsGateway } = walletProvider;
     const timeStamp = dateFormat(new Date(), 'HH:MM:ss | dd/mm/yy');
 
-    const sdk = AutSDK.getInstance();
+    const sdk = await AutSDK.getInstance();
     const { contract } = sdk.autID;
 
     const nftIdResp = await contract.getNextTokenID();
-    console.log('roleName', roleName);
-    console.log('nftIdResp', nftIdResp);
     const config = {
       name: username.toLowerCase(),
       role: roleName?.toString(),
@@ -106,7 +100,7 @@ export const mintMembership = createAsyncThunk(
       network: selectedNetwork?.network.toLowerCase(),
       novaAddress: aut.novaAddress,
       timestamp: `${timeStamp}`,
-    } as SWIDParams;
+    };
 
     const formData = new FormData();
     const file = dataURLtoFile(userData.picture, 'avatar');
@@ -161,7 +155,7 @@ export const joinCommunity = createAsyncThunk(
   async (selectedAddress: string, { getState, rejectWithValue, dispatch }) => {
     const { aut, userData, walletProvider } = getState() as RootState;
 
-    const sdk = AutSDK.getInstance();
+    const sdk = await AutSDK.getInstance();
     const { contract } = sdk.autID;
     const { customIpfsGateway } = walletProvider;
     const requiredAddress = aut.selectedUnjoinedCommunityAddress || aut.novaAddress;
@@ -201,7 +195,7 @@ export const joinCommunity = createAsyncThunk(
 export const getAutId = createAsyncThunk('membership/get', async (selectedAddress: string, { dispatch, getState, rejectWithValue }) => {
   const { walletProvider } = getState() as RootState;
   const { customIpfsGateway } = walletProvider;
-  const sdk = AutSDK.getInstance();
+  const sdk = await AutSDK.getInstance();
 
   const query = gql`
     query GetAutID {
@@ -310,7 +304,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
       }
 
       const autId = metadata;
-      const sdk = AutSDK.getInstance();
+      const sdk = await AutSDK.getInstance();
       const { contract } = sdk.autID;
       const holderCommunities = await contract.getHolderDAOs(selectedAddress);
       // const holderCommunities = await contract.getHolderDAOs(selectedAddress);
@@ -319,8 +313,6 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
       // if (aut.novaAddress) {
       //   const communityRegistryContract = await Web3DAOExpanderRegistryProvider(walletProvider.networkConfig.communityRegistryAddress);
       //   const communitiesByDeployer = await communityRegistryContract.getDAOExpandersByDeployer(selectedAddress);
-      //   // console.log('holderCommunities', holderCommunities);
-      //   // console.log(communitiesByDeployer);
       //   for (const address of communitiesByDeployer) {
       //     if (!(holderCommunities as unknown as string[]).includes(address)) {
       //       const communityExtensionContract = await Web3DAOExpanderProvider(address);
@@ -338,7 +330,6 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
       //         roles: communityJson.properties.rolesSets[0].roles,
       //         minCommitment: communityJson.properties.commitment,
       //       });
-      //       // console.log(address);
       //     }
       //   }
       // }
@@ -416,12 +407,27 @@ export const checkIfNameTaken = createAsyncThunk('membership/nametaken', async (
 });
 
 export const checkIfAutIdExists = createAsyncThunk('membership/exists', async (selectedAddress: string, { getState, rejectWithValue }) => {
-  const { aut } = getState() as RootState;
-  const sdk = AutSDK.getInstance();
-  const { contract } = sdk.autID;
-  const balanceOf = await contract.balanceOf(selectedAddress);
-
-  return balanceOf.data > 0;
+  const queryArgsString = queryParamsAsString({
+    skip: 0,
+    take: 1,
+    filters: [{ prop: 'id', comparison: 'equals', value: selectedAddress?.toLowerCase() }],
+  });
+  const query = gql`
+    query GetAutIDs {
+      autIDs(${queryArgsString}) {
+        username
+      }
+    }
+  `;
+  const apolloClient = getGraphClient();
+  const response = await apolloClient.query({
+    query,
+  });
+  const exists = response?.data?.autIDs?.length > 0;
+  if (exists) {
+    return rejectWithValue(InternalErrorTypes.AutIDAlreadyExistsForAddress);
+  }
+  return false;
 
   // let hasAutId;
   // if (balanceOf.data > 0) {
@@ -435,7 +441,6 @@ export const checkIfAutIdExists = createAsyncThunk('membership/exists', async (s
   //   holderCommunities = await contract.getHolderDAOs(selectedAddress);
   // } catch (e) {
   //   // if (e?.data?.message?.toString().includes(`AutID: Doesn't have a SW.`)) {
-  //   // console.log(e);
   //   // } else {
   //   //   throw e;
   //   // }

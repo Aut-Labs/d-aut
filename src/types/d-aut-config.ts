@@ -38,6 +38,7 @@ export interface EnvConfig {
   REACT_APP_IPFS_API_KEY: string;
   REACT_APP_IPFS_API_SECRET: string;
   REACT_APP_IPFS_GATEWAY_URL: string;
+  REACT_APP_ENV: 'development' | 'production';
 }
 
 export interface SwAuthConfig<CSSObject> {

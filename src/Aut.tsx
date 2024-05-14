@@ -26,8 +26,7 @@ import { IPFSCusomtGateway, setCustomIpfsGateway, setNetworks, updateWalletProvi
 import { ipfsCIDToHttpUrl } from './services/storage/storage.hub';
 import AutButtonMenu from './components/AutButtonMenu/AutButtonMenu';
 import { AutMenuItemType, MenuItemActionType, AutButtonUserProfile } from './components/AutButtonMenu/AutMenuUtils';
-import AutSDK, { AutID } from '@aut-labs/sdk';
-import { checkIfAutIdExists, fetchCommunity } from './services/web3/api';
+import AutSDK from '@aut-labs/sdk';
 import { MultiSigner } from '@aut-labs/sdk/dist/models/models';
 import { useAutConnectorContext } from '.';
 import { env } from './services/web3/env';
@@ -69,7 +68,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
 
   const initializeSDK = async (network: NetworkConfig, multiSigner: MultiSigner) => {
-    const sdk = AutSDK.getInstance();
+    const sdk = await AutSDK.getInstance(false);
     const autIdContractAddress = network?.contracts?.autIDAddress;
 
     // If nova address is provided then to ensure is the correct autId address
@@ -83,20 +82,6 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       await sdk.init(multiSigner, {
         autIDAddress: autIdContractAddress,
       });
-    }
-  };
-
-  const checkForExistingAutId = async (account: string) => {
-    const hasAutId = await dispatch(checkIfAutIdExists(account));
-    if (hasAutId.meta.requestStatus !== 'rejected') {
-      await dispatch(fetchCommunity());
-      if (!hasAutId.payload) {
-        await dispatch(setJustJoining(false));
-        navigate('userdetails');
-      } else {
-        await dispatch(setJustJoining(true));
-        navigate('role');
-      }
     }
   };
 
@@ -123,10 +108,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
 
   const setAttributes = (attributes: SwAttributes) => {
     if (attributes.novaAddress) {
-      // console.log(attributes.novaAddress);
       dispatch(setCommunityExtesnionAddress(attributes.novaAddress as string));
-    } else {
-      // console.log('nocommunity extension');
     }
     if (attributes.ipfsGateway) {
       dispatch(setCustomIpfsGateway(attributes.ipfsGateway as string));
@@ -255,7 +237,6 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   }, []);
 
   useEffect(() => {
-    // window.removeEventListener(InputEventTypes.Open, handleOpen);
     window.addEventListener(InputEventTypes.Open, handleOpen);
     return () => window.removeEventListener(InputEventTypes.Open, handleOpen);
   }, [userData, flowMode]);

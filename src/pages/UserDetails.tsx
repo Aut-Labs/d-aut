@@ -80,7 +80,13 @@ const UserDetails: React.FunctionComponent = (props) => {
           <Controller
             name="username"
             control={control}
-            rules={{ required: true, pattern: /^\S+$/ }}
+            rules={{
+              required: 'Username is required',
+              pattern: {
+                value: /^[a-z0-9-]{1,32}$/,
+                message: 'Username must contain only lowercase letters, numbers, and hyphens, and be 1-32 characters long',
+              },
+            }}
             render={({ field: { name, value, onChange }, formState }) => (
               <AutTextField
                 inputProps={{ maxLength: 16 }}

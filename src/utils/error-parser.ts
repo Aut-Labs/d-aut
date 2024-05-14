@@ -138,7 +138,6 @@ export const ParseErrorMessage = (error: any) => {
   }
 
   if (error.message?.includes('call revert exception')) {
-    console.log(error.message);
     return 'Something went wrong. Call reverted.';
   }
 

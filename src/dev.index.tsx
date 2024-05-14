@@ -78,6 +78,7 @@ setTimeout(() => {
     },
     config,
     envConfig: {
+      REACT_APP_ENV: 'development',
       REACT_APP_API_URL: '',
       REACT_APP_GRAPH_API_URL: '',
       REACT_APP_IPFS_API_KEY: '',

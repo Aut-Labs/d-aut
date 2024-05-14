@@ -12,7 +12,7 @@ import { AttributeNames, createShadowElement, extractAttributes, isElement } fro
 import { createRoot } from 'react-dom/client';
 import { fonts } from './assets/fonts/Fractul/fontsBase64';
 import { env } from './services/web3/env';
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { NetworkConfig } from './types/network';
 
 function safeDecorator(fn) {
@@ -53,9 +53,17 @@ export const AutConnectorProvider = ({ connector, children }) => {
   const [state, setState] = useState<S | null>(connector.state);
 
   const handleStateChange = (newState: S) => {
-    console.log('State Changed', newState);
     setState(newState);
   };
+
+  const connect = useCallback(
+    async (c?: Connector) => {
+      const newState = await connector.connect(c);
+      setState(newState);
+      return newState;
+    },
+    [state]
+  );
 
   useEffect(() => {
     connector.setStateChangeCallback(handleStateChange);
@@ -64,11 +72,7 @@ export const AutConnectorProvider = ({ connector, children }) => {
   const value = useMemo(() => {
     return {
       ...connector,
-      connect: async (c: Connector, network?: NetworkConfig) => {
-        const newState = await connector.connect(c, network);
-        setState(newState);
-        return newState;
-      },
+      connect,
       state,
     };
   }, [connector, state]);
@@ -85,8 +89,6 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
     throw new Error('Auth Config is required');
   }
   Object.assign(env, authConfig.envConfig);
-
-  console.log('Env', env);
 
   const style = document.createElement('style');
   style.textContent = fonts;

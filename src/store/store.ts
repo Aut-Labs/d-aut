@@ -4,7 +4,7 @@ import { Action, combineReducers } from 'redux';
 import autSliceReducer, { initialState as initAutState } from './aut.reducer';
 import userDataReducer, { initialState as initUserDataState } from './user-data.reducer';
 import walletProvider from './wallet-provider';
-import { stat } from 'fs';
+import { env } from '../services/web3/env';
 
 const appReducer = combineReducers({
   aut: autSliceReducer,
@@ -40,7 +40,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(logger),
+    }).concat(!env.REACT_APP_ENV || env.REACT_APP_ENV === 'development' ? logger : []),
   reducer: rootReducer,
 });
 

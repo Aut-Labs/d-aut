@@ -13,10 +13,10 @@ interface FormHelperTextProps {
 
 const defaultErrorTypes = {
   required: 'Field is required!',
-  pattern: 'Username cannot contain spaces!',
+  pattern: 'Username must contain only lowercase letters, numbers, and hyphens, and be 1-32 characters long.',
 };
 
-export function FormHelperText({ errors, name, errorTypes, children = null, positionAbsolute = true }: FormHelperTextProps) {
+export function FormHelperText({ errors, name, errorTypes, children = null, positionAbsolute = false }: FormHelperTextProps) {
   if (errors[name]) {
     const { type } = errors[name];
     const types = {
@@ -28,17 +28,17 @@ export function FormHelperText({ errors, name, errorTypes, children = null, posi
 
     return (
       <Typography
-        whiteSpace="nowrap"
+        // whiteSpace="nowrap"
         color="red"
-        align={`${positionAbsolute ? 'right' : 'center'}`}
+        align={`${positionAbsolute ? 'right' : 'right'}`}
         component="span"
         variant="body2"
         className="auto-helper-error"
         sx={{
           fontFamily: 'FractulRegular',
           width: '100%',
-          position: `${positionAbsolute ? 'absolute' : 'static'}`,
-          left: '0',
+          // position: `${positionAbsolute ? 'absolute' : 'static'}`,
+          // left: '0',
         }}
       >
         {message}

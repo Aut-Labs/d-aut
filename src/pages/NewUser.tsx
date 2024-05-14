@@ -47,7 +47,7 @@ const NewUser: React.FunctionComponent = () => {
       setCheckAutID(false);
       return;
     }
-    checkForExistingAutId(state.address);
+    await checkForExistingAutId(state.address);
     setCheckAutID(false);
 
     return state;

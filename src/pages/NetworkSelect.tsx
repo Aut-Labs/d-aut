@@ -12,7 +12,7 @@ import { useAppDispatch } from '../store/store.model';
 import { getAutId } from '../services/web3/api';
 import { NetworksConfig, SelectedNetwork } from '../store/wallet-provider';
 import { InternalErrorTypes } from '../utils/error-parser';
-import AutSDK from '@aut-labs/sdk';
+import AutSDK, { AutID, Nova } from '@aut-labs/sdk';
 import { useAutConnectorContext } from '..';
 
 const NetworkSelect: React.FunctionComponent = () => {
@@ -36,28 +36,13 @@ const NetworkSelect: React.FunctionComponent = () => {
     if (foundChainId === network.chainId) {
       await dispatch(getAutId(state.address));
     } else {
-      // await dispatch(setSelectedNetwork(network));
       try {
-        // @ts-ignore
-        const { provider } = conn.provider;
-        // await EnableAndChangeNetwork(provider, network);
-        const sdk = AutSDK.getInstance();
-        const signer = provider.getSigner();
-        await sdk.init(signer, {
-          novaAddress: novaAddress as string,
-        });
-
-        const result = await sdk.nova.contract.getAutIDContractAddress();
-        console.log(result);
-
-        await sdk.init(signer, {
-          novaAddress,
-          autIDAddress: result.data,
-        });
-
+        const sdk = await AutSDK.getInstance();
+        const novaContract = sdk.initService(Nova, novaAddress);
+        const result = await novaContract.contract.getAutIDContractAddress();
+        sdk.initService(AutID, result.data);
         await dispatch(getAutId(state.address));
       } catch (e) {
-        // await dispatch(setSelectedNetwork(null));
         await dispatch(setStatus(ResultState.Failed));
         dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
       }
