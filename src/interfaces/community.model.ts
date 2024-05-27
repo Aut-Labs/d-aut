@@ -5,16 +5,29 @@ import { CommitmentMessages } from '../components/CommitmentSlider';
 
 export const MarketTemplates = [
   {
-    title: 'Open-Source & DeFi',
+    title: 'Open-Source & Infra',
     market: 1,
+    // icon: OpenSource
   },
   {
-    title: 'Art, Events & NFTs',
+    title: 'DeFi & Payments',
     market: 2,
+    // icon: Defi
   },
   {
-    title: 'Local Projects & DAOs',
+    title: 'ReFi & Governance',
     market: 3,
+    // icon: Refi
+  },
+  {
+    title: 'Social, Art & Gaming',
+    market: 4,
+    // icon: Social
+  },
+  {
+    title: 'Identity & Reputation',
+    market: 5,
+    // icon: Identity
   },
 ];
 

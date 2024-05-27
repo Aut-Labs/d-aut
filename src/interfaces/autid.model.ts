@@ -57,11 +57,18 @@ export class AutIDProperties {
 
   holderData?: HolderData;
 
+  bio: string;
+
+  [key: string]: any;
+
   constructor(data: AutIDProperties) {
     if (!data) {
       this.communities = [];
       this.socials = [];
     } else {
+      Object.keys(data).forEach((key) => {
+        this[key] = data[key];
+      });
       this.timestamp = data.timestamp;
       this.avatar = data.avatar;
       this.address = data.address;
@@ -75,6 +82,7 @@ export class AutIDProperties {
       this.thumbnailAvatar = data.thumbnailAvatar;
       this.loginTimestamp = data.loginTimestamp;
       this.role = data.role;
+      this.bio = data.bio;
     }
   }
 }

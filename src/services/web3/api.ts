@@ -239,7 +239,7 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
     properties: {
       ...novaMetadata.properties,
       address: autID.novaAddress,
-      market: novaMarket,
+      market: Number(novaMarket) - 1,
       userData: {
         role: autID.role.toString(),
         commitment: autID.commitment.toString(),
@@ -248,16 +248,17 @@ export const getAutId = createAsyncThunk('membership/get', async (selectedAddres
       },
     },
   } as unknown as Community);
+
   const newAutId = new AutID({
     name: autIdMetadata.name,
     image: autIdMetadata.image,
     description: autIdMetadata.description,
     properties: {
+      ...autIdMetadata.properties,
       avatar,
       thumbnailAvatar,
       timestamp,
       role: autID.role,
-      socials: [],
       address: selectedAddress,
       tokenId: autID.tokenID,
       loginTimestamp: new Date().getTime(),
@@ -279,7 +280,7 @@ export const checkAvailableNetworksAndGetAutId = createAsyncThunk(
     const { selectedNetwork, customIpfsGateway } = walletProvider;
     let autIDs: AutId[] = [];
     try {
-      const result = await axios.get(`https://api.skillwallet.id/api/autid/scanNetworks/${selectedAddress}`);
+      const result = await axios.get(`${env.REACT_APP_API_URL}/autid/scanNetworks/${selectedAddress}`);
       autIDs = result.data;
     } catch (e) {
       if (e.response.status === 404) {
