@@ -23,8 +23,8 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
 
   const novaAddress = await sdk.nova.contract.contract.getAddress();
   const query = gql`
-    query GetNovaDAO {
-      novaDAO(id: "${novaAddress.toLowerCase()}") {
+    query GetHub {
+      hub(id: "${novaAddress.toLowerCase()}") {
         id
         address
         market
@@ -38,7 +38,7 @@ export const fetchCommunity = createAsyncThunk('community/get', async (arg, { re
     query,
   });
 
-  const nova = response.data.novaDAO;
+  const nova = response.data.hub;
 
   if (!nova) {
     return rejectWithValue(InternalErrorTypes.CouldNotFindCommunity);

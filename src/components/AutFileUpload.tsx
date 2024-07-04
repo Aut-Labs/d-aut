@@ -7,7 +7,8 @@ import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { ReactComponent as UploadIcon } from '../assets/upload-icon.svg';
 import { FormHelperText } from './Fields';
-import { pxToRem } from '../utils/utils';
+import Cropper from 'react-cropper';
+import AutCropper from './Cropper';
 
 const UploadWrapper = styled('div')({
   height: '90px',
@@ -60,9 +61,16 @@ const errorTypes = {
   required: 'Avatar is required!',
 };
 
+const StyledCropper = styled(Cropper)({
+  '.cropper-container': {
+    height: '100% !important',
+  },
+});
+
 const AutFileUpload = ({ fileChange = (file: File) => null, initialPreviewUrl = null, name, errors }) => {
   const [preview, setPreview] = useState(initialPreviewUrl);
   const [showAction, setShowAction] = useState(false);
+  const [showCropper, setShowCropper] = useState(false);
   const { getRootProps, getInputProps, open } = useDropzone({
     noClick: true,
     multiple: false,
@@ -74,7 +82,7 @@ const AutFileUpload = ({ fileChange = (file: File) => null, initialPreviewUrl = 
     onDrop: ([file]) => {
       const url = URL.createObjectURL(file);
       setPreview(url);
-      fileChange(file);
+      setShowCropper(true);
     },
   });
 
@@ -92,52 +100,67 @@ const AutFileUpload = ({ fileChange = (file: File) => null, initialPreviewUrl = 
   };
 
   return (
-    <UploadWrapper
-      onMouseEnter={() => toggleActions(true)}
-      onMouseLeave={() => toggleActions(false)}
-      onClick={handleActionClick}
-      className="container"
-    >
-      <div {...getRootProps({ className: 'dropzone' })}>
-        <input {...getInputProps()} />
-      </div>
-      <div
-        style={{
-          height: '100%',
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
-        <Avatar
-          alt="Avatar"
-          variant="square"
+    <>
+      {showCropper && (
+        <AutCropper
           src={preview}
-          sx={{
-            display: `${errors.length > 0 ? 'none' : ''}`,
-            cursor: 'pointer',
-            background: 'transparent',
+          open={showCropper}
+          onClose={() => setShowCropper(false)}
+          getCroppedFile={(file) => {
+            fileChange(file);
+            setPreview(URL.createObjectURL(file));
+            setShowCropper(false);
+          }}
+        />
+      )}
+
+      <UploadWrapper
+        onMouseEnter={() => toggleActions(true)}
+        onMouseLeave={() => toggleActions(false)}
+        onClick={handleActionClick}
+        className="container"
+      >
+        <div {...getRootProps({ className: 'dropzone' })}>
+          <input {...getInputProps()} />
+        </div>
+        <div
+          style={{
             height: '100%',
             width: '100%',
-            '&.MuiAvatar-root': {
-              justifyContent: 'center',
-            },
-          }}
-          imgProps={{
-            style: {
-              maxHeight: '100%',
-              maxWidth: '100%',
-              objectFit: 'cover',
-            },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
-          <UploadIcon height="32px" />
-        </Avatar>
-        <Action className={`${showAction ? 'show' : ''}`}>{preview ? <HighlightOffIcon className="remove" /> : null}</Action>
-        <FormHelperText errorTypes={errorTypes} name={name} errors={errors} positionAbsolute={false} />
-      </div>
-    </UploadWrapper>
+          <Avatar
+            alt="Avatar"
+            variant="square"
+            src={preview}
+            sx={{
+              display: `${errors.length > 0 ? 'none' : ''}`,
+              cursor: 'pointer',
+              background: 'transparent',
+              height: '100%',
+              width: '100%',
+              '&.MuiAvatar-root': {
+                justifyContent: 'center',
+              },
+            }}
+            imgProps={{
+              style: {
+                maxHeight: '100%',
+                maxWidth: '100%',
+                objectFit: 'cover',
+              },
+            }}
+          >
+            <UploadIcon height="32px" />
+          </Avatar>
+          <Action className={`${showAction ? 'show' : ''}`}>{preview ? <HighlightOffIcon className="remove" /> : null}</Action>
+          <FormHelperText errorTypes={errorTypes} name={name} errors={errors} positionAbsolute />
+        </div>
+      </UploadWrapper>
+    </>
   );
 };
 

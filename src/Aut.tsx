@@ -68,7 +68,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
 
   const initializeSDK = async (network: NetworkConfig, multiSigner: MultiSigner) => {
-    const sdk = await AutSDK.getInstance(false);
+    const sdk = await AutSDK.getInstance();
     const autIdContractAddress = network?.contracts?.autIDAddress;
 
     // If nova address is provided then to ensure is the correct autId address

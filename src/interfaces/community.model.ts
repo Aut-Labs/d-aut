@@ -63,6 +63,8 @@ export class CommunityProperties {
 
   socials: AutSocial[];
 
+  domain: string;
+
   userData?: {
     role: string;
     roleName?: string;
@@ -86,6 +88,7 @@ export class CommunityProperties {
       this.address = data.address;
       this.socials = data.socials;
       this.domains = data.domains || [];
+      this.domain = data.domain || '';
       this.additionalProps = data.additionalProps;
       this.userData = JSON.parse(JSON.stringify(data?.userData || {})) || ({} as typeof this.userData);
 

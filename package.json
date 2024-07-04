@@ -1,6 +1,6 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.163-dev",
+  "version": "1.0.165-dev",
   "main": "./build/index.umd.js",
   "module": "./build/index.es.js",
   "types": "./build/index.d.ts",
@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@apollo/client": "^3.8.10",
-    "@aut-labs/sdk": "^0.0.160-dev",
+    "@aut-labs/sdk": "^0.0.161-dev",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.0.0-next.10",
     "@emotion/styled": "^11.11.0",
@@ -122,5 +122,7 @@
       "last 1 safari version"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "react-cropper": "^2.3.3"
+  }
 }
