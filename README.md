@@ -2,18 +2,18 @@
 
 ## Web Component - what it does
 
-This Web Component is Āut Labs' decentralized, **role-based** authentication system.  
-It lets your users create an account, or login to your platform, in a fully decentralized way, while giving them a familiar (web2-like) experience.  
-Each user will add their nickname and avatar, and pick a Role in your Nova - after doing that, they will join your Nova, and claim their universal ID.
+This Web Component is Āut Labs' decentralized, **role-based** authentication system.
+It lets your users create an account, or login to your platform, in a fully decentralized way, while giving them a familiar (web2-like) experience.
+Each user will add their nickname and avatar, and pick a Role in your Hub - after doing that, they will join your Hub, and claim their universal ID.
 
 ## Web Component Developer notes
 
-When a user successfully connects with dĀut their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'. Don't forget to add the attribute: nova-address
+When a user successfully connects with dĀut their ĀutID information is stored in the 'Session Storage' with the Key 'aut-data'. Don't forget to add the attribute: hub-address
 
-## Pre-requisite: obtain your Nova Address
+## Pre-requisite: obtain your Hub Address
 
-This Web Component is cross-platform, and can be integrated on any Web framework.  
-In order to use it, though, you **will need to have a Nova Address** - you can get deploy your Nova contract, and receive your Nova key directly on our [Integrate App](https://docs.aut.id/v2/product-suite/aut-exp.).
+This Web Component is cross-platform, and can be integrated on any Web framework.
+In order to use it, though, you **will need to have a Hub Address** - you can get deploy your Hub contract, and receive your Hub key directly on our [Integrate App](https://docs.aut.id/v2/product-suite/aut-exp.).
 
 ## Web Component installation
 
@@ -37,7 +37,7 @@ In order to use it, though, you **will need to have a Nova Address** - you can g
    Init();
    ```
 
-4. Add the custom HTML tag and populate the nova-address property
+4. Add the custom HTML tag and populate the hub-address property
 
 ```tsx
 import './App.css';
@@ -51,7 +51,7 @@ function App() {
 
   return (
     <div>
-        <d-aut  nova-address="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+        <d-aut hub-address="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
     </div>
   );
 }
@@ -85,7 +85,7 @@ export default App;
    import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
    ```
 
-5. Add the custom HTML tag and populate the nova-address property
+5. Add the custom HTML tag and populate the hub-address property
 
 app.component.ts:
 
@@ -127,7 +127,7 @@ export class AppModule {}
 app.component.ts:
 
 ```html
-<d-aut nova-address="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+<d-aut hub-address="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
 ```
 
 ### Example Vue
@@ -150,7 +150,7 @@ app.component.ts:
    Init();
    ```
 
-4. Add the custom HTML tag and populate the nova-address property
+4. Add the custom HTML tag and populate the hub-address property
 
 App.vue:
 
@@ -162,7 +162,7 @@ App.vue:
 
 <template>
   <div class="wrapper">
-    <d-aut nova-address="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
+    <d-aut hub-address="0x94C5A2d8B75D139FE02180Fd7Ce87EC55B01b358"></d-aut>
   </div>
 </template>
 
@@ -179,16 +179,16 @@ App.vue:
 'rpcUrls' = 'string',
 'ipfsGateway' = 'string',
 
-1. `nova-address`
-   The address you are given after [Integrating](https://expander.aut.id/) your Nova
+1. `hub-address`
+   The address you are given after [Integrating](https://expander.aut.id/) your Hub
 2. `chain-id`
-   Chain id for the desired network defaults to 80001
+   Chain id for the desired network defaults to 80002
 3. `network-name`
-   Name of desired network defaults to Mumbai
+   Name of desired network defaults to Amoy
 4. `rps-urls`
    Rpc Urls (separate by commas if multiple)
-   example: "https://rpc-mumbai.maticvigil.com/,https://rpc-mumbai.maticvigil.com/"
-   default: "https://rpc-mumbai.maticvigil.com/"
+   example: "https://rpc-amoy.maticvigil.com/,https://rpc-amoy.maticvigil.com/"
+   default: "https://rpc-amoy.maticvigil.com/"
 5. `explorer-urls`
    Explorer Urls (separate by commas if multiple)
    example: "https://explorer-mumbai.maticvigil.com/,https://explorer-mumbai.maticvigil.com/"

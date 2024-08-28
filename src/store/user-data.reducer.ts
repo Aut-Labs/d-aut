@@ -47,16 +47,6 @@ export const userDataSlice = createSlice({
 
 export const { setUserData } = userDataSlice.actions;
 
-// export const currentUserState = createSelector(
-//   (state) => {
-//     return {
-//       username: state.swUserData.username,
-//       profileImageUrl: state.swUserData.profileImageUrl,
-//       isLoggedIn: state.swUserData.isLoggedIn,
-//     };
-//   },
-//   (userState) => userState
-// );
 export const IsOwner = (state) => state.userData.isOwner as boolean;
 
 export const UserAvatar = (state) => state.userData.picture as string;

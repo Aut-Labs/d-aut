@@ -59,10 +59,10 @@
   resolved "https://registry.npmjs.org/@aut-labs/abi-types/-/abi-types-0.0.77-dev.tgz"
   integrity sha512-inHHIpHHfaALj9rNK85cN49JtazHM5JJhsYQFH48/Sz9scv9xafemIqlbSvjwZIi5hg7tI8V3LYmgRof4L9TXA==
 
-"@aut-labs/sdk@^0.0.162-dev":
-  version "0.0.162-dev"
-  resolved "https://registry.npmjs.org/@aut-labs/sdk/-/sdk-0.0.162-dev.tgz"
-  integrity sha512-KEzQ79uWn6VZOgQmX6roY86f9FIyBhIvIhFbZlEeZRtIYmoINMQYL2QqQHFrUWehlJMb12G8/fDgJHbs2a5LpQ==
+"@aut-labs/sdk@^0.0.167-dev":
+  version "0.0.167-dev"
+  resolved "https://registry.npmjs.org/@aut-labs/sdk/-/sdk-0.0.167-dev.tgz"
+  integrity sha512-wiMgd+LerNVVHHAtfg+2wJzcQZ0CP3qUh/fkxvJGmdKrfyg7DUOS8hpkRswDqu0Ror1opB86fA/BIhaJZnNSrw==
   dependencies:
     "@aut-labs/abi-types" "^0.0.77-dev"
     date-fns "^2.29.3"

@@ -21,7 +21,7 @@ const rootReducer = (state: RootState, action: Action) => {
       aut: {
         ...initAutState,
         showDialog: state.aut.showDialog,
-        novaAddress: state.aut.novaAddress,
+        hubAddress: state.aut.hubAddress,
         flowConfig: state.aut.flowConfig,
         useDev: state.aut.useDev,
         allowedRoleId: state.aut.allowedRoleId,

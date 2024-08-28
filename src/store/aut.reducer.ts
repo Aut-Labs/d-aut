@@ -1,30 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createSelector } from 'reselect';
-import {
-  checkAvailableNetworksAndGetAutId,
-  checkIfAutIdExists,
-  checkIfNameTaken,
-  fetchCommunity,
-  getAutId,
-  joinCommunity,
-  mintMembership,
-} from '../services/web3/api';
+import { checkIfAutIdExists, checkIfNameTaken, fetchHub, loginToAutId, joinHub, mintMembership } from '../services/web3/api';
 import { FlowConfig, FlowConfigMode } from '../types/d-aut-config';
 import { OutputEventTypes } from '../types/event-types';
 import { InternalErrorTypes } from '../utils/error-parser';
 import { dispatchEvent } from '../utils/utils';
 import { ActionPayload } from './action-payload';
-import { AutID } from '../interfaces/autid.model';
-import { AutId } from '../types/network';
-
-export interface Community {
-  name: string;
-  // image: string;
-  address?: string;
-  description: string;
-  roles: Role[];
-  minCommitment: number;
-}
+import { DAutHub } from '../interfaces/hub.model';
+import { DAutAutID } from '../interfaces/autid.model';
 
 export interface Role {
   id: number;
@@ -40,15 +23,15 @@ export enum ResultState {
 }
 
 export interface AutState {
-  community?: Community;
-  unjoinedCommunities?: Community[];
-  selectedUnjoinedCommunityAddress?: string;
-  novaAddress?: string;
+  hub?: DAutHub;
+  unjoinedHubs?: DAutHub[];
+  selectedUnjoinedHubAddress?: string;
+  hubAddress?: string;
   showDialog: boolean;
   status: ResultState;
   errorStateAction: string;
   transactionState: string;
-  user: AutID;
+  user: DAutAutID;
   userBadge: string;
   justJoin: boolean;
   provider: any;
@@ -56,15 +39,14 @@ export interface AutState {
   isWalletConnect: boolean;
   flowConfig: FlowConfig;
   allowedRoleId: string;
-  autIdsOnDifferentNetworks: AutId[];
   useDev: boolean;
 }
 
 export const initialState: AutState = {
-  community: null,
-  unjoinedCommunities: [],
-  selectedUnjoinedCommunityAddress: null,
-  novaAddress: null,
+  hub: new DAutHub(),
+  unjoinedHubs: [],
+  selectedUnjoinedHubAddress: null,
+  hubAddress: null,
   showDialog: false,
   status: ResultState.Idle,
   errorStateAction: null,
@@ -75,7 +57,6 @@ export const initialState: AutState = {
   provider: null,
   selectedAddress: null,
   isWalletConnect: false,
-  autIdsOnDifferentNetworks: [],
   allowedRoleId: null,
   flowConfig: null,
   useDev: false,
@@ -93,8 +74,8 @@ export const autSlice = createSlice({
     setSelectedAddress: (state, action: ActionPayload<any>) => {
       state.selectedAddress = action.payload;
     },
-    setCommunityExtesnionAddress: (state, action: ActionPayload<string>) => {
-      state.novaAddress = action.payload;
+    setHubExtensionAddress: (state, action: ActionPayload<string>) => {
+      state.hubAddress = action.payload;
     },
     setFlowConfig: (state, action: ActionPayload<FlowConfig>) => {
       state.flowConfig = action.payload;
@@ -114,20 +95,17 @@ export const autSlice = createSlice({
     setJustJoining(state, action) {
       state.justJoin = action.payload;
     },
-    setUnjoinedCommunities(state, action) {
-      state.unjoinedCommunities = action.payload;
+    setUnjoinedHubs(state, action) {
+      state.unjoinedHubs = action.payload;
     },
-    setSelectedUnjoinedCommunityAddress(state, action) {
-      state.selectedUnjoinedCommunityAddress = action.payload;
+    setSelectedUnjoinedHubAddress(state, action) {
+      state.selectedUnjoinedHubAddress = action.payload;
     },
     errorAction(state, action) {
       state.status = ResultState.Idle;
     },
     setUser(state, action: ActionPayload<any>) {
       state.user = action.payload;
-    },
-    setAutIdsOnDifferentNetworks(state, action: ActionPayload<AutId[]>) {
-      state.autIdsOnDifferentNetworks = action.payload;
     },
     setStatus(state, action) {
       state.status = action.payload;
@@ -138,27 +116,27 @@ export const autSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchCommunity.pending, (state) => {
+      .addCase(fetchHub.pending, (state) => {
         state.status = ResultState.Loading;
       })
-      .addCase(fetchCommunity.fulfilled, (state, action) => {
-        state.community = action.payload;
+      .addCase(fetchHub.fulfilled, (state, action) => {
+        state.hub = action.payload;
         state.status = ResultState.Idle;
       })
-      .addCase(fetchCommunity.rejected, (state, action) => {
+      .addCase(fetchHub.rejected, (state, action) => {
         state.errorStateAction = action.payload as string;
         state.status = ResultState.Failed;
       })
-      .addCase(getAutId.pending, (state) => {
+      .addCase(loginToAutId.pending, (state) => {
         state.status = ResultState.Loading;
       })
-      .addCase(getAutId.fulfilled, (state, action) => {
+      .addCase(loginToAutId.fulfilled, (state, action) => {
         state.showDialog = false;
         state.user = action.payload;
         dispatchEvent(OutputEventTypes.Connected, action.payload);
       })
-      .addCase(getAutId.rejected, (state, action) => {
-        if (action.payload === InternalErrorTypes.UserHasUnjoinedCommunities) {
+      .addCase(loginToAutId.rejected, (state, action) => {
+        if (action.payload === InternalErrorTypes.UserHasUnjoinedHubs) {
           state.status = ResultState.Idle;
           state.user = null;
           window.localStorage.removeItem('aut-data');
@@ -199,30 +177,14 @@ export const autSlice = createSlice({
         state.errorStateAction = action.payload as string;
         state.status = ResultState.Failed;
       })
-      .addCase(joinCommunity.fulfilled, (state, action) => {
+      .addCase(joinHub.fulfilled, (state, action) => {
         state.status = ResultState.Idle;
       })
-      .addCase(joinCommunity.rejected, (state, action) => {
+      .addCase(joinHub.rejected, (state, action) => {
         state.errorStateAction = action.payload as string;
         state.status = ResultState.Failed;
       })
-      .addCase(joinCommunity.pending, (state) => {
-        state.status = ResultState.Loading;
-      })
-      .addCase(checkAvailableNetworksAndGetAutId.fulfilled, (state, action) => {
-        state.showDialog = false;
-        state.user = action.payload;
-        dispatchEvent(OutputEventTypes.Connected, action.payload);
-      })
-      .addCase(checkAvailableNetworksAndGetAutId.rejected, (state, action) => {
-        if (action.payload === InternalErrorTypes.FoundAutIDOnMultipleNetworks) {
-          state.status = ResultState.Idle;
-        } else {
-          state.errorStateAction = action.payload as string;
-          state.status = ResultState.Failed;
-        }
-      })
-      .addCase(checkAvailableNetworksAndGetAutId.pending, (state) => {
+      .addCase(joinHub.pending, (state) => {
         state.status = ResultState.Loading;
       });
   },
@@ -232,14 +194,13 @@ export const {
   setUser,
   setSelectedAddress,
   setJustJoining,
-  setUnjoinedCommunities,
-  setCommunityExtesnionAddress,
+  setUnjoinedHubs,
+  setHubExtensionAddress,
   showDialog,
   updateTransactionState,
   updateErrorState,
   errorAction,
-  setSelectedUnjoinedCommunityAddress,
-  setAutIdsOnDifferentNetworks,
+  setSelectedUnjoinedHubAddress,
   setStatus,
   setAllowedRoleId,
   setFlowConfig,
@@ -247,7 +208,7 @@ export const {
   updateAutState,
 } = autSlice.actions;
 
-export const NovaAddress = (state: any) => state.aut.novaAddress as string;
+export const HubAddress = (state: any) => state.aut.hubAddress as string;
 
 export const FlowMode = (state: any) => state.aut.flowConfig?.mode as FlowConfigMode;
 
@@ -257,9 +218,9 @@ export const AllowedRoleId = (state: any) => state.aut.allowedRoleId as number;
 
 export const CustomCongratsMessage = (state: any) => state.aut.flowConfig?.customCongratsMessage as string;
 
-export const community = createSelector(
-  (state) => state.aut.community,
-  (community) => community as typeof initialState.community
+export const HubData = createSelector(
+  (state) => state.aut.hub,
+  (hub) => hub as typeof initialState.hub
 );
 
 export const autState = createSelector(
@@ -286,9 +247,5 @@ export const IsOpen = createSelector(
   (state) => state.aut.showDialog as boolean,
   (showDialog) => showDialog as typeof initialState.showDialog
 );
-// export const currentCommunity = createSelector(
-//   (state) => state.swAuth.community as Community & PartnerAgreementKey,
-//   (comm: Community & PartnerAgreementKey) => comm
-// );
 
 export default autSlice.reducer;

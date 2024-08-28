@@ -4,22 +4,20 @@ import { memo, useEffect, useMemo, useState } from 'react';
 import Portal from '@mui/material/Portal';
 import MainDialog from './components/MainDialog';
 import { resetUIState } from './store/store';
-import { AutID as AutIDModel } from './interfaces/autid.model';
 import { dispatchEvent, parseAttributeValue, toCammelCase } from './utils/utils';
 import { AutButtonProps, FlowConfig, FlowConfigMode, SwAttributes } from './types/d-aut-config';
 import { InputEventTypes, OutputEventTypes } from './types/event-types';
 import {
   autState,
-  NovaAddress,
   FlowMode,
   setAllowedRoleId,
-  setCommunityExtesnionAddress,
+  setHubExtensionAddress,
   setFlowConfig,
-  setJustJoining,
   setUseDev,
   setUser,
   showDialog,
   user,
+  HubAddress,
 } from './store/aut.reducer';
 import { useAppDispatch } from './store/store.model';
 import { IPFSCusomtGateway, setCustomIpfsGateway, setNetworks, updateWalletProviderState } from './store/wallet-provider';
@@ -31,6 +29,8 @@ import { MultiSigner } from '@aut-labs/sdk/dist/models/models';
 import { useAutConnectorContext } from '.';
 import { env } from './services/web3/env';
 import { NetworkConfig } from './types/network';
+import { DAutHub } from './interfaces/hub.model';
+import { DAutAutID } from './interfaces/autid.model';
 
 const AutModal = ({ container, rootContainer = null }: any) => {
   const dispatch = useAppDispatch();
@@ -62,20 +62,20 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
 
   const customIpfsGateway = useSelector(IPFSCusomtGateway);
   const flowMode = useSelector(FlowMode);
-  const novaAddress = useSelector(NovaAddress);
+  const hubAddress = useSelector(HubAddress);
   const userData = useSelector(user);
 
   const [menuItems, setMenuItems] = useState<AutMenuItemType[]>([]);
 
   const initializeSDK = async (network: NetworkConfig, multiSigner: MultiSigner) => {
-    const sdk = await AutSDK.getInstance();
+    const sdk = await AutSDK.getInstance(false);
     const autIdContractAddress = network?.contracts?.autIDAddress;
 
-    // If nova address is provided then to ensure is the correct autId address
-    // we will fetch contract address from novaAddress contract
-    if (novaAddress) {
+    // If hub address is provided then to ensure is the correct autId address
+    // we will fetch contract address from hubAddress contract
+    if (hubAddress) {
       await sdk.init(multiSigner, {
-        novaAddress,
+        hubAddress,
         autIDAddress: autIdContractAddress,
       });
     } else {
@@ -107,8 +107,8 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   };
 
   const setAttributes = (attributes: SwAttributes) => {
-    if (attributes.novaAddress) {
-      dispatch(setCommunityExtesnionAddress(attributes.novaAddress as string));
+    if (attributes.hubAddress) {
+      dispatch(setHubExtensionAddress(attributes.hubAddress as string));
     }
     if (attributes.ipfsGateway) {
       dispatch(setCustomIpfsGateway(attributes.ipfsGateway as string));
@@ -171,18 +171,17 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
     // check timestamp
     const _autId = JSON.parse(localStorage.getItem('aut-data'));
     if (_autId) {
-      const autId = new AutIDModel(_autId);
+      const autId = new DAutAutID(_autId);
       const currentTime = new Date().getTime();
-      // 8 Hours
-      const sessionLength = new Date(8 * 60 * 60 * 1000 + autId.properties.loginTimestamp).getTime();
+      const lastLogin = autId.properties.loginTimestamp;
+      const maxSession = 8 * 60 * 60 * 1000; // 8 hours
+      const sessionLength = lastLogin + maxSession;
       if (currentTime < sessionLength) {
         dispatch(setUser(autId));
         dispatchEvent(OutputEventTypes.Connected, autId);
         // activateBrowserWallet({ type: autId?.provider }); // activave provider to get address
       } else {
-        window.localStorage.removeItem('aut-data');
-        dispatch(resetUIState);
-        dispatchEvent(OutputEventTypes.Disconnected);
+        await handleDisconnect();
       }
     }
   };
@@ -196,7 +195,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
         gatewayUrl: env.REACT_APP_IPFS_GATEWAY_URL,
       },
     });
-  }, []);
+  }, [networks]);
 
   useEffect(() => {
     const start = async () => {
@@ -215,7 +214,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
     if (state?.multiSignerId) {
       start();
     }
-  }, [state?.multiSignerId, novaAddress]);
+  }, [state?.multiSignerId, hubAddress]);
 
   useEffect(() => {
     setMenuItems([
@@ -243,8 +242,8 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
 
   const userProfile: AutButtonUserProfile = useMemo(() => {
     if (!userData?.name) return;
-    const [community] = userData?.properties?.communities || [];
-    const isAdmin = community?.properties?.userData?.isAdmin;
+    const [hub]: DAutHub[] = userData.properties.hubs || [];
+    const isAdmin = hub.properties.autIdState?.isAdmin;
     return {
       role: isAdmin ? 'Admin' : 'Member',
       name: userData.name,

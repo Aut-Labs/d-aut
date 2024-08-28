@@ -7,7 +7,6 @@ import { AutPageBox } from '../components/AutPageBox';
 import { autState, CustomCongratsMessage, UsingDev } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { IsOwner, userData } from '../store/user-data.reducer';
-import { SelectedNetwork } from '../store/wallet-provider';
 import { autUrls } from '../services/web3/env';
 
 const Congratulations: React.FunctionComponent = () => {
@@ -40,7 +39,7 @@ const Congratulations: React.FunctionComponent = () => {
             <>
               {isOwner ? (
                 <>
-                  You’re now a {userInput.roleName} @ {autData.community?.name}🎉
+                  You’re now a {userInput.roleName} @ {autData.hub?.name}🎉
                   <br /> Your ĀutID is the first identity that you truly own - cause your Identity is not rare. It’s unique.
                   <br />
                   <br /> Look at your self-sovereign ĀutID, and share your journey 🖖
@@ -49,7 +48,7 @@ const Congratulations: React.FunctionComponent = () => {
                 <>
                   <br />
                   <br />
-                  You are now {userInput.roleName} in {autData.community?.name}.
+                  You are now {userInput.roleName} in {autData.hub?.name}.
                   <br /> Let it be known to the people of the Internet
                   <br /> or check out your beautiful NFT ID in your public profile.
                   <br />

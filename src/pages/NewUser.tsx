@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../store/store.model';
 import { AutPageBox } from '../components/AutPageBox';
-import { checkIfAutIdExists, fetchCommunity } from '../services/web3/api';
+import { checkIfAutIdExists, fetchHub } from '../services/web3/api';
 import { FlowMode, ResultState, loadingStatus, setJustJoining, updateAutState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { LoadingProgress } from '../components/LoadingProgress';
@@ -22,7 +22,7 @@ const NewUser: React.FunctionComponent = () => {
   const checkForExistingAutId = async (account: string) => {
     const hasAutId = await dispatch(checkIfAutIdExists(account));
     if (hasAutId.meta.requestStatus !== 'rejected') {
-      await dispatch(fetchCommunity());
+      await dispatch(fetchHub());
       if (!hasAutId.payload) {
         await dispatch(setJustJoining(false));
         navigate('/userdetails');
@@ -68,8 +68,7 @@ const NewUser: React.FunctionComponent = () => {
               title="Welcome"
               subtitle={
                 <>
-                  First, import your wallet <br /> & claim your Role in your DAO
-                  {/* <span style={{ textDecoration: 'underline' }}>{autData.community?.name}!</span> */}
+                  First, import your wallet <br /> & claim your Role in your Hub
                 </>
               }
             />

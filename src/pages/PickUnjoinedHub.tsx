@@ -4,33 +4,33 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
-import { autState, setSelectedUnjoinedCommunityAddress } from '../store/aut.reducer';
+import { autState, setSelectedUnjoinedHubAddress } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { Controller, useForm } from 'react-hook-form';
 import { FormAction, FormWrapper, FormContent } from '../components/FormHelpers';
 import { AutSelectField, FormHelperText } from '../components/Fields';
 import { useAppDispatch } from '../store/store.model';
-import { fetchCommunity } from '../services/web3/api';
+import { fetchHub } from '../services/web3/api';
 
-const PickUnjoinedDAO: React.FunctionComponent = () => {
+const PickUnjoinedHub: React.FunctionComponent = () => {
   const autData = useSelector(autState);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { control, handleSubmit, formState } = useForm({
     mode: 'onChange',
     defaultValues: {
-      dao: autData.selectedUnjoinedCommunityAddress,
+      hub: autData.selectedUnjoinedHubAddress,
     },
   });
 
   const onSubmit = async (data: any) => {
-    await dispatch(setSelectedUnjoinedCommunityAddress(data.dao));
-    await dispatch(fetchCommunity());
+    await dispatch(setSelectedUnjoinedHubAddress(data.hub));
+    await dispatch(fetchHub());
     navigate('/role');
   };
 
   const onBackClicked = async () => {
-    await dispatch(setSelectedUnjoinedCommunityAddress(null));
+    await dispatch(setSelectedUnjoinedHubAddress(null));
   };
 
   return (
@@ -48,10 +48,10 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
         <AutHeader
           backAction={onBackClicked}
           logoId="unjoined-logo"
-          title="Pick DAO to join."
+          title="Pick Hub to join."
           subtitle={
             <>
-              You have integrated these DAOs
+              You have integrated these Hubs
               <br />
               but haven't joined them.
             </>
@@ -60,7 +60,7 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
         <FormWrapper onSubmit={handleSubmit(onSubmit)}>
           <FormContent>
             <Controller
-              name="dao"
+              name="hub"
               control={control}
               rules={{
                 validate: {
@@ -72,14 +72,6 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
                   <AutSelectField
                     variant="standard"
                     autoFocus
-                    // @TODO: fix this
-                    // renderValue={(selected) => {
-                    //   if (!selected) {
-                    //     return 'Select DAO';
-                    //   }
-                    //   const dao = autData.unjoinedCommunities.find((t) => t.address === selected);
-                    //   return dao?.name || selected;
-                    // }}
                     name={name}
                     color="primary"
                     value={value || ''}
@@ -88,10 +80,10 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
                     onChange={onChange}
                     helperText={<FormHelperText name={name} errors={formState.errors} />}
                   >
-                    {autData.unjoinedCommunities &&
-                      autData.unjoinedCommunities.map((dao) => (
-                        <MenuItem key={`dao-${dao.address}`} color="primary" value={dao.address}>
-                          {dao.name}
+                    {autData.unjoinedHubs &&
+                      autData.unjoinedHubs.map((hub) => (
+                        <MenuItem key={`hub-${hub.properties.address}`} color="primary" value={hub.properties.address}>
+                          {hub.name}
                         </MenuItem>
                       ))}
                   </AutSelectField>
@@ -101,7 +93,7 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
           </FormContent>
           <FormAction>
             <AutButton type="submit" disabled={!formState.isValid}>
-              JOIN DAO
+              Join Hub
             </AutButton>
           </FormAction>
         </FormWrapper>
@@ -110,4 +102,4 @@ const PickUnjoinedDAO: React.FunctionComponent = () => {
   );
 };
 
-export default PickUnjoinedDAO;
+export default PickUnjoinedHub;

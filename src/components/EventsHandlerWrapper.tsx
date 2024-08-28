@@ -1,4 +1,4 @@
-// import { getCommunity } from '../services/web3/web3Service';
+// import { getHub } from '../services/web3/web3Service';
 
 export const EventsHandlerWrapper = ({ children }) => {
   // const dispatch = useDispatch();

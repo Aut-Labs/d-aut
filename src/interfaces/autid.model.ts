@@ -1,95 +1,36 @@
-import { HolderData } from '@aut-labs/sdk';
-import { BaseNFTModel } from '@aut-labs/sdk/dist/models/baseNFTModel';
-import { Community } from './community.model';
+import { AutIDNFT, AutIDProperties as BaseAutIDProperties } from '@aut-labs/sdk/dist/models/aut.model';
 import { NetworkConfig } from '../types/network';
+import { AutIdJoinedHubState, DAutHub } from './hub.model';
 
-export interface AutSocial {
-  type: string;
-  link: string;
-  metadata: any;
-}
+export class AutIDProperties extends BaseAutIDProperties {
+  hubs: DAutHub[];
 
-export const DefaultSocials: AutSocial[] = [
-  {
-    type: 'discord',
-    link: '',
-    metadata: {},
-  },
-  {
-    type: 'ens',
-    link: '',
-    metadata: {},
-  },
-  {
-    type: 'twitter',
-    link: '',
-    metadata: {},
-  },
-  {
-    type: 'github',
-    link: '',
-    metadata: {},
-  },
-];
-
-export class AutIDProperties {
-  avatar: string;
-
-  thumbnailAvatar: string;
-
-  communities: Community[];
-
-  timestamp: string;
-
-  loginTimestamp: number;
-
-  role: number;
+  loginTimestamp?: number;
 
   address: string;
 
-  tokenId: string;
+  network: NetworkConfig;
 
-  socials: AutSocial[];
-
-  ethDomain?: string;
-
-  network?: NetworkConfig;
-
-  holderData?: HolderData;
-
-  bio: string;
-
-  [key: string]: any;
+  joinedHubs: AutIdJoinedHubState[];
 
   constructor(data: AutIDProperties) {
+    super(data);
     if (!data) {
-      this.communities = [];
-      this.socials = [];
+      this.hubs = [];
+      this.joinedHubs = [];
     } else {
-      Object.keys(data).forEach((key) => {
-        this[key] = data[key];
-      });
-      this.timestamp = data.timestamp;
-      this.avatar = data.avatar;
-      this.address = data.address;
-      this.tokenId = data.tokenId;
-      this.communities = (data.communities || []).map((community) => new Community(community));
-      this.ethDomain = data.ethDomain;
-      this.socials = data.socials || DefaultSocials;
-      this.socials = this.socials.filter((s) => s.type !== 'eth');
-      this.network = data.network;
-      this.holderData = data.holderData;
-      this.thumbnailAvatar = data.thumbnailAvatar;
+      this.hubs = data.hubs;
       this.loginTimestamp = data.loginTimestamp;
-      this.role = data.role;
-      this.bio = data.bio;
+      this.address = data.address;
+      this.network = data.network;
+      this.joinedHubs = data.joinedHubs;
     }
   }
 }
 
-export class AutID extends BaseNFTModel<AutIDProperties> {
-  constructor(data: AutID = {} as AutID) {
+export class DAutAutID<T = AutIDProperties> extends AutIDNFT<T> {
+  constructor(data: DAutAutID<T> = {} as DAutAutID<T>) {
     super(data);
-    this.properties = new AutIDProperties(data.properties);
+    this.properties = new AutIDProperties((data.properties || {}) as AutIDProperties) as T;
   }
 }

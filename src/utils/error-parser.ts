@@ -97,18 +97,18 @@ export const METAMASK_POSSIBLE_ERRORS = {
 };
 
 export enum InternalErrorTypes {
-  CouldNotFindCommunity = 'Could not find community.',
+  CouldNotFindHub = 'Could not find hub.',
   FoundAutIDOnMultipleNetworks = 'Found ĀutID on multiple networks.',
   FoundAnAutIDOnADifferentNetwork = 'Found an ĀutID on a different network.',
   FailedToSwitchNetwork = 'Failed to switch network.',
   AutIDNotFound = 'ĀutID was not found.',
   AutIDAlreadyExistsForAddress = 'ĀutID already exists for this address.',
-  AutIDAlreadyInThisCommunity = 'Your ĀutID is already a member of this DAO.',
+  AutIDAlreadyInThisHub = 'Your ĀutID is already a member of this Hub.',
   UsernameAlreadyTaken = 'This username is already taken.',
-  UserHasUnjoinedCommunities = 'User has unjoined DAOs.',
+  UserHasUnjoinedHubs = 'User has unjoined Hubs.',
   GatewayTimedOut = 'IPFS: Gateway timed out.',
-  UserNotAMemberOfThisDaoMint = 'Failed to mint ĀutID. Your address is not a member of this DAO.',
-  UserNotAMemberOfThisDaoJoin = 'Failed to join. Your ĀutID is not a member of this DAO.',
+  UserNotAMemberOfThisDaoMint = 'Failed to mint ĀutID. Your address is not a member of this Hub.',
+  UserNotAMemberOfThisDaoJoin = 'Failed to join. Your ĀutID is not a member of this Hub.',
   OnlyOperatorsCanAccessTheDashboard = 'Only operators can access the dashboard.',
 }
 

@@ -13,8 +13,8 @@ import { LinkedinShareButton, TelegramShareButton, TwitterShareButton } from 're
 import { userData } from '../store/user-data.reducer';
 import { autUrls } from '../services/web3/env';
 
-const shareContent = (role, username, community, network) => {
-  return `I'm now a ${role} @ ${community} 🎉\nLook at my self-sovereign ĀutID,\nand follow my journey 🖖`;
+const shareContent = (role: string, username: string, hub: string) => {
+  return `I'm now a ${role} @ ${hub} 🎉\nLook at my self-sovereign ĀutID,\nand follow my journey 🖖`;
 };
 
 const Share: React.FunctionComponent = () => {
@@ -27,7 +27,7 @@ const Share: React.FunctionComponent = () => {
     <AutPageBox>
       <AutHeader hideBackBtn logoId="new-user-logo" title="Show off your ĀutID" />
       <Typography textAlign="center" color="white" variant="subtitle2" sx={{ maxWidth: '300px', wordBreak: 'break-all' }}>
-        I'm now a {userInput?.roleName} @ {autData.community?.name} 🎉
+        I'm now a {userInput?.roleName} @ {autData.hub?.name} 🎉
         <br />
         <br />
         Look at my self-sovereign ĀutID,
@@ -67,7 +67,7 @@ const Share: React.FunctionComponent = () => {
           <LinkedinShareButton
             url={`${autUrls(isDev).myAut}${userInput?.username}`}
             className="social-button"
-            summary={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
+            summary={shareContent(userInput?.roleName, userInput?.username, autData.hub?.name)}
             title="My ĀutID"
           >
             <LinkedInIcon
@@ -82,7 +82,7 @@ const Share: React.FunctionComponent = () => {
           <TelegramShareButton
             url={`${autUrls(isDev).myAut}${userInput?.username}`}
             className="social-button"
-            title={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
+            title={shareContent(userInput?.roleName, userInput?.username, autData.hub?.name)}
           >
             <TelegramIcon
               sx={{
@@ -95,8 +95,8 @@ const Share: React.FunctionComponent = () => {
           <TwitterShareButton
             url={`${autUrls(isDev).myAut}${userInput?.username}`}
             className="social-button"
-            title={shareContent(userInput?.roleName, userInput?.username, autData.community?.name, selectedNetwork)}
-            hashtags={['Aut', 'DAO']}
+            title={shareContent(userInput?.roleName, userInput?.username, autData.hub?.name)}
+            hashtags={['Aut', 'Hub']}
           >
             <TwitterIcon
               color="primary"

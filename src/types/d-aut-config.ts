@@ -6,21 +6,21 @@ import { NetworkConfig } from './network';
 
 export type S = {
   address: string;
-  error: string;
   isConnecting: boolean;
   isConnected: boolean;
   chainId: number;
   status: 'connected' | 'connecting' | 'disconnected' | 'reconnecting';
   multiSigner: MultiSigner;
   multiSignerId: string;
+  error?: string;
 };
 
 export type Connector = {
   id: string;
   name: string;
-  type: string;
-  uid: string;
-  icon: string;
+  type?: string;
+  uid?: string;
+  icon?: string;
 };
 
 export interface EthersConnector {
@@ -47,6 +47,7 @@ export interface SwAuthConfig<CSSObject> {
   containerStyles?: CSSObject;
   connector?: EthersConnector;
   envConfig: EnvConfig;
+  subscribeToStore?: (state: any) => void;
 }
 
 export enum FlowConfigMode {
@@ -62,7 +63,7 @@ export interface FlowConfig {
 
 export enum AttributesDefinitions {
   'use-dev' = 'boolean',
-  'nova-address' = 'string',
+  'hub-address' = 'string',
   'hide-button' = 'boolean',
   'ipfs-gateway' = 'string',
   'menu-items' = 'object',

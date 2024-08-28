@@ -11,7 +11,7 @@ import { FormAction, FormContent, FormWrapper } from '../components/FormHelpers'
 import { AutHeader } from '../components/AutHeader';
 import { AutCommitmentSlider } from '../theme/commitment-slider-styles';
 import { useAutConnectorContext } from '..';
-import { joinCommunity, mintMembership } from '../services/web3/api';
+import { joinHub, mintMembership } from '../services/web3/api';
 
 const Commitment: React.FunctionComponent = (props) => {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const Commitment: React.FunctionComponent = (props) => {
 
   const onSubmit = async (data: any) => {
     if (coreState.justJoin) {
-      const result = await dispatch(joinCommunity(state.address));
+      const result = await dispatch(joinHub(state.address));
       if (!(result as any).error) {
         navigate('/congrats');
       }
@@ -65,11 +65,11 @@ const Commitment: React.FunctionComponent = (props) => {
           <Controller
             name="commitment"
             control={control}
-            rules={{ required: true, min: coreState.community.minCommitment, max: 10 }}
+            rules={{ required: true, min: coreState.hub.properties.minCommitment, max: 10 }}
             render={({ field: { name, value, onChange } }) => (
               <AutCommitmentSlider
-                communityName={coreState.community.name}
-                minCommitment={coreState.community.minCommitment}
+                hubName={coreState.hub.name}
+                minCommitment={coreState.hub.properties.minCommitment}
                 value={value}
                 name={name}
                 sx={{ mt: '63px' }}
@@ -101,7 +101,7 @@ const Commitment: React.FunctionComponent = (props) => {
             type="submit"
             disabled={!isValid}
           >
-            JOIN THE COMMUNITY
+            JOIN THE HUB
           </AutButton>
         </FormAction>
       </FormWrapper>

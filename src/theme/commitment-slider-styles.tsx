@@ -58,7 +58,7 @@ const errorTypes = (minCommitment) => {
 };
 
 interface AutSliderProps {
-  communityName: string;
+  hubName: string;
   minCommitment: number;
   value: any;
   sliderProps: SliderProps;

@@ -88,14 +88,14 @@ setTimeout(() => {
   });
   // setInterval(() => {
   //   const el: HTMLElement = document.getElementById('aut');
-  //   // const hide = el.getAttribute('nova-address');
+  //   // const hide = el.getAttribute('hub-address');
   //   const network = JSON.stringify({
-  //     name: 'Mumbai (Polygon)',
-  //     chainId: 80001,
-  //     network: 'Mumbai',
+  //     name: 'Amoyt (Polygon)',
+  //     chainId: 80002,
+  //     network: 'polygon-amoy',
   //     disabled: false,
   //     explorerUrls: ['https://explorer-mumbai.maticvigil.com/'],
-  //     rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
+  //     rpcUrls: ['https://rpc-amoy.maticvigil.com'],
   //   });
   //   const menuItems = JSON.stringify([
   //     {

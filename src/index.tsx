@@ -13,7 +13,9 @@ import { createRoot } from 'react-dom/client';
 import { fonts } from './assets/fonts/Fractul/fontsBase64';
 import { env } from './services/web3/env';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { NetworkConfig } from './types/network';
+
+export * from './interfaces/autid.model';
+export * from './interfaces/hub.model';
 
 function safeDecorator(fn) {
   // eslint-disable-next-line func-names
@@ -57,7 +59,7 @@ export const AutConnectorProvider = ({ connector, children }) => {
   };
 
   const connect = useCallback(
-    async (c?: Connector) => {
+    async (c: Connector) => {
       const newState = await connector.connect(c);
       setState(newState);
       return newState;
@@ -110,7 +112,7 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
           // Add all tracked attributes to this array
           return [
             AttributeNames.hideButton,
-            AttributeNames.novaAddress,
+            AttributeNames.hubAddress,
             AttributeNames.menuItems,
             AttributeNames.network,
             AttributeNames.flowConfig,
@@ -188,6 +190,11 @@ export function Init(authConfig: SwAuthConfig<CSSObject> = null) {
           }
 
           const root = createRoot(mountPoint);
+          if (authConfig.subscribeToStore) {
+            store.subscribe(() => {
+              authConfig.subscribeToStore(store.getState());
+            });
+          }
 
           root.render(
             <StyledEngineProvider injectFirst>

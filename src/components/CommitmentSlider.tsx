@@ -96,7 +96,7 @@ interface AutSliderProps {
   name: string;
   errors: FieldErrors<any>;
   minCommitment: number;
-  communityName: string;
+  hubName: string;
 }
 
 interface CustomSliderProps {
@@ -107,9 +107,9 @@ interface CustomSliderProps {
 //   min: 'Min 1 commitment level!',
 // };
 
-const errorTypes = (minCommitment, communityName) => {
+const errorTypes = (minCommitment: number, hubName: string) => {
   return {
-    min: `Whoops - The min level to join ${communityName} is ${minCommitment}`,
+    min: `Whoops - The min level to join ${hubName} is ${minCommitment}`,
   };
 };
 
@@ -126,7 +126,7 @@ export const AutSlider = (props: AutSliderProps) => {
         <StyledSlider {...props.sliderProps} minCommitment={props.minCommitment} />
       </div>
       <div style={{ marginTop: '-3px', display: 'flex', justifyContent: 'flex-end' }}>
-        <FormHelperText errorTypes={errorTypes(props.minCommitment, props.communityName)} name={props.name} errors={props.errors}>
+        <FormHelperText errorTypes={errorTypes(props.minCommitment, props.hubName)} name={props.name} errors={props.errors}>
           <Typography color="white" variant="h5">
             You can change your commitment at any time
           </Typography>

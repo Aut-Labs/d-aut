@@ -1,23 +1,23 @@
 import React from 'react';
-import { Box, MenuItem } from '@mui/material';
+import { Box } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
-import { autState, NovaAddress, ResultState, setStatus, updateErrorState } from '../store/aut.reducer';
+import { autState, HubAddress, ResultState, setStatus, updateErrorState } from '../store/aut.reducer';
 import { AutHeader } from '../components/AutHeader';
 import { Controller, useForm } from 'react-hook-form';
 import { FormAction, FormWrapper, FormContent } from '../components/FormHelpers';
 import { AutSelectField, FormHelperText } from '../components/Fields';
 import { useAppDispatch } from '../store/store.model';
-import { getAutId } from '../services/web3/api';
+import { loginToAutId } from '../services/web3/api';
 import { NetworksConfig, SelectedNetwork } from '../store/wallet-provider';
 import { InternalErrorTypes } from '../utils/error-parser';
-import AutSDK, { AutID, Nova } from '@aut-labs/sdk';
+import AutSDK, { AutID, Hub } from '@aut-labs/sdk';
 import { useAutConnectorContext } from '..';
 
 const NetworkSelect: React.FunctionComponent = () => {
   const networkConfigs = useSelector(NetworksConfig);
-  const novaAddress = useSelector(NovaAddress);
+  const hubAddress = useSelector(HubAddress);
   const autData = useSelector(autState);
   const selectedNetwork = useSelector(SelectedNetwork);
   const dispatch = useAppDispatch();
@@ -34,14 +34,14 @@ const NetworkSelect: React.FunctionComponent = () => {
     // @ts-ignore
     const foundChainId = Number(connector?.provider?.chainId);
     if (foundChainId === network.chainId) {
-      await dispatch(getAutId(state.address));
+      await dispatch(loginToAutId(state.address));
     } else {
       try {
         const sdk = await AutSDK.getInstance();
-        const novaContract = sdk.initService(Nova, novaAddress);
-        const result = await novaContract.contract.getAutIDContractAddress();
+        const hubService = sdk.initService(Hub, hubAddress);
+        const result = await hubService.contract.getAutIDContractAddress();
         sdk.initService(AutID, result.data);
-        await dispatch(getAutId(state.address));
+        await dispatch(loginToAutId(state.address));
       } catch (e) {
         await dispatch(setStatus(ResultState.Failed));
         dispatch(updateErrorState(InternalErrorTypes.FailedToSwitchNetwork));
@@ -113,12 +113,12 @@ const NetworkSelect: React.FunctionComponent = () => {
                     onChange={onChange}
                     helperText={<FormHelperText name={name} errors={formState.errors} />}
                   >
-                    {autData.autIdsOnDifferentNetworks &&
+                    {/* {autData.autIdsOnDifferentNetworks &&
                       autData.autIdsOnDifferentNetworks.map((autId) => (
                         <MenuItem key={`autId-${autId.network}`} color="primary" value={autId.network}>
                           {autId.network}
                         </MenuItem>
-                      ))}
+                      ))} */}
                   </AutSelectField>
                 );
               }}

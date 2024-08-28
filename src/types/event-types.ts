@@ -3,8 +3,9 @@ export enum OutputEventTypes {
   Disconnected = 'aut-onDisconnected',
   Init = 'aut-Init',
   Minted = 'aut-minted',
-  ActivateSuccess = 'activateSkillWalletCommunitySuccess',
-  ActivateError = 'activateSkillWalletCommunityError',
+  Joined = 'aut-joined',
+  ActivateSuccess = 'activateHubSuccess',
+  ActivateError = 'activateHubError',
 }
 
 export enum InputEventTypes {

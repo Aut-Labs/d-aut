@@ -7,7 +7,7 @@ import UserRole from '../pages/UserRole';
 import Commitment from '../pages/Commitment';
 import Congratulations from '../pages/Congratulations';
 import MintSuccess from '../pages/MintSuccess';
-import PickUnjoinedDAO from '../pages/PickUnjoinedDAO';
+import PickUnjoinedHub from '../pages/PickUnjoinedHub';
 import NetworkSelect from '../pages/NetworkSelect';
 import Share from '../pages/Share';
 
@@ -27,7 +27,7 @@ const routes: IRoute[] = [
   {
     path: '/unjoined',
     name: 'Pick Unjoined',
-    component: PickUnjoinedDAO,
+    component: PickUnjoinedHub,
     exact: true,
   },
   {

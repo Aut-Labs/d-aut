@@ -1,5 +1,5 @@
 import { useAppDispatch } from '../store/store.model';
-import { getAutId } from '../services/web3/api';
+import { loginToAutId } from '../services/web3/api';
 import { AutPageBox } from '../components/AutPageBox';
 import { AutHeader } from '../components/AutHeader';
 import { LoadingProgress } from '../components/LoadingProgress';
@@ -32,7 +32,7 @@ const LoginWithAut: React.FunctionComponent = () => {
       setLoadAutID(false);
       return;
     }
-    await dispatch(getAutId(state.address));
+    await dispatch(loginToAutId(state.address));
     setLoadAutID(false);
 
     return state;

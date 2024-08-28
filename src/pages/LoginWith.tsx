@@ -39,7 +39,7 @@ const LoginWith: React.FunctionComponent = () => {
       >
         CONNECT WITH ĀutID
       </AutButton>
-      {autData.novaAddress && (
+      {autData.hubAddress && (
         <AutButton
           color="white"
           size="normal"

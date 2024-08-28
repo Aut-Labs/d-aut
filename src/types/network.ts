@@ -1,8 +1,3 @@
-export enum NetworkConfigEnv {
-  Testing = 'testing',
-  Mainnet = 'mainnet',
-}
-
 export interface NetworkContracts {
   autIDAddress: string;
   daoExpanderRegistryAddress: string;
