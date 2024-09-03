@@ -1,27 +1,6 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.183-dev",
-  "main": "./build/index.umd.js",
-  "module": "./build/index.es.js",
-  "types": "./build/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./build/index.es.js",
-      "require": "./build/index.umd.js"
-    }
-  },
-  "files": [
-    "build/",
-    "src/"
-  ],
-  "bugs": {
-    "url": "https://github.com/Aut-Labs/d-aut/issues"
-  },
-  "author": "Aut",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Aut-Labs/d-aut.git"
-  },
+  "version": "1.0.187-dev",
   "keywords": [
     "aut",
     "identity",
@@ -31,18 +10,48 @@
     "own your own identity",
     "shareable social profile"
   ],
+  "bugs": {
+    "url": "https://github.com/Aut-Labs/d-aut/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aut-Labs/d-aut.git"
+  },
+  "author": "Aut",
+  "exports": {
+    ".": {
+      "import": "./build/index.es.js",
+      "require": "./build/index.umd.js"
+    }
+  },
+  "main": "./build/index.umd.js",
+  "module": "./build/index.es.js",
+  "types": "./build/index.d.ts",
+  "files": [
+    "build/",
+    "src/"
+  ],
   "scripts": {
-    "commit": "git-cz",
     "build": "vite build && tsc",
-    "deploy": "gh-pages -d build",
-    "eject": "react-app-rewired eject",
-    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
-    "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
-    "start": "vite",
-    "test": "react-app-rewired test",
     "build-cjs": "cross-env BUILD_CJS=true react-app-rewired build",
     "build-ems": "cross-env BUILD_CJS=false react-app-rewired build",
-    "clear:babel-cache": "rimraf -rf ./node_modules/.cache && node patch.js"
+    "clear:babel-cache": "rimraf -rf ./node_modules/.cache && node patch.js",
+    "commit": "git-cz",
+    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\"",
+    "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
+    "start": "vite"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "eslintConfig": {
     "extends": [
@@ -56,8 +65,6 @@
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.0.0-next.10",
     "@emotion/styled": "^11.11.0",
-    "@lottiefiles/lottie-player": "^2.0.2",
-    "@lottiefiles/react-lottie-player": "^3.5.3",
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.4",
     "@mui/styles": "^5.0.0-rc.1",
@@ -72,7 +79,7 @@
     "@typescript-eslint/parser": "~6.3.0",
     "@vitejs/plugin-react": "^4.0.4",
     "axios": "^1.4.0",
-    "customize-cra": "~1.0.0",
+    "caniuse-lite": "^1.0.30001655",
     "dateformat": "^5.0.3",
     "eslint": "~8.46.0",
     "eslint-config-airbnb": "~19.0.4",
@@ -88,41 +95,24 @@
     "jss": "^10.10.0",
     "prettier": "~3.0.1",
     "react": "~18.2.0",
-    "react-app-rewire-alias": "~1.1.5",
-    "react-app-rewired": "~2.1.8",
+    "react-cropper": "^2.3.3",
     "react-dom": "~18.2.0",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.45.4",
+    "react-lottie-player": "^2.1.0",
     "react-redux": "~8.1.2",
     "react-router-dom": "~6.14.2",
-    "react-scripts": "^5.0.1",
     "react-share": "^4.4.1",
     "redux": "~4.2.1",
     "redux-logger": "~3.0.6",
     "reselect": "^4.1.8",
     "typescript": "^5.1.6",
-    "vite": "^4.4.9",
+    "vite": "^4.5.3",
     "vite-plugin-checker": "^0.6.1",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-handlebars": "^1.6.0",
-    "vite-plugin-svgr": "^3.2.0",
-    "vite-tsconfig-paths": "^4.2.0",
-    "webpack": "^5.0.0",
-    "xmldom": "^0.6.0"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "dependencies": {
-    "react-cropper": "^2.3.3"
+    "vite-plugin-svgr": "^3.3.0",
+    "vite-tsconfig-paths": "^4.3.2",
+    "webpack": "^5.0.0"
   }
 }

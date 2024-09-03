@@ -19,7 +19,7 @@ export class AutIDProperties extends BaseAutIDProperties {
       this.hubs = [];
       this.joinedHubs = [];
     } else {
-      this.hubs = data.hubs;
+      this.hubs = data.hubs.map((hub) => new DAutHub(hub));
       this.loginTimestamp = data.loginTimestamp;
       this.address = data.address;
       this.network = data.network;

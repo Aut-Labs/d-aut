@@ -168,23 +168,30 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
 
   const initializeAut = async () => {
     dispatchEvent(OutputEventTypes.Init);
-    // check timestamp
     const _autId = JSON.parse(localStorage.getItem('aut-data'));
     if (_autId) {
       const autId = new DAutAutID(_autId);
-      const currentTime = new Date().getTime();
-      const lastLogin = autId.properties.loginTimestamp;
-      const maxSession = 8 * 60 * 60 * 1000; // 8 hours
-      const sessionLength = lastLogin + maxSession;
-      if (currentTime < sessionLength) {
-        dispatch(setUser(autId));
-        dispatchEvent(OutputEventTypes.Connected, autId);
-        // activateBrowserWallet({ type: autId?.provider }); // activave provider to get address
-      } else {
+      const currentAddress = autId.properties.address;
+      if (currentAddress !== state.address) {
         await handleDisconnect();
+      } else {
+        const currentTime = new Date().getTime();
+        const lastLogin = autId.properties.loginTimestamp;
+        const maxSession = 8 * 60 * 60 * 1000; // 8 hours
+        const sessionLength = lastLogin + maxSession;
+        if (currentTime < sessionLength) {
+          dispatch(setUser(autId));
+          dispatchEvent(OutputEventTypes.Connected, autId);
+        } else {
+          await handleDisconnect();
+        }
       }
     }
   };
+
+  useEffect(() => {
+    initializeAut();
+  }, [state.address]);
 
   useEffect(() => {
     dispatch(setNetworks(networks));
@@ -225,7 +232,6 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
       },
     ]);
     setAttributes(defaultAttributes);
-    initializeAut();
     setAttrCallback(async (name: string, _: string, newVal: string) => {
       const key = toCammelCase(name);
       const updatedAttributes = {

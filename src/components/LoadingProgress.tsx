@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
-import { Player } from '@lottiefiles/react-lottie-player';
 import animationData from '../assets/aut-load.json';
 import { AutHeader } from './AutHeader';
+import Lottie from 'react-lottie-player/dist/LottiePlayerLight';
 
 export const LoadingProgress = () => {
   return (
@@ -26,7 +26,7 @@ export const LoadingProgress = () => {
           justifyContent: 'center',
         }}
       >
-        <Player autoplay loop src={animationData} style={{ height: '150px', width: '150px' }} />
+        <Lottie play loop animationData={animationData} style={{ height: '150px', width: '150px' }} />
       </Box>
     </Box>
   );
