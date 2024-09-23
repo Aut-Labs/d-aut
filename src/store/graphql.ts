@@ -18,4 +18,4 @@ const getApolloClient = (url: string) => {
   return _apolloClient;
 };
 
-export const getGraphClient = (): ApolloClient<any> => getApolloClient(env.REACT_APP_GRAPH_API_URL);
+export const getGraphClient = (): ApolloClient<any> => getApolloClient(env.GRAPH_API_URL);

@@ -24,8 +24,7 @@ import { IPFSCusomtGateway, setCustomIpfsGateway, setNetworks, updateWalletProvi
 import { ipfsCIDToHttpUrl } from './services/storage/storage.hub';
 import AutButtonMenu from './components/AutButtonMenu/AutButtonMenu';
 import { AutMenuItemType, MenuItemActionType, AutButtonUserProfile } from './components/AutButtonMenu/AutMenuUtils';
-import AutSDK from '@aut-labs/sdk';
-import { MultiSigner } from '@aut-labs/sdk/dist/models/models';
+import AutSDK, { Hub, MultiSigner } from '@aut-labs/sdk';
 import { useAutConnectorContext } from '.';
 import { env } from './services/web3/env';
 import { NetworkConfig } from './types/network';
@@ -70,18 +69,13 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   const initializeSDK = async (network: NetworkConfig, multiSigner: MultiSigner) => {
     const sdk = await AutSDK.getInstance(false);
     const autIdContractAddress = network?.contracts?.autIDAddress;
-
+    await sdk.init(multiSigner, {
+      autIDAddress: autIdContractAddress,
+    });
     // If hub address is provided then to ensure is the correct autId address
     // we will fetch contract address from hubAddress contract
     if (hubAddress) {
-      await sdk.init(multiSigner, {
-        hubAddress,
-        autIDAddress: autIdContractAddress,
-      });
-    } else {
-      await sdk.init(multiSigner, {
-        autIDAddress: autIdContractAddress,
-      });
+      sdk.hub = sdk.initService<Hub>(Hub, hubAddress);
     }
   };
 
@@ -196,10 +190,11 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
   useEffect(() => {
     dispatch(setNetworks(networks));
     const sdk = new AutSDK({
+      enableDebug: env.ENV === 'development',
       ipfs: {
-        apiKey: env.REACT_APP_IPFS_API_KEY,
-        secretApiKey: env.REACT_APP_IPFS_API_SECRET,
-        gatewayUrl: env.REACT_APP_IPFS_GATEWAY_URL,
+        apiKey: env.IPFS_API_KEY,
+        secretApiKey: env.IPFS_API_SECRET,
+        gatewayUrl: env.IPFS_GATEWAY_URL,
       },
     });
   }, [networks]);

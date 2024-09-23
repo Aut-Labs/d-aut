@@ -38,9 +38,8 @@ const NetworkSelect: React.FunctionComponent = () => {
     } else {
       try {
         const sdk = await AutSDK.getInstance();
-        const hubService = sdk.initService(Hub, hubAddress);
-        const result = await hubService.contract.getAutIDContractAddress();
-        sdk.initService(AutID, result.data);
+        sdk.hub = sdk.initService(Hub, hubAddress);
+        sdk.autID = sdk.initService(AutID, network.contracts.autIDAddress);
         await dispatch(loginToAutId(state.address));
       } catch (e) {
         await dispatch(setStatus(ResultState.Failed));

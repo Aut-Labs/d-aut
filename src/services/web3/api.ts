@@ -4,7 +4,16 @@ import { InternalErrorTypes } from '../../utils/error-parser';
 import { base64toFile, dispatchEvent } from '../../utils/utils';
 import { setUserData } from '../../store/user-data.reducer';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import AutSDK, { Hub, HubNFT, fetchMetadata, queryParamsAsString } from '@aut-labs/sdk';
+import AutSDK, {
+  AutIDNFT,
+  AutIDProperties,
+  DefaultSocials,
+  Hub,
+  HubNFT,
+  fetchMetadata,
+  getOverrides,
+  queryParamsAsString,
+} from '@aut-labs/sdk';
 import { RootState } from '../../store/store.model';
 import { OutputEventTypes } from '../../types/event-types';
 import { env } from './env';
@@ -13,8 +22,6 @@ import { gql } from '@apollo/client';
 import { AutIdJoinedHubState, DAutHub } from '../../interfaces/hub.model';
 import { stateDetails } from './state.util';
 import { dataUrlToFile, dataURLtoFile } from './utils';
-import { AutIDNFT, AutIDProperties } from '@aut-labs/sdk/dist/models/aut.model';
-import { DefaultSocials } from '@aut-labs/sdk/dist/models/social';
 import { DAutAutID } from '../../interfaces/autid.model';
 import { NetworkConfig } from '../../types/network';
 
@@ -37,7 +44,8 @@ export const fetchHubs = async (hubs: string[], customIpfsGateway: string) => {
 
   const communities = await Promise.all(
     response.data.hubs.map(async ({ address, domain, metadataUri, deployer, minCommitment }) => {
-      const metadata = await fetchMetadata<HubNFT>(metadataUri, customIpfsGateway);
+      let metadata = await fetchMetadata<HubNFT>(metadataUri, customIpfsGateway);
+      metadata = metadata ?? new HubNFT({ name: 'Unknown', description: 'Unknown', image: '', properties: {} as any });
       return new DAutHub({
         ...metadata,
         properties: {
@@ -58,6 +66,9 @@ export const fetchAutIdAndHubs = async (
   ipfsGateway: string,
   selectedNetwork: NetworkConfig
 ): Promise<DAutAutID> => {
+  if (!selectedAddress) {
+    throw new Error('No address provided');
+  }
   const query = gql`
         query GetAutID {
           autID(id: "${selectedAddress.toLowerCase()}") {
@@ -77,7 +88,11 @@ export const fetchAutIdAndHubs = async (
     query,
   });
   const autID = response?.data?.autID;
-  const metadata = await fetchMetadata<AutIDNFT>(autID.metadataUri, ipfsGateway);
+  if (!autID) {
+    throw new Error('AutID not found');
+  }
+  let metadata = await fetchMetadata<AutIDNFT>(autID.metadataUri, ipfsGateway);
+  metadata = metadata ?? new AutIDNFT({ name: 'Unknown', description: 'Unknown', image: '', properties: {} as any });
   const sdk = await AutSDK.getInstance(true);
 
   const joinedHubs = autID.joinedHubs.map((hub: AutIdJoinedHubState) => {
@@ -120,12 +135,16 @@ export const fetchAutIdAndHubs = async (
 
 export const fetchHub = createAsyncThunk('hub/get', async (arg, { rejectWithValue, getState }) => {
   const { hubAddress, ipfsGateway } = stateDetails(getState() as RootState);
-  const hubs = await fetchHubs([hubAddress], ipfsGateway);
+  try {
+    const hubs = await fetchHubs([hubAddress], ipfsGateway);
 
-  if (!hubs?.length) {
+    if (!hubs?.length) {
+      return rejectWithValue(InternalErrorTypes.CouldNotFindHub);
+    }
+    return hubs[0];
+  } catch (error) {
     return rejectWithValue(InternalErrorTypes.CouldNotFindHub);
   }
-  return hubs[0];
 });
 
 export const mintMembership = createAsyncThunk(
@@ -145,7 +164,7 @@ export const mintMembership = createAsyncThunk(
       dao: hub.name,
       hash: `#${tokenID}`,
       network: selectedNetwork?.network.toLowerCase(),
-      novaAddress: hubAddress,
+      hubAddress,
       timestamp: `${timeStamp}`,
     };
 
@@ -156,7 +175,7 @@ export const mintMembership = createAsyncThunk(
     formData.append('config', JSON.stringify(config));
     const result = await axios({
       method: 'post',
-      url: `${env.REACT_APP_API_URL}/user/generateBadge`,
+      url: `${env.API_URL}/user/generateBadge`,
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' },
     });
@@ -183,8 +202,15 @@ export const mintMembership = createAsyncThunk(
       },
     });
     const cid = await sdk.client.sendJSONToIPFS(AutIDNFT.updateAutIDNFT(metadata) as any);
-    const response = await sdk.autID.contract.mintAndJoin(username.toLowerCase(), cid, role, commitment, hubAddress);
+    console.log('username', username);
+    console.log('cid', cid);
+    console.log('role', role);
+    console.log('commitment', commitment);
+    console.log('hubAddress', hubAddress);
+    const overrides = await getOverrides(sdk.signer);
+    const response = await sdk.autID.contract.mintAndJoin(username.toLowerCase(), cid, role, commitment, hubAddress, overrides);
     if (!response?.isSuccess) {
+      console.error('Error minting NFT', response.event);
       dispatchEvent(OutputEventTypes.Minted, false);
       return rejectWithValue(response?.errorMessage);
     }
@@ -204,15 +230,14 @@ export const joinHub = createAsyncThunk('hub/join', async (selectedAddress: stri
 
   const sdk = await AutSDK.getInstance();
   const { contract } = sdk.autID;
-  const result = await contract.joinDAO(userData.role, userData.commitment, hubAddress);
+  const result = await contract.joinHub(userData.role, userData.commitment, hubAddress);
   if (result.isSuccess) {
+    console.error('Error joining hub', result.event);
     const autID = await fetchAutIdAndHubs(selectedAddress, ipfsGateway, selectedNetwork);
     const joinedHub = autID.properties.joinedHubs.find((h) => h.hubAddress.toLowerCase() === hubAddress.toLowerCase());
 
     await dispatch(setUserData({ username: autID.name, isOwner: joinedHub.isAdmin }));
-
     dispatchEvent(OutputEventTypes.Joined, true);
-
     return true;
   }
   return rejectWithValue(result.errorMessage);
@@ -220,12 +245,17 @@ export const joinHub = createAsyncThunk('hub/join', async (selectedAddress: stri
 
 export const loginToAutId = createAsyncThunk('membership/get', async (selectedAddress: string, { dispatch, getState, rejectWithValue }) => {
   const { ipfsGateway, selectedNetwork } = stateDetails(getState() as RootState);
-  const autID = await fetchAutIdAndHubs(selectedAddress, ipfsGateway, selectedNetwork);
-  autID.properties.loginTimestamp = new Date().getTime();
+  try {
+    const autID = await fetchAutIdAndHubs(selectedAddress, ipfsGateway, selectedNetwork);
+    autID.properties.loginTimestamp = new Date().getTime();
 
-  await dispatch(setUserData({ username: autID.name }));
-  window.localStorage.setItem('aut-data', JSON.stringify(autID));
-  return autID;
+    await dispatch(setUserData({ username: autID.name }));
+    window.localStorage.setItem('aut-data', JSON.stringify(autID));
+    return autID;
+  } catch (error) {
+    console.error('Err: ', error);
+    return rejectWithValue(InternalErrorTypes.AutIDNotFound);
+  }
 });
 
 export const checkIfNameTaken = createAsyncThunk('membership/nametaken', async (requestBody: { username: string }, { rejectWithValue }) => {

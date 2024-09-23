@@ -9,7 +9,7 @@ import { AutButton } from '../components/AutButton';
 import { AutPageBox } from '../components/AutPageBox';
 import { FormWrapper } from '../components/FormHelpers';
 import { AutHeader } from '../components/AutHeader';
-import { Role } from '@aut-labs/sdk/dist/models/role';
+import { Role } from '@aut-labs/sdk';
 
 const UserRole: React.FunctionComponent = (props) => {
   const dispatch = useAppDispatch();

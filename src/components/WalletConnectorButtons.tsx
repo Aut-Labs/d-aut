@@ -6,9 +6,9 @@ import WalletConnectIcon from '../assets/WalletConnect';
 import Web3Auth from '../assets/Web3Auth';
 
 const btnConfig = {
-  metaMask: {
+  metaMaskSDK: {
     order: 0,
-    label: 'metaMask',
+    label: 'MetaMask',
     icon: <MetamaskIcon />,
   },
   walletConnect: {

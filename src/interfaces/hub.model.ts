@@ -1,6 +1,4 @@
-import { HubNFT } from '@aut-labs/sdk';
-import { HubProperties as BaseHubProperties } from '@aut-labs/sdk/dist/models/hub';
-import { Role } from '@aut-labs/sdk/dist/models/role';
+import { HubNFT, HubProperties as BaseHubProperties, Role } from '@aut-labs/sdk';
 
 export interface AutIdJoinedHubState {
   id: string;

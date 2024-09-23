@@ -78,12 +78,12 @@ setTimeout(() => {
     },
     config,
     envConfig: {
-      REACT_APP_ENV: 'development',
-      REACT_APP_API_URL: '',
-      REACT_APP_GRAPH_API_URL: '',
-      REACT_APP_IPFS_API_KEY: '',
-      REACT_APP_IPFS_API_SECRET: '',
-      REACT_APP_IPFS_GATEWAY_URL: '',
+      ENV: 'development',
+      API_URL: '',
+      GRAPH_API_URL: '',
+      IPFS_API_KEY: '',
+      IPFS_API_SECRET: '',
+      IPFS_GATEWAY_URL: '',
     },
   });
   // setInterval(() => {

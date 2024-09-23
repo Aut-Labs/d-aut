@@ -40,7 +40,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(!env.REACT_APP_ENV || env.REACT_APP_ENV === 'development' ? logger : []),
+    }).concat(!env.ENV || env.ENV === 'development' ? logger : []),
   reducer: rootReducer,
 });
 

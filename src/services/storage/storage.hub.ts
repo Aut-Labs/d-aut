@@ -14,7 +14,7 @@ export function ipfsCIDToHttpUrl(url: string, customGateway: string = null, isJs
   }
   if (!url.includes('https://'))
     return isJson
-      ? `${customGateway || env.REACT_APP_IPFS_GATEWAY_URL}/${replaceAll(url, 'ipfs://', '')}/metadata.json`
-      : `${customGateway || env.REACT_APP_IPFS_GATEWAY_URL}/${replaceAll(url, 'ipfs://', '')}`;
+      ? `${customGateway || env.IPFS_GATEWAY_URL}/${replaceAll(url, 'ipfs://', '')}/metadata.json`
+      : `${customGateway || env.IPFS_GATEWAY_URL}/${replaceAll(url, 'ipfs://', '')}`;
   return url;
 }

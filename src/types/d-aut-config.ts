@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-duplicate-enum-values */
-import { MultiSigner } from '@aut-labs/sdk/dist/models/models';
+import { MultiSigner } from '@aut-labs/sdk';
 import { IAutButtonConfig } from '../components/AutButtonMenu/AutMenuUtils';
 import { CamelCase } from './camel-case';
 import { NetworkConfig } from './network';
@@ -33,12 +33,12 @@ export interface EthersConnector {
 }
 
 export interface EnvConfig {
-  REACT_APP_API_URL: string;
-  REACT_APP_GRAPH_API_URL: string;
-  REACT_APP_IPFS_API_KEY: string;
-  REACT_APP_IPFS_API_SECRET: string;
-  REACT_APP_IPFS_GATEWAY_URL: string;
-  REACT_APP_ENV: 'development' | 'production';
+  API_URL: string;
+  GRAPH_API_URL: string;
+  IPFS_API_KEY: string;
+  IPFS_API_SECRET: string;
+  IPFS_GATEWAY_URL: string;
+  ENV: 'development' | 'production';
 }
 
 export interface SwAuthConfig<CSSObject> {

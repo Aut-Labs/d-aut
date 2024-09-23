@@ -1,4 +1,4 @@
-import { AutIDNFT, AutIDProperties as BaseAutIDProperties } from '@aut-labs/sdk/dist/models/aut.model';
+import { AutIDNFT, AutIDProperties as BaseAutIDProperties } from '@aut-labs/sdk';
 import { NetworkConfig } from '../types/network';
 import { AutIdJoinedHubState, DAutHub } from './hub.model';
 
