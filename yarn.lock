@@ -40,17 +40,17 @@
     tslib "^2.3.0"
     zen-observable-ts "^1.2.5"
 
-"@aut-labs/abi-types@^0.0.81-dev":
-  version "0.0.81-dev"
-  resolved "https://registry.npmjs.org/@aut-labs/abi-types/-/abi-types-0.0.81-dev.tgz"
-  integrity sha512-/I+6aL353cYrp220yASBHM9KONRd7NFWutonAoRIkZnEzh2fixEHEskkEYB9+3jAAN4LnwKt+/tnKheja8uv9g==
+"@aut-labs/abi-types@^0.0.86-dev":
+  version "0.0.86-dev"
+  resolved "https://registry.npmjs.org/@aut-labs/abi-types/-/abi-types-0.0.86-dev.tgz"
+  integrity sha512-I9VNsYN8smW516wPQeDWhJaw4OWiIc7WxRBIn2GkqKw4oYKaLbDRzTV2XXVrMlvVCo7V82V51SlV+fC0Hajq/w==
 
-"@aut-labs/sdk@^0.0.207-dev":
-  version "0.0.207-dev"
-  resolved "https://registry.npmjs.org/@aut-labs/sdk/-/sdk-0.0.207-dev.tgz"
-  integrity sha512-ilfAyD9s7rhYqdHcSUyH56+7tQYOwaeTA36M0deYbioT7eFD+MvMIIXq/yZtZ+tQgwHjdAmRtOkWn6Vxe4vDxg==
+"@aut-labs/sdk@^0.0.219-dev":
+  version "0.0.219-dev"
+  resolved "https://registry.npmjs.org/@aut-labs/sdk/-/sdk-0.0.219-dev.tgz"
+  integrity sha512-TogxdZtubYReTQQeH5oNP60hiDdbuxZJmkMqX+kHDbosdF7oAbFZhz7qX2zB9NhVobjqjkxPkylyuhG88lejpQ==
   dependencies:
-    "@aut-labs/abi-types" "^0.0.81-dev"
+    "@aut-labs/abi-types" "^0.0.86-dev"
     date-fns "^2.29.3"
     ethers "^6.10.0"
 

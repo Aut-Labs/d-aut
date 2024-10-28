@@ -1,6 +1,6 @@
 {
   "name": "@aut-labs/d-aut",
-  "version": "1.0.203-dev",
+  "version": "1.0.204-dev",
   "keywords": [
     "aut",
     "identity",
@@ -61,7 +61,7 @@
   },
   "devDependencies": {
     "@apollo/client": "^3.8.10",
-    "@aut-labs/sdk": "^0.0.207-dev",
+    "@aut-labs/sdk": "^0.0.219-dev",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.0.0-next.10",
     "@emotion/styled": "^11.11.0",
