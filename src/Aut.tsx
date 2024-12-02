@@ -185,7 +185,7 @@ export const AutButton = memo(({ config, attributes: defaultAttributes, containe
 
   useEffect(() => {
     initializeAut();
-  }, [state.address]);
+  }, [state?.address]);
 
   useEffect(() => {
     dispatch(setNetworks(networks));
